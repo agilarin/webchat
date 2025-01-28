@@ -5,6 +5,7 @@ import {Ripple} from "@/components/Ripple";
 import {Checkbox} from "@/pages/AuthPage/components/Checkbox";
 import {Button} from "@/components/UI/Button";
 import authService from "@/services/authService.ts";
+import classes from "../../AuthPage.module.scss";
 
 
 
@@ -41,7 +42,7 @@ function Signup() {
 
   return (
     <form
-      className="grid gap-4 w-full"
+      className={classes.form}
       onSubmit={handleSubmit}
     >
       <AuthInput
@@ -86,13 +87,13 @@ function Signup() {
         required
       />
 
-      <label className="relative flex items-center -mt-2 py-3 pl-4 rounded-xl">
+      <label className={classes.checkbox}>
         <Ripple/>
         <Checkbox
           onChange={(e) => setIsShowPassword(e.target.checked)}
           checked={isShowPassword}
         />
-        <span className="pl-4">
+        <span className={classes.checkboxText}>
           Показать пароль
         </span>
       </label>
@@ -100,14 +101,14 @@ function Signup() {
       <Button
         variant="solid"
         type="submit"
-        className="mt-8"
+        className={classes.buttonSubmit}
         disabled={isLoading}
       >
         {isLoading? "Загрузка" : "Зарегистрироваться"}
       </Button>
 
       <Button
-        className="-mt-2"
+        className={classes.link}
         as="RouterLink"
         to={"/signin"}
       >
