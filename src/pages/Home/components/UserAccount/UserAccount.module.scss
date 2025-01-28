@@ -1,0 +1,39 @@
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+}
+
+.info {
+  margin-left: 16px;
+}
+
+.title {
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.navigation {
+  display: flex;
+  align-items: center;
+  margin-left: 16px;
+}
+
+.button {
+  padding: 8px;
+  border-radius: 100px;
+}
+
+.logoutIcon {
+  width: 24px;
+}
+

@@ -1,0 +1,27 @@
+.root {
+  display: flex;
+  //align-items: flex-start;
+  align-items: center;
+  padding: 12px 46px;
+  border-top: 1px solid var(--gray-200);
+  background: var(--white);
+}
+
+.input {
+  width: 100%;
+  font-size: 16px;
+  line-height: 20px;
+  height: 20px;
+
+  resize: none;
+  scrollbar-width: none;
+  outline: 0;
+
+  &::placeholder {
+    color: var(--gray-400);
+  }
+}
+
+.sendButton {
+
+}

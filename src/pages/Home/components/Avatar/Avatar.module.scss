@@ -1,0 +1,38 @@
+.root {
+  position: relative;
+  display: inline-block;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  object-fit: cover;
+  border-radius: 50%;
+  background: var(--gray-100);
+}
+
+.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 600;
+  border-radius: 50%;
+  background: var(--gray-200);
+}
+
+.notify {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  height: 12px;
+  width: 12px;
+  background: var(--green);
+  border-radius: 50%;
+}

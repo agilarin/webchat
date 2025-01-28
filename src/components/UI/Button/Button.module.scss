@@ -1,0 +1,40 @@
+.root {
+  position: relative;
+  padding: 8px 20px;
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: 500;
+  text-align: center;
+  border-radius: 12px;
+}
+
+.primary {
+  --button-primary-color: var(--primary-color);
+  --button-primary-color-rgb: var(--primary-color-rgb);
+  --button-secondary-color: var(--white);
+  --button-secondary-color-rgb: var(--white-rgb);
+}
+
+.gray {
+  --button-primary-color: var(--gray-500);
+  --button-primary-color-rgb: var(--gray-500-rgb);
+  --button-secondary-color: var(--white);
+  --button-secondary-color-rgb: var(--white-rgb);
+}
+
+.text {
+  color: var(--button-primary-color);
+
+  &:hover {
+    background: rgba(var(--button-primary-color-rgb), 0.1);
+  }
+}
+
+.solid {
+  background: var(--button-primary-color);
+  color: var(--button-secondary-color);
+
+  &:hover {
+    background: rgba(var(--button-primary-color-rgb), 0.95);
+  }
+}

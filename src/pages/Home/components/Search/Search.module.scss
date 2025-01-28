@@ -1,0 +1,52 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background: var(--white);
+}
+
+.active {
+  position: absolute;
+  z-index: 1;
+  height: 100%;
+
+  .content {
+    display: flex;
+  }
+}
+
+.searchContainer {
+  padding: 12px 24px;
+}
+
+.search {
+  position: relative;
+}
+
+.icon {
+  position: absolute;
+  top: calc(50% - 9px);
+  left: 12px;
+  width: 18px;
+  height: 18px;
+  fill: var(--gray-300);
+}
+
+.input {
+  width: 100%;
+  padding: 10px 14px 10px 40px;
+  font-size: 16px;
+  line-height: 20px;
+  border: 1px solid var(--gray-300);
+  border-radius: 12px;
+
+  &::placeholder {
+    color: var(--gray-400);
+    opacity: .8;
+  }
+}
+
+.content {
+  display: none;
+  min-height: 0;
+}

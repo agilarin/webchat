@@ -1,0 +1,76 @@
+.root {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+
+.ripple {
+  position: absolute;
+  opacity: 0;
+  transform: scale(0);
+  pointer-events: none;
+}
+
+.rippleChild {
+  opacity: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--black);
+  border-radius: 50%;
+}
+
+
+
+//@keyframes ripple-effect {
+//  to {
+//    transform: scale(2);
+//  }
+//  0% {
+//    opacity: .15;
+//  }
+//  30% {
+//    opacity: 0.1;
+//  }
+//  50% {
+//    opacity: 0.08;
+//  }
+//  100% {
+//    opacity: 0;
+//  }
+//}
+
+@keyframes ripple-enter {
+  0% {
+    transform: scale(0);
+    opacity: 0.1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+}
+
+@keyframes ripple-exit {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes ripple-pulsate {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.92);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
