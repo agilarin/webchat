@@ -1,20 +1,15 @@
-import {createBrowserRouter} from "react-router";
+import {createBrowserRouter, createHashRouter, RouteObject} from "react-router";
 import {Home} from "../pages/Home";
 import {AuthPage} from "@/pages/AuthPage";
 import {PrivateRoute} from "@/components/PrivateRoute";
 
 
-export const router = createBrowserRouter([
-  {
+const routes: RouteObject[] = [{
     path: "/",
-    // element: <Home/>,
     children: [
       {
         index: true,
-        element:
-          <PrivateRoute>
-            <Home/>
-          </PrivateRoute>
+        element: <PrivateRoute> <Home/> </PrivateRoute>
       },
       {
         path: "/signin",
@@ -24,14 +19,13 @@ export const router = createBrowserRouter([
         path: "/signup",
         element: <AuthPage type="signup"/>
       },
-
-    //   // {
-    //   //   path: "/catalog/:pathName",
-    //   //   element: <Catalog/>,
-    //   // },
     ]
-  },
-])
+  }]
+
+
+
+export let router = import.meta.env.DEV ? createBrowserRouter(routes) : createHashRouter(routes);
+
 
 
 // const paths = {
