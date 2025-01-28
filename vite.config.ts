@@ -6,7 +6,7 @@ import svgr from "vite-plugin-svgr"
 
 // https://vite.dev/config/
 export default defineConfig(({ command }) => ({
-  base: command === 'build' ? "webchat-app" : "/",
+  base: command === 'build' ? "webchat" : "/",
   plugins: [react(), svgr()],
   resolve: {
     alias: {
