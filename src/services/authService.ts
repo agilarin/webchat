@@ -2,11 +2,16 @@ import {
   getAuth,
   signOut as firebaseSignOut,
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword
+  signInWithEmailAndPassword,
+  reauthenticateWithCredential,
+  EmailAuthProvider, updatePassword,
+  updateEmail as updateEmailFirebase
 } from "firebase/auth";
 import {ref, serverTimestamp, update} from 'firebase/database';
+import {doc, setDoc, serverTimestamp as FSServerTimestamp, collection, updateDoc} from "firebase/firestore";
 import {database, firestore} from "@/services/firebase.ts";
-import {doc, setDoc, serverTimestamp as FSServerTimestamp, collection} from "firebase/firestore";
+import userChatsService from "@/services/userChatsService.ts";
+
 
 
 interface ICreateUser {
@@ -27,8 +32,27 @@ interface ISignIn {
 
 class authService {
   usersRef = collection(firestore, "users");
-  userChatsRef = collection(firestore, "userchats");
   auth = getAuth();
+
+
+
+  private async passwordVerification(password: string) {
+    const user = this.auth.currentUser;
+    if (!user || !user.email) {
+      throw undefined;
+    }
+
+    try {
+      const credential = EmailAuthProvider.credential(
+        user.email,
+        password
+      )
+      return await reauthenticateWithCredential(user, credential);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
 
 
   async createUser({email, password, username, firstName, lastName}: ICreateUser) {
@@ -42,10 +66,7 @@ class authService {
         lastName: lastName || null,
         createdAt: FSServerTimestamp(),
       });
-
-      await setDoc(doc(this.userChatsRef, userCredential.user.uid), {
-        chats: []
-      });
+      await userChatsService.createUserChats(userCredential.user.uid);
 
     } catch (error) {
       console.log(error);
@@ -80,6 +101,34 @@ class authService {
       throw error;
     }
   }
+
+
+  async updatePassword(oldPassword: string, newPassword: string) {
+    try {
+      const userCredential = await this.passwordVerification(oldPassword);
+      await updatePassword(userCredential.user, newPassword)
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
+
+  async updateEmail(newEmail: string, password: string) {
+    try {
+      const userCredential = await this.passwordVerification(password)
+      await updateEmailFirebase(userCredential.user, newEmail);
+      const userRef = doc(firestore, "user", userCredential.user.uid);
+      await updateDoc(userRef, {
+        email: newEmail,
+        updatedAt: serverTimestamp(),
+      })
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
 }
 
 
