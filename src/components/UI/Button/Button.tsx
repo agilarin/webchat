@@ -1,49 +1,82 @@
-import {ComponentPropsWithoutRef, ElementType, ReactNode} from "react";
+import {ComponentPropsWithoutRef, ComponentProps, ElementType, forwardRef, ReactNode, ForwardedRef, ReactElement} from "react";
 import clsx from "clsx";
-import {Link, LinkProps} from "react-router";
 import {Ripple} from "@/components/Ripple";
 import classes from "./Button.module.scss";
 
-type LinkType = "RouterLink";
 
-type ButtonOwnProps<E extends ElementType | LinkType> = {
-  children?: ReactNode;
-  color?: "primary" | "gray",
+type ButtonOwnProps<E extends ElementType> = {
+  children?: ReactNode,
+  icon?: boolean,
+  color?: "primary" | "default",
   variant?: "text" | "solid",
-  rounded?: "default" | "none" | "full",
+  shape?: "default" | "round" | "none",
   as?: E,
 }
-  // variant?: "text" | "filled" | "solid" | "outlined",
+// "text" | "filled" | "solid" | "outlined"
 
-type ButtonProps<E extends ElementType | LinkType> = E extends ElementType ?
-  ButtonOwnProps<E> & Omit<ComponentPropsWithoutRef<E>, keyof ButtonOwnProps<E>> :
-  ButtonOwnProps<E> & LinkProps;
+export type PolymorphicRef<
+  E extends ElementType
+> = ComponentProps<E>['ref']
+
+type ButtonProps<
+  E extends ElementType
+> = ButtonOwnProps<E> & Omit<ComponentPropsWithoutRef<E>, keyof ButtonOwnProps<E>>
 
 
 const defaultElement = "button";
 
-function Button<E extends ElementType | LinkType = typeof defaultElement>(
-  {
-    as,
-    color = "primary",
-    variant = "text",
-    rounded = "default",
-    className,
-    children,
-    ...otherProps
-  }: ButtonProps<E>
-) {
-  const TagName = as === "RouterLink" ? Link : as || defaultElement;
+export default forwardRef(
+  function Button<E extends ElementType = typeof defaultElement>(
+    {
+      as,
+      icon,
+      color = "default",
+      variant = "text",
+      shape = "default",
+      className,
+      children,
+      ...otherProps
+    }: ButtonProps<E>,
+    ref?: ForwardedRef<any>
+  ) {
+    const TagName = as || defaultElement;
+    const classNames = clsx(
+      classes.root,
+      icon && classes.btnIcon,
+      classes[color + "Color"],
+      classes[variant],
+      classes[shape + "Shape"],
+      className
+    );
 
-  return (
-    <TagName
-      className={clsx(classes.root, classes[color], classes[variant], classes[rounded], className)}
-      {...otherProps}
-    >
-      <Ripple/>
-      {children}
-    </TagName>
-  );
-}
+    return (
+      <TagName
+        className={classNames}
+        {...otherProps}
+        ref={ref}
+      >
+        <Ripple/>
+        {children}
+      </TagName>
+    );
+  }
+) as <E extends ElementType = typeof defaultElement>(props: ButtonProps<E> & { ref?: PolymorphicRef<E> }) => ReactElement
 
-export default Button;
+// export default forwardRef(function Button<E extends ElementType | LinkType = typeof defaultElement>())
+// const TagName = as === "RouterLink" ? Link : as || defaultElement;
+
+
+// type LinkType = "RouterLink";
+//
+// type ButtonOwnProps<E extends ElementType | LinkType> = {
+//   children?: ReactNode;
+//   color?: "primary" | "default",
+//   variant?: "text" | "solid",
+//   shape?: "default" | "round" | "none",
+//   as?: E,
+// }
+// // variant?: "text" | "filled" | "solid" | "outlined",
+//
+// type ButtonProps<E extends ElementType | LinkType> = E extends ElementType ?
+//   ButtonOwnProps<E> & Omit<ComponentPropsWithoutRef<E>, keyof ButtonOwnProps<E>> :
+//   ButtonOwnProps<E> & LinkProps;
