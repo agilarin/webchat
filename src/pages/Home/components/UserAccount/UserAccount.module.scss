@@ -22,18 +22,38 @@
   text-overflow: ellipsis;
 }
 
+.subtitle {
+  font-size: 14px;
+  line-height: 18px;
+  color: var(--gray-500);
+}
+
 .navigation {
   display: flex;
   align-items: center;
   margin-left: 16px;
 }
 
-.button {
-  padding: 8px;
-  border-radius: 100px;
+
+.item {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--black);
+  //color: var(--black);
 }
 
-.logoutIcon {
-  width: 24px;
+.itemRed {
+  color: var(--red);
+  stroke: var(--red);
 }
+
+.itemIcon {
+  margin-right: 12px;
+  width: 20px;
+  height: 20px;
+}
+
+
 

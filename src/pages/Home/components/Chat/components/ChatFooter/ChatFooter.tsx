@@ -1,14 +1,16 @@
 import React, {useEffect, useRef, useState} from "react";
 import chatService from "@/services/chatService.ts";
-import {useAuthState} from "@/hooks/useAuthState.ts";
-import {useChatState} from "@/hooks/useChatState.ts";
+import {useAuthContext} from "@/hooks/useAuthContext.ts";
+import {useChatContext} from "@/hooks/useChatContext.ts";
 import {Button} from "@/components/UI/Button";
 import classes from "./ChatFooter.module.scss";
+import PaperPlaneIcon from "@/assets/icons/paper-plane.svg?react";
+
 
 
 function ChatFooter() {
-  const {currentUser} = useAuthState();
-  const {currentChat, setCurrentChat, isCreated} = useChatState();
+  const {currentUser} = useAuthContext();
+  const {currentChat, setCurrentChat, isCreated} = useChatContext();
   const [messageValue, setMessageValue] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -70,11 +72,13 @@ function ChatFooter() {
       />
 
       <Button
-        variant="solid"
+        icon
+        color="primary"
+        variant="text"
         className={classes.sendButton}
         type="submit"
       >
-        Send
+        <PaperPlaneIcon className={classes.sendButtonIcon}/>
       </Button>
 
     </form>

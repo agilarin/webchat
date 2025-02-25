@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
-import {useAuthState} from "@/hooks/useAuthState.ts";
+import {useAuthContext} from "@/hooks/useAuthContext.ts";
 import {ChatType} from "@/types";
+import userChatsService from "@/services/userChatsService.ts";
 import chatService from "@/services/chatService.ts";
 import {Search} from "@/pages/Home/components/Search";
 import {ChatsList} from "@/pages/Home/components/ChatsList";
@@ -9,8 +10,9 @@ import classes from "./Sidebar.module.scss"
 
 
 function Sidebar() {
-  const {currentUser} = useAuthState();
+  const {currentUser} = useAuthContext();
   const [chats, setChats] = useState<ChatType[]>([]);
+  const [isSuccess, setIsSuccess] = useState(false);
 
 
   useEffect(() => {
@@ -18,16 +20,17 @@ function Sidebar() {
     if (!userId) {
       return;
     }
-    const unsub = chatService.subscribeToUserChats({ userId }, (ids) => {
+    const unsub = userChatsService.subscribeToUserChats(userId, (ids) => {
       const promises = ids.map(chatId => chatService.getChat({ chatId, userId }))
       Promise.all(promises).then(setChats)
+      setIsSuccess(true)
     });
     return () => unsub();
   }, [currentUser]);
 
 
   return (
-    <div className={classes.root}>
+    <div className={classes.sidebarRoot}>
       <div className={classes.userContainer}>
         <UserAccount/>
       </div>
@@ -35,7 +38,7 @@ function Sidebar() {
       <div className={classes.content}>
         <Search/>
 
-        <ChatsList chats={chats}/>
+        <ChatsList chats={chats} isSuccess={isSuccess}/>
       </div>
 
     </div>

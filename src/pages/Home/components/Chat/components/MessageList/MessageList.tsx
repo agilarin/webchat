@@ -1,5 +1,5 @@
 import {useEffect, useRef} from "react";
-import {useChatState} from "@/hooks/useChatState.ts";
+import {useChatContext} from "@/hooks/useChatContext.ts";
 import {useInView} from "@/hooks/useInView.ts";
 import {combineRefs} from "@/utils/combineRefs.ts";
 import {LoadingProgress} from "@/components/UI/LoadingProgress";
@@ -18,10 +18,10 @@ function MessageList() {
     getPrevMessages,
     unreadCount,
     goToLastMessage
-  } = useChatState();
+  } = useChatContext();
   const listRef = useRef<HTMLDivElement | null>(null)
   const {ref, isVisible, rootRef} = useInView({rootMargin: "1000px" });
-  const {scrollRef, heightRef} = useChangeScrollHeight();
+  const {scrollRef, scrollInnerRef} = useChangeScrollHeight();
 
 
   useEffect(() => {
@@ -54,7 +54,7 @@ function MessageList() {
   return (
     <div className={classes.root}>
       <div ref={combineRefs(rootRef, listRef, scrollRef)} className={classes.list}>
-        <div ref={heightRef}>
+        <div ref={scrollInnerRef}>
           {messages.map((message) => (
             <MessageListItem
               key={message.id}

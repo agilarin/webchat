@@ -1,5 +1,5 @@
 import React from "react";
-import {useAuthState} from "@/hooks/useAuthState.ts";
+import {useAuthContext} from "@/hooks/useAuthContext.ts";
 import {Navigate} from "react-router";
 
 
@@ -8,7 +8,7 @@ interface PrivateRouteProps {
 }
 
 function PrivateRoute({children}: PrivateRouteProps) {
-  const {currentUser, isLoading} = useAuthState();
+  const {currentUser, isLoading} = useAuthContext();
 
   if (isLoading) {
     return (<></>);

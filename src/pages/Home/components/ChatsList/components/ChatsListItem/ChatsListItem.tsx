@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import {ChatType, UserType} from "@/types";
-import {useChatState} from "@/hooks/useChatState.ts";
-import {useAuthState} from "@/hooks/useAuthState.ts";
+import {useChatContext} from "@/hooks/useChatContext.ts";
+import {useAuthContext} from "@/hooks/useAuthContext.ts";
 import {formatDate} from "@/utils/formatDate.ts";
 import {Timestamp} from "firebase/firestore";
 import {Avatar} from "@/pages/Home/components/Avatar";
@@ -18,8 +18,8 @@ interface ChatsListItemProps {
 
 function ChatsListItem({ active, user, chat }: ChatsListItemProps) {
   const {unreadCount, lastMessage} = useSubscribeToLastMessageAndUnreadCount(chat?.id);
-  const {setCurrentChat, isCreated} = useChatState();
-  const {currentUser} = useAuthState();
+  const {setCurrentChat, isCreated} = useChatContext();
+  const {currentUser} = useAuthContext();
   const data = {
     title: "",
     subTitle: "",

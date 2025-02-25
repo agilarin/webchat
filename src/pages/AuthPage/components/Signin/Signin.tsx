@@ -1,48 +1,54 @@
-import React, {useState} from "react";
+import {useState} from "react";
+import {useNavigate} from "react-router";
+import {useForm} from "react-hook-form";
 import {AuthInput} from "@/pages/AuthPage/components/AuthInput";
 import {Button} from "@/components/UI/Button";
-import {useNavigate} from "react-router";
 import authService from "@/services/authService.ts";
 import classes from "../../AuthPage.module.scss";
 
 
+type FormValues = {
+  email: string,
+  password: string,
+}
+
 function Signin() {
+  const {register, handleSubmit} = useForm<FormValues>();
   const [isLoading, setIsLoading] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const onSubmit = (data: FormValues) => {
+    if (data.email || data.password) {
+      return;
+    }
     setIsLoading(true);
-    authService.signIn({email, password})
-      .then(() => navigate("/"))
+    authService.signIn({
+      email: data.email,
+      password: data.password
+    }).then(() => navigate("/"))
       .finally(() => setIsLoading(false));
   }
 
   return (
     <form
       className={classes.form}
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit(onSubmit)}
     >
       <AuthInput
         title="Адрес эл. почты"
-        name="emailInput"
-        value={email}
-        setValue={setEmail}
+        {...register("email", { required: true })}
       />
 
       <AuthInput
         type="password"
         title="Пароль"
-        name="password"
-        value={password}
-        setValue={setPassword}
+        {...register("password", { required: true })}
       />
 
 
       <Button
+        color="primary"
         variant="solid"
         type="submit"
         className={classes.buttonSubmit}
@@ -52,9 +58,9 @@ function Signin() {
       </Button>
 
       <Button
+        color="primary"
         className={classes.link}
-        as="RouterLink"
-        to={"/signup"}
+        onClick={() => navigate("/signup")}
       >
         Создать аккаунт
       </Button>

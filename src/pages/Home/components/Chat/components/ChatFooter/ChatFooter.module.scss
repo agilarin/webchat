@@ -1,9 +1,7 @@
 .root {
   display: flex;
-  //align-items: flex-start;
   align-items: center;
-  padding: 12px 46px;
-  border-top: 1px solid var(--gray-200);
+  padding: 12px 24px 12px 46px;
   background: var(--white);
 }
 
@@ -23,5 +21,10 @@
 }
 
 .sendButton {
+  width: 50px;
+  height: 50px;
+}
 
+.sendButtonIcon {
+  width: 24px;
 }

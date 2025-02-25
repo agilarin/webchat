@@ -4,11 +4,15 @@
 
   --white: #FFFFFF;
   --white-rgb: 255, 255, 255;
+
   --black: #000000;
   --black-rgb: 0, 0, 0;
 
-  --green: #2fbf2f;
-  --green-rgb: 47, 191, 47;
+  --green: #44b700;
+  --green-rgb: 68, 183, 0;
+
+  --red: #f5222d;
+  --red-rgb: 245, 34, 45;
 
   --gray-50: #fafafa;
   --gray-50-rgb: 250, 250, 250;
@@ -56,4 +60,7 @@
   --sky-800: #075985;
   --sky-900: #0c4a6e;
   --sky-950: #082f49;
+
+
+  --box-shadow: 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
 }

@@ -1,14 +1,15 @@
-.root {
+.headerRoot {
   display: flex;
-  padding: 12px 16px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 24px 6px 8px;
   background: var(--white);
-  border-bottom: 1px solid var(--gray-200);
 }
 
 .content {
+  padding: 6px 16px 6px 8px;
   display: flex;
-  align-items: center;
-
+  justify-content: flex-start;
   text-align: left;
 }
 
@@ -33,3 +34,4 @@
 .userStatus_active {
   color: var(--primary-color);
 }
+

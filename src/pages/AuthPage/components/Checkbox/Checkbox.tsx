@@ -12,7 +12,7 @@ interface CheckboxProps extends ComponentPropsWithoutRef<"input"> {
 function Checkbox({children, ...otherProps}: CheckboxProps) {
 
   return (
-    <div className={classes.root}>
+    <div className={classes.CheckboxRoot}>
       <input
         className={classes.input}
         type="checkbox"

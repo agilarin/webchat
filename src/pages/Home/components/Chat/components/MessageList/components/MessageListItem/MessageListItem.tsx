@@ -2,8 +2,8 @@ import {useEffect, useRef} from "react";
 import clsx from "clsx";
 import {MessageType} from "@/types";
 import {useInView} from "@/hooks/useInView.ts";
-import {useAuthState} from "@/hooks/useAuthState.ts";
-import {useChatState} from "@/hooks/useChatState.ts";
+import {useAuthContext} from "@/hooks/useAuthContext.ts";
+import {useChatContext} from "@/hooks/useChatContext.ts";
 import {formatMessageDate} from "@/utils/formatDate.ts";
 import {combineRefs} from "@/utils/combineRefs.ts";
 import classes from "./MessageListItem.module.scss";
@@ -17,8 +17,8 @@ interface MessagesListItemProps {
 }
 
 function MessageListItem({ message, isLastRead, isRead}: MessagesListItemProps) {
-  const {currentUser} = useAuthState();
-  const {setLastReadMessage, incrementUnreadCount} = useChatState();
+  const {currentUser} = useAuthContext();
+  const {setLastReadMessage, incrementUnreadCount} = useChatContext();
   const wasVisible = useRef(false);
   const elementRef = useRef<HTMLDivElement>(null);
   const {ref, isVisible} = useInView();

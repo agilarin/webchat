@@ -1,37 +1,39 @@
-import React, {useState} from "react";
+import {useState} from "react";
 import {useNavigate} from "react-router";
-import {AuthInput} from "@/pages/AuthPage/components/AuthInput";
-import {Ripple} from "@/components/Ripple";
-import {Checkbox} from "@/pages/AuthPage/components/Checkbox";
-import {Button} from "@/components/UI/Button";
+import {useForm} from "react-hook-form";
 import authService from "@/services/authService.ts";
+import {FORM_REGISTER_OPTIONS} from "@/constants";
+import {Button} from "@/components/UI/Button";
+import {AuthInput} from "@/pages/AuthPage/components/AuthInput";
+import {Checkbox} from "@/pages/AuthPage/components/Checkbox";
 import classes from "../../AuthPage.module.scss";
 
 
 
+type FormValues = {
+  email: string,
+  username: string,
+  firstName: string,
+  password: string,
+  confirmPassword: string,
+}
+
+
 function Signup() {
+  const {register, handleSubmit} = useForm<FormValues>();
   const [isLoading, setIsLoading] = useState(false);
-  const [email, setEmail] = useState("");
-  const [username, setUserName] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [isShowPassword, setIsShowPassword] = useState(false);
   const navigate = useNavigate();
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    if  (password !== confirmPassword) {
-      return;
-    }
 
+  async function onSubmit(data: FormValues) {
     setIsLoading(true);
     try {
       await authService.createUser({
-        email,
-        password,
-        username,
-        firstName,
+        email: data.email,
+        password: data.password,
+        username: data.username,
+        firstName: data.firstName,
       });
       navigate("/")
     } finally {
@@ -43,52 +45,38 @@ function Signup() {
   return (
     <form
       className={classes.form}
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit(onSubmit)}
     >
       <AuthInput
         title="Ваш username"
-        name="username"
-        value={username}
-        setValue={setUserName}
-        required
+        {...register("username", FORM_REGISTER_OPTIONS.USERNAME)}
       />
-
       <AuthInput
         title="Ваше имя"
-        name="name"
-        value={firstName}
-        setValue={setFirstName}
-        required
+        {...register("firstName", {
+          required: true,
+          minLength: 2
+        })}
       />
-
       <AuthInput
         title="Адрес эл. почты"
-        name="emailInput"
-        value={email}
-        setValue={setEmail}
-        required
+        {...register("email", FORM_REGISTER_OPTIONS.EMAIL)}
       />
-
       <AuthInput
         type={isShowPassword ? "text" : "password"}
         title="Пароль"
-        name="password"
-        value={password}
-        setValue={setPassword}
-        required
+        {...register("password", FORM_REGISTER_OPTIONS.PASSWORD)}
       />
-
       <AuthInput
         type={isShowPassword ? "text" : "password"}
         title="Подтвердите пароль"
-        name="confPassInput"
-        value={confirmPassword}
-        setValue={setConfirmPassword}
-        required
+        {...register("confirmPassword", FORM_REGISTER_OPTIONS.CONFIRM_PASSWORD)}
       />
 
-      <label className={classes.checkbox}>
-        <Ripple/>
+      <Button
+        as="label"
+        className={classes.checkbox}
+      >
         <Checkbox
           onChange={(e) => setIsShowPassword(e.target.checked)}
           checked={isShowPassword}
@@ -96,9 +84,10 @@ function Signup() {
         <span className={classes.checkboxText}>
           Показать пароль
         </span>
-      </label>
+      </Button>
 
       <Button
+        color="primary"
         variant="solid"
         type="submit"
         className={classes.buttonSubmit}
@@ -108,9 +97,9 @@ function Signup() {
       </Button>
 
       <Button
+        color="primary"
         className={classes.link}
-        as="RouterLink"
-        to={"/signin"}
+        onClick={() => navigate("/signin")}
       >
         Уже есть аккаунт
       </Button>

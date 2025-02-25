@@ -1,16 +1,21 @@
 import {Avatar} from "@/pages/Home/components/Avatar";
-import {useChatState} from "@/hooks/useChatState.ts";
+import {useChatContext} from "@/hooks/useChatContext";
+import {useChatInfoContext} from "@/hooks/useChatInfoContext";
 import {formatLastOnlineDate} from "@/utils/formatDate.ts";
 import classes from "./ChatHeader.module.scss";
+import {Button} from "@/components/UI/Button";
+
 
 
 function ChatHeader() {
-  const {currentChat} = useChatState();
+  const {currentChat} = useChatContext();
+  const {toggle} = useChatInfoContext()
+
+
   const user = currentChat?.user;
   const userLastOnline = user?.lastOnline && formatLastOnlineDate(user?.lastOnline);
   const title =  currentChat?.title || [currentChat?.user?.firstName, currentChat?.user?.lastName].join(" ");
   let subTitle;
-
   if (currentChat?.type === "PRIVATE") {
     subTitle = user?.isOnline && "в сети" || userLastOnline
   } else {
@@ -19,10 +24,12 @@ function ChatHeader() {
 
 
   return (
-    <div className={classes.root}>
-      <button className={classes.content}>
+    <div className={classes.headerRoot}>
+      <Button
+        className={classes.content}
+        onClick={() => toggle()}
+      >
         <Avatar
-          isOnline={user?.isOnline}
           image={user?.avatar}
           title={title}
         />
@@ -35,11 +42,7 @@ function ChatHeader() {
             {subTitle}
           </p>
         </div>
-      </button>
-
-      <div className={classes.buttons}>
-
-      </div>
+      </Button>
     </div>
   );
 }

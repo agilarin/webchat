@@ -1,10 +1,10 @@
 import {useEffect, useMemo, useState} from "react";
 import chatService from "@/services/chatService.ts";
-import {useAuthState} from "@/hooks/useAuthState.ts";
+import {useAuthContext} from "@/hooks/useAuthContext.ts";
 
 
 export function useUnreadCount(chatId?: string) {
-  const {currentUser} = useAuthState();
+  const {currentUser} = useAuthContext();
   const [isFetching, setIsFetching] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [incrementValue, setIncrementValue] = useState(0);

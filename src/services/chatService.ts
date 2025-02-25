@@ -22,9 +22,9 @@ import {
 import {firestore} from "@/services/firebase.ts";
 import {ChatType, MessageType} from "@/types";
 import userService from "@/services/userService.ts";
+import userChatsService from "@/services/userChatsService.ts";
 import {generateUniqueId} from "@/utils/generateUniqueId.ts";
 
-// import sizeof from "firestore-size";
 
 
 interface CreateChat {
@@ -32,23 +32,10 @@ interface CreateChat {
   userId: string,
 }
 
-
 interface GetChat {
   chatId: string,
   userId: string
 }
-
-
-interface CreateUserChats {
-  chatId: string,
-  userId: string
-}
-
-
-interface SubscribeToUserChats {
-  userId: string,
-}
-
 
 interface SendMessage {
   chatId: string,
@@ -56,25 +43,21 @@ interface SendMessage {
   message: string,
 }
 
-
 type SubscribeToMessages = {
   chatId: string,
   messageId?: string,
   messagesSnapshot?: DocumentSnapshot,
 }
 
-
 interface GetPrevMessages {
   messageId: string,
   chatId: string,
 }
 
-
 interface CreateUnreadCount {
   chatId: string,
   usersId: string | string[],
 }
-
 
 interface UpdateUnreadCountWithValue {
   userId: string,
@@ -83,7 +66,6 @@ interface UpdateUnreadCountWithValue {
   increment?: never,
 }
 
-
 interface UpdateUnreadCountWithIncrement {
   userId: string,
   chatId: string,
@@ -91,9 +73,7 @@ interface UpdateUnreadCountWithIncrement {
   increment: number,
 }
 
-
 type UpdateUnreadCount = UpdateUnreadCountWithValue | UpdateUnreadCountWithIncrement
-
 
 interface IncrementAllExceptUserUnreadCount {
   userId: string,
@@ -101,12 +81,10 @@ interface IncrementAllExceptUserUnreadCount {
   direction?: 1 | -1,
 }
 
-
 interface GetLastReadMessageAndSnapshot {
   chatId: string,
   userId: string,
 }
-
 
 interface CreateLastReadMessage {
   chatId: string,
@@ -114,13 +92,11 @@ interface CreateLastReadMessage {
   messageId?: string,
 }
 
-
 interface UpdateLastReadMessage {
   chatId: string,
   userId: string,
   messageId: string,
 }
-
 
 interface SubscribeToUnreadCount {
   chatId: string,
@@ -131,8 +107,7 @@ interface SubscribeToUnreadCount {
 
 
 class ChatService {
-  chatsRef = collection(firestore, "chats");
-
+  private chatsRef = collection(firestore, "chats");
 
 
   async createChat({data, userId}: CreateChat) {
@@ -145,7 +120,7 @@ class ChatService {
       const chatId = chatRef.id;
 
       data.members.forEach((memberId) => {
-        this.updateUserChats({chatId, userId: memberId});
+        userChatsService.addChatToUserChats({chatId, userId: memberId});
         this.createLastReadMessage({chatId, userId: memberId});
       })
 
@@ -179,43 +154,12 @@ class ChatService {
 
       const userId = chat.members.filter(id => id !== currentUserId)[0];
       chat.user = await userService.getUser(userId)
-      // chat.username = user.username;
-      // chat.firstName = user.firstName;
-      // chat.lastName = user.lastName;
-      // chat.photo = user.avatar;
 
       return chat;
     } catch(error) {
       console.error(error);
       throw error;
     }
-  }
-
-
-
-  async updateUserChats({chatId, userId}: CreateUserChats) {
-    const userChatsRef = doc(firestore, "userchats", userId);
-
-    try {
-      await updateDoc(userChatsRef, {
-        chats: arrayUnion(chatId)
-      });
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-  }
-
-
-  subscribeToUserChats(
-    {userId}: SubscribeToUserChats,
-    callback: (data: string[]) => void
-  ) {
-    const userChatsRef = doc(firestore, 'userchats', userId);
-
-    return onSnapshot(userChatsRef, (snapshot) => {
-      callback(snapshot.data()?.chats || [])
-    });
   }
 
 
@@ -460,43 +404,6 @@ class ChatService {
     }
   }
 
-
-
-  // async getLastReadMessageAndSnapshot({userId, chatId}: GetLastReadMessageAndSnapshot) {
-  //   const messagesRef = collection(this.chatsRef, chatId, "messages");
-  //   const readMessagesRef = doc(this.chatsRef, chatId, "readmessages", userId);
-  //
-  //   try {
-  //     let readMessagesSnap = await getDoc(readMessagesRef);
-  //
-  //     if (!readMessagesSnap.exists()) {
-  //       await this.createLastReadMessage({chatId, userId});
-  //       readMessagesSnap = await getDoc(readMessagesRef);
-  //     }
-  //
-  //     const messageId: string = readMessagesSnap?.data()?.messageId;
-  //
-  //     if (!messageId) {
-  //       return {};
-  //     }
-  //     const MessagesQuery = query(
-  //       messagesRef,
-  //       where("messagesId", "array-contains",
-  //         messageId
-  //       ));
-  //     const messagesQuerySnap = await getDocs(MessagesQuery);
-  //     const messagesSnap = messagesQuerySnap.docs?.[0];
-  //     const messages = messagesSnap?.data().messages as MessageType[];
-  //
-  //     return {
-  //       snapshot: messagesSnap,
-  //       message: messages.find((message) => message.id === messageId),
-  //     };
-  //   } catch (error) {
-  //     console.error(error);
-  //     throw error;
-  //   }
-  // }
 
 
   subscribeLastReadMessageAndSnapshot(

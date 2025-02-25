@@ -1,7 +1,7 @@
 import {Navigate} from "react-router";
 import {Signin} from "@/pages/AuthPage/components/Signin";
 import {Signup} from "@/pages/AuthPage/components/Signup";
-import {useAuthState} from "@/hooks/useAuthState.ts";
+import {useAuthContext} from "@/hooks/useAuthContext.ts";
 import LogoIcon from "@/assets/icons/logo.svg?react";
 import classes from "./AuthPage.module.scss";
 
@@ -24,7 +24,7 @@ interface AuthProps {
 
 function AuthPage({type}: AuthProps) {
   const formElement = forms[type];
-  const {currentUser} = useAuthState();
+  const {currentUser} = useAuthContext();
 
   if (currentUser) {
     return (

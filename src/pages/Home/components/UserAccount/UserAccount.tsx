@@ -1,29 +1,25 @@
+import {useRef} from "react";
+import clsx from "clsx";
 import authService from "@/services/authService.ts";
-import {Avatar} from "@/pages/Home/components/Avatar";
+import {useAuthContext} from "@/hooks/useAuthContext.ts";
+import useToggle from "@/hooks/useToggle.ts";
 import {Button} from "@/components/UI/Button";
+import {Menu, MenuItem} from "@/components/UI/Menu";
+import {Avatar} from "@/pages/Home/components/Avatar";
+import {Account} from "@/components/Account";
 import classes from "./UserAccount.module.scss";
 import LogoutIcon from "@/assets/icons/logout.svg?react";
-import {UserType} from "@/types";
-import {useLayoutEffect, useState} from "react";
-import userService from "@/services/userService.ts";
-import {useAuthState} from "@/hooks/useAuthState.ts";
+import EllipsisIcon from "@/assets/icons/ellipsis.svg?react";
+import UserIcon from "@/assets/icons/user-avatar.svg?react";
+
 
 
 function UserAccount() {
-  const {currentUser} = useAuthState();
-  const [userProfile, setUserProfile] = useState<UserType | null>(null);
-  const fullName = [userProfile?.firstName, userProfile?.lastName].join(' ');
-
-
-  useLayoutEffect(() => {
-    if (!currentUser) {
-      return;
-    }
-    userService.getUser(currentUser.uid).then(setUserProfile)
-  }, [currentUser]);
-
-
-  const handleLogout = () => authService.signOut();
+  const {userInfo} = useAuthContext();
+  const [menuOpen, menuToggle] = useToggle(false);
+  const [profileOpen, profileToggle] = useToggle(false);
+  const fullName = [userInfo?.firstName, userInfo?.lastName].join(' ');
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
 
   return (
@@ -35,18 +31,41 @@ function UserAccount() {
           <h4 className={classes.title}>
             {fullName}
           </h4>
+          <p className={classes.subtitle}>
+            {"@" + userInfo?.username}
+          </p>
         </div>
       </div>
 
       <div className={classes.navigation}>
         <Button
-          variant="text"
-          color="gray"
-          className={classes.button}
-          onClick={handleLogout}
+          ref={buttonRef}
+          icon
+          shape="round"
+          onClick={() => menuToggle()}
         >
-          <LogoutIcon className={classes.logoutIcon}/>
+          <EllipsisIcon/>
         </Button>
+
+        <Menu
+          open={menuOpen}
+          onClose={() => menuToggle(false)}
+          toggleEl={buttonRef.current}
+        >
+          <MenuItem className={classes.item} onClick={() => profileToggle(true)}>
+            <UserIcon className={classes.itemIcon}/>
+            Мой аккаунт
+          </MenuItem>
+
+          <MenuItem
+            className={clsx(classes.item, classes.itemRed)}
+            onClick={() => authService.signOut()}
+          >
+            <LogoutIcon className={classes.itemIcon}/>
+            Выйти
+          </MenuItem>
+        </Menu>
+        <Account open={profileOpen} onClose={() => profileToggle(false)} />
       </div>
 
     </div>

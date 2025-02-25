@@ -1,4 +1,5 @@
 import {useCallback, useEffect, useState} from "react";
+// import {debounce} from "@/utils/debounce.ts";
 
 
 
@@ -9,24 +10,27 @@ function useChangeScrollHeight() {
 
 
   const scrollRef = useCallback((node: Element | null) => setElement(node), [])
-  const heightRef = useCallback((node: Element | null) => setObservedElement(node), [])
+  const scrollInnerRef = useCallback((node: Element | null) => setObservedElement(node), [])
 
 
   useEffect(() => {
-    const observer = new ResizeObserver(([entry] ) => {
-      if (!element) {
-        return;
-      }
+    if (!element) {
+      return;
+    }
+
+    const handleScroll = () => {
       const scrollTop = Math.abs(element.scrollTop);
       const height = element.getBoundingClientRect().height;
 
       if (scrollHeight && scrollTop + height > scrollHeight) {
         element.scrollTo(0, -(scrollHeight - height))
       }
-      if (scrollHeight !== entry.target.scrollHeight) {
-        setScrollHeight(entry.target.scrollHeight)
+      if (scrollHeight !== element.scrollHeight) {
+        setScrollHeight(element.scrollHeight)
       }
-    })
+    }
+
+    const observer = new ResizeObserver(handleScroll);
 
     if (!observedElement) {
       return;
@@ -34,31 +38,45 @@ function useChangeScrollHeight() {
     observer.observe(observedElement);
     return () => observer.unobserve(observedElement);
 
-    // function checkScroll() {
+
     // if (!element) {
     //   return;
     // }
-    // const scrollTop = Math.abs(element.scrollTop);
-    // const height = element.getBoundingClientRect().height;
     //
-    // if (scrollHeight && scrollTop + height > scrollHeight) {
-    //   element.scrollTo(0, scrollHeight - height)
-    // }
-    // if (scrollHeight !== element.scrollHeight) {
-    //   setScrollHeight(element.scrollHeight)
-    // }
-    // }
+    // const handleScroll = debounce(() => {
+    //   const scrollTop = Math.abs(element.scrollTop);
+    //   const height = element.getBoundingClientRect().height;
+    //
+    //   if (scrollHeight && scrollTop + height > scrollHeight) {
+    //     element.scrollTo(0, -(scrollHeight - height))
+    //   }
+    //   if (scrollHeight !== element.scrollHeight) {
+    //     setScrollHeight(element.scrollHeight)
+    //   }
+    // }, 500)
+    //
+    // element?.addEventListener("scroll", handleScroll);
+    // return () => element?.removeEventListener("scroll", handleScroll)
+  // }, [element, scrollHeight]);
 
-    // element?.addEventListener("scroll", checkScroll);
-    // return () => element?.removeEventListener("scroll", checkScroll)
   }, [element, observedElement, scrollHeight]);
 
 
   return {
     scrollRef,
-    heightRef
+    scrollInnerRef
   };
 }
 
 
 export default useChangeScrollHeight;
+
+
+// console.group()
+// console.log("scrollHeight - height", -(scrollHeight - height))
+// console.log("scrollTop", element.scrollTop)
+// console.log("scrollHeight", scrollHeight)
+// console.log("scrollTop + height", scrollTop + height)
+// console.log("scrollTop", scrollTop)
+// console.log("height", height)
+// console.groupEnd()

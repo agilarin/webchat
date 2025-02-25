@@ -1,25 +1,23 @@
+import clsx from "clsx";
 import classes from "./Avatar.module.scss";
 
 
 interface AvatarProps {
-  isOnline?: boolean,
   image?: string,
   title: string,
+  className?: string,
+  placeholderClassName?: string,
 }
 
-function Avatar({isOnline, image, title}: AvatarProps) {
-
+function Avatar({image, title, className, placeholderClassName}: AvatarProps) {
   return (
-    <div className={classes.root}>
+    <div className={clsx(classes.avatarRoot, className)}>
       {image ? (
-        <img className={classes.avatar} src={image} alt={title}/>
+        <img className={classes.img} src={image} alt={title}/>
       ) : (
-        <div className={classes.placeholder}>
+        <div className={clsx(classes.placeholder, placeholderClassName)}>
           {title?.[0]?.toUpperCase()}
         </div>
-      )}
-      {isOnline && (
-        <div className={classes.notify}/>
       )}
     </div>
   );

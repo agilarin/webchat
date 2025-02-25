@@ -12,7 +12,7 @@ export type UserType = {
   lastOnline?: number,
   isOnline?: boolean,
   createdAt: Timestamp,
-  updatedAt: Timestamp
+  updatedAt?: Timestamp
 }
 
 type chatTypeField = "PRIVATE" | "GROUP";

@@ -1,40 +1,51 @@
-import React, {useLayoutEffect, useState} from "react";
+import {useLayoutEffect, useState, ReactNode} from "react";
 import {getAuth, onAuthStateChanged, User} from "firebase/auth";
+import {UserType} from "@/types";
 import {AuthContext} from "@/context/AuthContext.ts";
 import {updateUserOnConnection} from "@/services/presenceService.ts";
+import userService from "@/services/userService.ts";
+
+
 
 interface AuthProviderProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 function AuthProvider({ children }: AuthProviderProps) {
   const auth = getAuth();
-  const [user, setUser] = useState<User | null>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [userInfo, setUserInfo] = useState<UserType | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
 
   useLayoutEffect(() => {
-    if  (!user) {
-      return;
-    }
-    const unsub = updateUserOnConnection({userId: user.uid})
-    return () => unsub()
-  }, [user])
-
-
-  useLayoutEffect(() => {
     const unsub = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+      setCurrentUser(currentUser);
       setIsLoading(false);
     });
     return () => unsub()
   }, [])
 
 
+  useLayoutEffect(() => {
+    if  (!currentUser) {
+      return;
+    }
+    const userId = currentUser.uid;
+    const unsubConnect = updateUserOnConnection({userId})
+    const unsubUser = userService.subscribeToUser(userId, setUserInfo);
+    return () => {
+      unsubConnect()
+      unsubUser()
+    }
+  }, [currentUser])
+
+
   return (
     <AuthContext.Provider value={{
       isLoading,
-      currentUser: user
+      currentUser,
+      userInfo,
     }}>
       {children}
     </AuthContext.Provider>

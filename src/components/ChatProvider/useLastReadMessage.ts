@@ -1,7 +1,7 @@
 import {useEffect, useState, Dispatch, SetStateAction, RefObject} from "react";
 import {MessageType, ChatType} from "@/types";
 import chatService from "@/services/chatService.ts";
-import {useAuthState} from "@/hooks/useAuthState.ts";
+import {useAuthContext} from "@/hooks/useAuthContext.ts";
 import {DocumentSnapshot} from "firebase/firestore";
 
 
@@ -20,7 +20,7 @@ interface UseLastMessageProps {
 }
 
 export function useLastReadMessage({currentChat, isCreated}: UseLastMessageProps): UseLastReadMessage {
-  const {currentUser} = useAuthState();
+  const {currentUser} = useAuthContext();
   const [isFetching, setIsFetching] = useState(false);
   const [snapshot, setSnapshot] = useState<DocumentSnapshot | null>(null);
   const [message, setMessage] = useState<MessageType | null>(null);

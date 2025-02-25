@@ -1,17 +1,17 @@
 import {useEffect, useMemo, useState} from "react";
 import chatService from "@/services/chatService.ts";
 import {MessageType} from "@/types";
-import {useAuthState} from "@/hooks/useAuthState.ts";
-import {useChatState} from "@/hooks/useChatState.ts";
+import {useAuthContext} from "@/hooks/useAuthContext.ts";
+import {useChatContext} from "@/hooks/useChatContext.ts";
 
 
 export function useSubscribeToLastMessageAndUnreadCount(chatId: string | undefined) {
-  const {currentUser} = useAuthState();
+  const {currentUser} = useAuthContext();
   const {
     unreadCount: unreadCountChat,
     setLastMessage: setLastMessageChat,
     currentChat
-  } = useChatState();
+  } = useChatContext();
   const [isFetching, setIsFetching] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [lastMessage, setLastMessage] = useState<MessageType | null>();

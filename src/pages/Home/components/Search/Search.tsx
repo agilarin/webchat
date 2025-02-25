@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {ChangeEvent, useEffect, useState} from "react";
 import clsx from "clsx";
 import {UserType} from "@/types";
 import searchService from "@/services/searchService.ts";
@@ -10,19 +10,27 @@ import SearchIcon from "@/assets/icons/search.svg?react"
 function Search() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResult, setSearchResult] = useState<UserType[]>();
+  const [isSuccess, setIsSuccess] = useState(false);
 
 
   useEffect(() => {
     if (!searchQuery) {
+      setIsSuccess(true)
       return setSearchResult(undefined);
     }
 
     const timeoutId = setTimeout(async () => {
       const response = await searchService.searchUsers({query: searchQuery})
       setSearchResult(response);
-    }, 1000);
+      setIsSuccess(true)
+    }, 700);
     return () => clearTimeout(timeoutId);
   }, [searchQuery]);
+
+
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value)
+  }
 
 
   return (
@@ -34,7 +42,7 @@ function Search() {
             className={classes.input}
             type="text"
             placeholder={"Search"}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={handleSearchChange}
             value={searchQuery}
           />
         </div>
@@ -42,7 +50,7 @@ function Search() {
 
 
       <div className={classes.content}>
-        <ChatsList users={searchResult}/>
+        <ChatsList users={searchResult} isSuccess={isSuccess}/>
       </div>
     </div>
   );

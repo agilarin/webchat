@@ -1,20 +1,21 @@
 import clsx from "clsx";
 import {ChatsListItem, ChatsListItemSkeleton} from "@/pages/Home/components/ChatsList/components/ChatsListItem";
 import {ChatType, UserType} from "@/types";
-import {useChatState} from "@/hooks/useChatState.ts";
+import {useChatContext} from "@/hooks/useChatContext.ts";
 import classes from "./ChatsList.module.scss";
 
 
 interface ChatsListProps {
   users?: UserType[],
   chats?: ChatType[],
+  isSuccess?: boolean,
 }
 
-function ChatsList({users, chats}: ChatsListProps) {
-  const {currentChat} = useChatState();
+function ChatsList({users, chats, isSuccess}: ChatsListProps) {
+  const {currentChat} = useChatContext();
 
 
-  if (users?.length) {
+  if (isSuccess && users) {
     return (
       <ul className={classes.root}>
         {users.map(item => (
@@ -28,7 +29,7 @@ function ChatsList({users, chats}: ChatsListProps) {
     );
   }
 
-  if (chats?.length) {
+  if (isSuccess && chats) {
     return (
       <ul className={classes.root}>
         {chats.map(item => (

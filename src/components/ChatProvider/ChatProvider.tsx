@@ -2,7 +2,7 @@ import {ReactNode, useEffect, useState, useRef, useLayoutEffect, useMemo} from "
 import {ChatType} from "@/types";
 import {ChatContext} from "@/context/ChatContext.ts";
 import chatService from "@/services/chatService.ts";
-import {useAuthState} from "@/hooks/useAuthState.ts";
+import {useAuthContext} from "@/hooks/useAuthContext.ts";
 import {useLastReadMessage} from "@/components/ChatProvider/useLastReadMessage.ts";
 import {useMessages} from "@/components/ChatProvider/useMessages.ts";
 import {useLastMessage} from "@/components/ChatProvider/useLastMessage.ts";
@@ -18,7 +18,7 @@ interface ChatProviderProps {
 
 function ChatProvider({ children }: ChatProviderProps) {
   const [currentChat, setCurrentChat] = useState<ChatType | null>(null);
-  const {currentUser} = useAuthState();
+  const {currentUser} = useAuthContext();
   const isCreatedRef = useRef(false);
   const lastReadMessage = useLastReadMessage({currentChat, isCreated: isCreatedRef});
   const messages = useMessages({

@@ -2,7 +2,7 @@ import {createContext, Dispatch, SetStateAction, MutableRefObject} from "react";
 import {ChatType, MessageType} from "@/types";
 
 
-interface IChatContext {
+interface ChatContextType {
   currentChat: ChatType | null,
   setCurrentChat:  Dispatch<SetStateAction<ChatType | null>>,
   isCreated: MutableRefObject<boolean>,
@@ -24,7 +24,7 @@ interface IChatContext {
 }
 
 
-export const ChatContext = createContext<IChatContext>({
+export const ChatContext = createContext<ChatContextType>({
   currentChat: null,
   setCurrentChat: () => {},
   isCreated: { current: false },
