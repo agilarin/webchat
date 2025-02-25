@@ -1,0 +1,19 @@
+
+.itemRoot {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  border-radius: 0;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--black);
+}
+
+.value {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--primary-color);
+}

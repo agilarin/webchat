@@ -1,0 +1,25 @@
+.editFormRoot {
+  width: 100%;
+  min-width: 340px;
+}
+
+.inputs {
+  display: grid;
+  gap: 16px;
+  padding: 8px 20px 12px;
+}
+
+.input {
+}
+
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px;
+}
+
+.button {
+  font-size: 16px;
+  padding: 6px 16px;
+  border-radius: 6px;
+}
