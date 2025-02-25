@@ -1,0 +1,21 @@
+.ChatPreviewRoot {
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.content {
+  margin-left: 16px;
+}
+
+.title {
+  font-size: 20px;
+  line-height: 24px;
+  font-weight: 500;
+}
+
+.status {
+  font-size: 14px;
+  line-height: 18px;
+  color: var(--gray-500);
+}
