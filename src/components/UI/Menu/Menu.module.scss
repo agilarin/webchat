@@ -1,0 +1,29 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: transparent;
+}
+
+.menu {
+  position: absolute;
+  padding: 4px;
+  background: var(--white);
+  border-radius: 4px;
+  box-shadow: var(--box-shadow);
+  //box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 20px;
+  cursor: pointer;
+  border-radius: 4px;
+
+  &:hover {
+    background: rgba(var(--black-rgb), 0.07);
+  }
+}
