@@ -11,7 +11,7 @@ class userService {
   usersRef = collection(firestore, "users");
 
 
-  async checkUsername(username: string) {
+  async checkUsernameUnique(username: string) {
     const usernameQuery = query(this.usersRef, where('username', "==", username))
     try {
       const snapshot = await getDocs(usernameQuery)
@@ -45,18 +45,16 @@ class userService {
     try {
       let usernameUnique;
       if (user.username) {
-        usernameUnique = await this.checkUsername(user.username);
+        usernameUnique = await this.checkUsernameUnique(user.username);
       }
       if (user.username && !usernameUnique) {
-        throw new Error("Username is already in use");
+        return Promise.reject("Username is already in use");
       }
 
       await updateDoc(userRef, {
         ...user,
         updatedAt: serverTimestamp(),
       })
-
-
     } catch (error) {
       console.log(error);
       throw error;
