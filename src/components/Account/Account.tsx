@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import {useAuthContext} from "@/hooks/useAuthContext.ts";
-import useToggle from "@/hooks/useToggle.ts";
+import {useToggle} from "@/hooks/useToggle.ts";
 import {Modal, ModalHeader} from "@/components/UI/Modal";
 import {AccountItem} from "./components/AccountItem";
 import {EditPassword} from "./components/EditPassword";
@@ -11,12 +11,13 @@ import {EditUsername} from "./components/EditUsername";
 import classes from "./Account.module.scss";
 
 
+
 interface UserProfileProps {
   open: boolean,
   onClose: () => void,
 }
 
-function Account({ open, onClose }: UserProfileProps): JSX.Element {
+export function Account({ open, onClose }: UserProfileProps): JSX.Element {
   const {userInfo} = useAuthContext();
   const [nameOpen, nameToggle] = useToggle(false);
   const [emailOpen, emailToggle] = useToggle(false);
@@ -88,5 +89,3 @@ function Account({ open, onClose }: UserProfileProps): JSX.Element {
     </Modal>
   );
 }
-
-export default Account;

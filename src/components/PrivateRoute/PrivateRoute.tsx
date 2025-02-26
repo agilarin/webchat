@@ -7,7 +7,7 @@ interface PrivateRouteProps {
   children?: React.ReactNode;
 }
 
-function PrivateRoute({children}: PrivateRouteProps) {
+export function PrivateRoute({children}: PrivateRouteProps) {
   const {currentUser, isLoading} = useAuthContext();
 
   if (isLoading) {
@@ -24,5 +24,3 @@ function PrivateRoute({children}: PrivateRouteProps) {
     <Navigate to="/signin" />
   );
 }
-
-export default PrivateRoute;

@@ -1,1 +1,1 @@
-export {default as EditPassword} from "./EditPassword.tsx";
+export {EditPassword} from "./EditPassword.tsx";

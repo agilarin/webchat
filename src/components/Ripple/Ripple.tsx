@@ -1,7 +1,9 @@
 import React, {useRef, useState} from "react";
 import {AnimatePresence} from "motion/react";
+import {RippleItemProps, RippleItem} from "@/components/Ripple/components/RippleItem";
 import classes from "./Ripple.module.scss";
-import RippleItem, {RippleItemProps} from "@/components/Ripple/components/RippleItem/RippleItem.tsx";
+
+
 
 const DURATION = 0.55;
 
@@ -9,10 +11,7 @@ type RippleItem = RippleItemProps & {
   id: number
 }
 
-interface RippleProps {
-}
-
-function Ripple({}: RippleProps) {
+export function Ripple() {
   const [ripples, setRipples] = useState<RippleItem[]>([]);
   const rippleId = useRef(0);
 
@@ -53,5 +52,3 @@ function Ripple({}: RippleProps) {
     </div>
   );
 }
-
-export default Ripple;

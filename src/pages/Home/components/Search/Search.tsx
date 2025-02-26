@@ -7,7 +7,7 @@ import classes from "./Search.module.scss";
 import SearchIcon from "@/assets/icons/search.svg?react"
 
 
-function Search() {
+export function Search() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResult, setSearchResult] = useState<UserType[]>();
   const [isSuccess, setIsSuccess] = useState(false);
@@ -55,5 +55,3 @@ function Search() {
     </div>
   );
 }
-
-export default Search;

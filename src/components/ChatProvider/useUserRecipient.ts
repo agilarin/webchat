@@ -10,8 +10,6 @@ interface UseUserRecipientProps {
 }
 
 export function useUserRecipient({recipientId, setCurrentChat}: UseUserRecipientProps) {
-
-
   useEffect(() => {
     if (!recipientId) {
       return;

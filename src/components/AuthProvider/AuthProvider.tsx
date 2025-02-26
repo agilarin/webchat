@@ -11,7 +11,7 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-function AuthProvider({ children }: AuthProviderProps) {
+export function AuthProvider({ children }: AuthProviderProps) {
   const auth = getAuth();
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [userInfo, setUserInfo] = useState<UserType | null>(null);
@@ -51,5 +51,3 @@ function AuthProvider({ children }: AuthProviderProps) {
     </AuthContext.Provider>
   );
 }
-
-export default AuthProvider;

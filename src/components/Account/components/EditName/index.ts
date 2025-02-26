@@ -1,1 +1,1 @@
-export {default as EditName} from "./EditName.tsx";
+export {EditName} from "./EditName.tsx";

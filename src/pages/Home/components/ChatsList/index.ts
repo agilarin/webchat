@@ -1,1 +1,1 @@
-export {default as ChatsList} from "./ChatsList.tsx";
+export {ChatsList} from "./ChatsList.tsx";

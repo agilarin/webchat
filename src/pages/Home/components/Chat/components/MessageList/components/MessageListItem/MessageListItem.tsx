@@ -16,7 +16,7 @@ interface MessagesListItemProps {
   lastElementRef?: (node: Element | null) => void,
 }
 
-function MessageListItem({ message, isLastRead, isRead}: MessagesListItemProps) {
+export function MessageListItem({ message, isLastRead, isRead}: MessagesListItemProps) {
   const {currentUser} = useAuthContext();
   const {setLastReadMessage, incrementUnreadCount} = useChatContext();
   const wasVisible = useRef(false);
@@ -65,5 +65,3 @@ function MessageListItem({ message, isLastRead, isRead}: MessagesListItemProps) 
     </div>
   );
 }
-
-export default MessageListItem;

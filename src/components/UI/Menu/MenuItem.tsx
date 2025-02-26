@@ -9,7 +9,7 @@ interface MenuItemProps {
   className?: string,
 }
 
-function MenuItem({ onClick, children, className }: MenuItemProps) {
+export function MenuItem({ onClick, children, className }: MenuItemProps) {
   return (
     <li
       className={clsx(classes.item, className)}
@@ -19,5 +19,3 @@ function MenuItem({ onClick, children, className }: MenuItemProps) {
     </li>
   );
 }
-
-export default MenuItem;

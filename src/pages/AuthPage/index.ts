@@ -1,1 +1,1 @@
-export {default as AuthPage} from "./AuthPage.tsx";
+export {AuthPage} from "./AuthPage.tsx";

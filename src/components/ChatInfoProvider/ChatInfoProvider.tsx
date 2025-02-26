@@ -1,6 +1,6 @@
 import {ReactNode} from "react";
 import {ChatInfoContext} from "@/context/ChatInfoContext.ts";
-import useToggle from "@/hooks/useToggle.ts";
+import {useToggle} from "@/hooks/useToggle.ts";
 
 
 
@@ -8,7 +8,7 @@ interface InfoPanelProviderProps {
   children: ReactNode
 }
 
-function ChatInfoProvider({ children }: InfoPanelProviderProps) {
+export function ChatInfoProvider({ children }: InfoPanelProviderProps) {
   const [open, toggle] = useToggle(true)
 
 
@@ -18,5 +18,3 @@ function ChatInfoProvider({ children }: InfoPanelProviderProps) {
     </ChatInfoContext.Provider>
   );
 }
-
-export default ChatInfoProvider;

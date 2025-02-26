@@ -2,12 +2,12 @@ import {Avatar} from "@/pages/Home/components/Avatar";
 import {useChatContext} from "@/hooks/useChatContext";
 import {useChatInfoContext} from "@/hooks/useChatInfoContext";
 import {formatLastOnlineDate} from "@/utils/formatDate.ts";
-import classes from "./ChatHeader.module.scss";
 import {Button} from "@/components/UI/Button";
+import classes from "./ChatHeader.module.scss";
 
 
 
-function ChatHeader() {
+export function ChatHeader() {
   const {currentChat} = useChatContext();
   const {toggle} = useChatInfoContext()
 
@@ -46,5 +46,3 @@ function ChatHeader() {
     </div>
   );
 }
-
-export default ChatHeader;

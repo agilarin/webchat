@@ -3,7 +3,7 @@ import {useCallback, useEffect, useState} from "react";
 
 
 
-function useChangeScrollHeight() {
+export function useChangeScrollHeight() {
   const [scrollHeight, setScrollHeight] = useState(0);
   const [element, setElement] = useState<Element | null>(null);
   const [observedElement, setObservedElement] = useState<Element | null>(null);
@@ -67,16 +67,3 @@ function useChangeScrollHeight() {
     scrollInnerRef
   };
 }
-
-
-export default useChangeScrollHeight;
-
-
-// console.group()
-// console.log("scrollHeight - height", -(scrollHeight - height))
-// console.log("scrollTop", element.scrollTop)
-// console.log("scrollHeight", scrollHeight)
-// console.log("scrollTop + height", scrollTop + height)
-// console.log("scrollTop", scrollTop)
-// console.log("height", height)
-// console.groupEnd()

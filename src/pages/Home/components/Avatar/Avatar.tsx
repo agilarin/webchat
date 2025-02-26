@@ -9,7 +9,7 @@ interface AvatarProps {
   placeholderClassName?: string,
 }
 
-function Avatar({image, title, className, placeholderClassName}: AvatarProps) {
+export function Avatar({image, title, className, placeholderClassName}: AvatarProps) {
   return (
     <div className={clsx(classes.avatarRoot, className)}>
       {image ? (
@@ -23,4 +23,3 @@ function Avatar({image, title, className, placeholderClassName}: AvatarProps) {
   );
 }
 
-export default Avatar;

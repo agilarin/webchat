@@ -9,7 +9,7 @@ interface AuthInputProps extends RequiredFields<InputHTMLAttributes<HTMLInputEle
   error?: boolean,
 }
 
-const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
+export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
   function(
     {title, name, id, className, error, ...otherProps},
     ref
@@ -38,5 +38,3 @@ const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
     );
   }
 );
-
-export default AuthInput;

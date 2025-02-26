@@ -8,7 +8,7 @@ import PaperPlaneIcon from "@/assets/icons/paper-plane.svg?react";
 
 
 
-function ChatFooter() {
+export function ChatFooter() {
   const {currentUser} = useAuthContext();
   const {currentChat, setCurrentChat, isCreated} = useChatContext();
   const [messageValue, setMessageValue] = useState("");
@@ -84,5 +84,3 @@ function ChatFooter() {
     </form>
   );
 }
-
-export default ChatFooter;

@@ -1,1 +1,1 @@
-export {default as ChatPreview} from "./ChatPreview.tsx";
+export {ChatPreview} from "./ChatPreview.tsx";

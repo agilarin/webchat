@@ -9,7 +9,7 @@ interface AccountItemProps {
   onClick?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void,
 }
 
-function AccountItem({ title, value, onClick }: AccountItemProps) {
+export function AccountItem({ title, value, onClick }: AccountItemProps) {
   return (
     <Button
       className={classes.itemRoot}
@@ -24,5 +24,3 @@ function AccountItem({ title, value, onClick }: AccountItemProps) {
     </Button>
   );
 }
-
-export default AccountItem;

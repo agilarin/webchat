@@ -2,7 +2,7 @@ import {useRef} from "react";
 import clsx from "clsx";
 import authService from "@/services/authService.ts";
 import {useAuthContext} from "@/hooks/useAuthContext.ts";
-import useToggle from "@/hooks/useToggle.ts";
+import {useToggle} from "@/hooks/useToggle.ts";
 import {Button} from "@/components/UI/Button";
 import {Menu, MenuItem} from "@/components/UI/Menu";
 import {Avatar} from "@/pages/Home/components/Avatar";
@@ -14,7 +14,7 @@ import UserIcon from "@/assets/icons/user-avatar.svg?react";
 
 
 
-function UserAccount() {
+export function UserAccount() {
   const {userInfo} = useAuthContext();
   const [menuOpen, menuToggle] = useToggle(false);
   const [profileOpen, profileToggle] = useToggle(false);
@@ -71,5 +71,3 @@ function UserAccount() {
     </div>
   );
 }
-
-export default UserAccount;

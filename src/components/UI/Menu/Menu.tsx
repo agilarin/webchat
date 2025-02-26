@@ -1,8 +1,8 @@
 import React, {CSSProperties, ReactNode, useLayoutEffect, useState} from "react";
 import {createPortal} from "react-dom";
 import clsx from "clsx";
+import {useWindowSize} from "@/components/UI/Menu/useWindowSize.ts";
 import classes from "./Menu.module.scss";
-import useWindowSize from "@/components/UI/Menu/useWindowSize.ts";
 
 
 interface MenuProps {
@@ -13,7 +13,7 @@ interface MenuProps {
   toggleEl?: HTMLElement | null,
 }
 
-function Menu({ open, onClose, className, children, toggleEl }: MenuProps) {
+export function Menu({ open, onClose, className, children, toggleEl }: MenuProps) {
   const [styles, setStyles] = useState<CSSProperties>({});
   const size = useWindowSize();
 
@@ -65,5 +65,3 @@ function Menu({ open, onClose, className, children, toggleEl }: MenuProps) {
     )
   );
 }
-
-export default Menu;

@@ -63,6 +63,7 @@ class userService {
     }
   }
 
+
   subscribeToUser(
     userId: string,
     callback: (snapshot: UserType) => void

@@ -1,1 +1,1 @@
-export {default as ChatFooter} from "./ChatFooter.tsx";
+export {ChatFooter} from "./ChatFooter.tsx";

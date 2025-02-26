@@ -40,7 +40,7 @@ export interface RippleItemProps {
   size: number,
 }
 
-function RippleItem({duration, size, y, x}: RippleItemProps) {
+export function RippleItem({duration, size, y, x}: RippleItemProps) {
   const rippleStyle = {
     width: size,
     height: size,
@@ -65,5 +65,3 @@ function RippleItem({duration, size, y, x}: RippleItemProps) {
     </motion.div>
   );
 }
-
-export default RippleItem;

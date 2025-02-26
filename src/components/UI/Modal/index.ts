@@ -1,2 +1,2 @@
-export {default as Modal} from "./Modal.tsx";
-export {default as ModalHeader} from "./components/ModalHeader.tsx";
+export {Modal} from "./Modal.tsx";
+export {ModalHeader} from "./ModalHeader.tsx";

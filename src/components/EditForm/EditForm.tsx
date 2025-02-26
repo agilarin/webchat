@@ -12,7 +12,7 @@ interface EditFormProps {
   children?: ReactNode,
 }
 
-function EditForm({open, onClose, onSubmit, title, children}: EditFormProps) {
+export function EditForm({open, onClose, onSubmit, title, children}: EditFormProps) {
   return (
     <Modal open={open} onClose={onClose}>
       <ModalHeader title={title} />
@@ -44,5 +44,3 @@ function EditForm({open, onClose, onSubmit, title, children}: EditFormProps) {
     </Modal>
   );
 }
-
-export default EditForm;

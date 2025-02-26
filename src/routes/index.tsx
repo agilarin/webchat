@@ -1,5 +1,5 @@
 import {createBrowserRouter, createHashRouter, RouteObject} from "react-router";
-import {Home} from "../pages/Home";
+import {Home} from "@/pages/Home";
 import {AuthPage} from "@/pages/AuthPage";
 import {PrivateRoute} from "@/components/PrivateRoute";
 
@@ -24,7 +24,7 @@ const routes: RouteObject[] = [{
 
 
 
-export let router = import.meta.env.DEV ? createBrowserRouter(routes) : createHashRouter(routes);
+export const router = import.meta.env.DEV ? createBrowserRouter(routes) : createHashRouter(routes);
 
 
 

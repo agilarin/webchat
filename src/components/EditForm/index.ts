@@ -1,1 +1,1 @@
-export {default as EditForm} from "./EditForm.tsx";
+export {EditForm} from "./EditForm.tsx";

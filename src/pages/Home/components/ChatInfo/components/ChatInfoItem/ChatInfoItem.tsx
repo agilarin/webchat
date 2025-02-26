@@ -7,7 +7,7 @@ interface ChatInfoItemProps {
   subtitle: string
 }
 
-function ChatInfoItem({ title, subtitle }: ChatInfoItemProps) {
+export function ChatInfoItem({ title, subtitle }: ChatInfoItemProps) {
   return (
     <div className={classes.itemRoot}>
       <p className={classes.title}>
@@ -19,5 +19,3 @@ function ChatInfoItem({ title, subtitle }: ChatInfoItemProps) {
     </div>
   );
 }
-
-export default ChatInfoItem;

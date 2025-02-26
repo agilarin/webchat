@@ -1,1 +1,1 @@
-export {default as EditEmail} from "./EditEmail.tsx";
+export {EditEmail} from "./EditEmail.tsx";

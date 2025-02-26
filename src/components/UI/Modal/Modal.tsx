@@ -10,7 +10,7 @@ interface ModalProps {
   children: ReactNode,
 }
 
-function Modal({ open, onClose, children }: ModalProps) {
+export function Modal({ open, onClose, children }: ModalProps) {
 
 
   function handleClick(event: React.MouseEvent<HTMLDivElement>) {
@@ -34,5 +34,3 @@ function Modal({ open, onClose, children }: ModalProps) {
     document.body
   ));
 }
-
-export default Modal;

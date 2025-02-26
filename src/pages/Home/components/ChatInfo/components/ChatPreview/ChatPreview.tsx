@@ -1,6 +1,6 @@
+import {formatLastOnlineDate} from "@/utils/formatDate.ts";
 import {Avatar} from "@/pages/Home/components/Avatar";
 import classes from "./ChatPreview.module.scss";
-import {formatLastOnlineDate} from "@/utils/formatDate.ts";
 
 
 interface ChatPreviewProps {
@@ -9,7 +9,7 @@ interface ChatPreviewProps {
   isOnline?: boolean,
 }
 
-function ChatPreview({ title, lastOnline }: ChatPreviewProps) {
+export function ChatPreview({ title, lastOnline }: ChatPreviewProps) {
   const userLastOnline = lastOnline && formatLastOnlineDate(lastOnline);
 
   return (
@@ -26,5 +26,3 @@ function ChatPreview({ title, lastOnline }: ChatPreviewProps) {
     </div>
   );
 }
-
-export default ChatPreview;

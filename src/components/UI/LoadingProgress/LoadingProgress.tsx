@@ -1,7 +1,7 @@
 import classes from "./LoadingProgress.module.scss";
 
 
-function LoadingProgress() {
+export function LoadingProgress() {
   return (
     <div className={classes.root}>
       <span className={classes.progress}>
@@ -12,5 +12,3 @@ function LoadingProgress() {
     </div>
   );
 }
-
-export default LoadingProgress;

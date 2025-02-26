@@ -9,7 +9,7 @@ import {UserAccount} from "@/pages/Home/components/UserAccount";
 import classes from "./Sidebar.module.scss"
 
 
-function Sidebar() {
+export function Sidebar() {
   const {currentUser} = useAuthContext();
   const [chats, setChats] = useState<ChatType[]>([]);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -44,5 +44,3 @@ function Sidebar() {
     </div>
   );
 }
-
-export default Sidebar;

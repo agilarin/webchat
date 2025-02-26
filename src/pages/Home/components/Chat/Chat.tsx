@@ -5,7 +5,7 @@ import {MessageList} from "@/pages/Home/components/Chat/components/MessageList";
 import classes from "./Chat.module.scss";
 
 
-function Chat() {
+export function Chat() {
   const {currentChat} = useChatContext();
 
   return (
@@ -20,5 +20,3 @@ function Chat() {
     </div>
   );
 }
-
-export default Chat;

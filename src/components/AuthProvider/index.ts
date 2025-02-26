@@ -1,1 +1,1 @@
-export {default as AuthProvider} from "./AuthProvider.tsx";
+export {AuthProvider} from "./AuthProvider.tsx";

@@ -22,7 +22,7 @@ interface AuthProps {
   type: AuthType
 }
 
-function AuthPage({type}: AuthProps) {
+export function AuthPage({type}: AuthProps) {
   const formElement = forms[type];
   const {currentUser} = useAuthContext();
 
@@ -52,5 +52,3 @@ function AuthPage({type}: AuthProps) {
     </div>
   );
 }
-
-export default AuthPage;

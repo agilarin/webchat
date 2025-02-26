@@ -1,1 +1,1 @@
-export {default as ChatHeader} from "./ChatHeader.tsx";
+export {ChatHeader} from "./ChatHeader.tsx";

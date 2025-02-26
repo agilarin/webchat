@@ -4,7 +4,7 @@ import {ChatInfo} from "@/pages/Home/components/ChatInfo";
 import classes from "./Home.module.scss";
 
 
-function Home() {
+export function Home() {
 
   return (
     <div className={classes.root}>
@@ -14,5 +14,3 @@ function Home() {
     </div>
   );
 }
-
-export default Home;

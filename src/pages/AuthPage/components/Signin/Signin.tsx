@@ -12,7 +12,7 @@ type FormValues = {
   password: string,
 }
 
-function Signin() {
+export function Signin() {
   const {register, handleSubmit} = useForm<FormValues>();
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -67,5 +67,3 @@ function Signin() {
     </form>
   );
 }
-
-export default Signin;

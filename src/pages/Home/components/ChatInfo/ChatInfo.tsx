@@ -2,13 +2,13 @@ import {useChatContext} from "@/hooks/useChatContext.ts";
 import {useChatInfoContext} from "@/hooks/useChatInfoContext.ts";
 import {Button} from "@/components/UI/Button";
 import {ChatPreview} from "@/pages/Home/components/ChatInfo/components/ChatPreview";
+import {ChatInfoItem} from "./components/ChatInfoItem";
 import classes from "./ChatInfo.module.scss";
 import CloseIcon from "@/assets/icons/close.svg?react";
-import ChatInfoItem from "./components/ChatInfoItem/ChatInfoItem.tsx";
 
 
 
-function ChatInfo() {
+export function ChatInfo() {
   const {currentChat} = useChatContext();
   const {open, toggle} = useChatInfoContext();
   const user = currentChat?.user;
@@ -57,5 +57,3 @@ function ChatInfo() {
     </div>
   );
 }
-
-      export default ChatInfo;

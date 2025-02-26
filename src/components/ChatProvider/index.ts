@@ -1,1 +1,1 @@
-export {default as ChatProvider} from "./ChatProvider.tsx";
+export {ChatProvider} from "./ChatProvider.tsx";

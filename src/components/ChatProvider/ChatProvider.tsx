@@ -11,12 +11,11 @@ import {useUserRecipient} from "@/components/ChatProvider/useUserRecipient.ts";
 
 
 
-
 interface ChatProviderProps {
   children: ReactNode,
 }
 
-function ChatProvider({ children }: ChatProviderProps) {
+export function ChatProvider({ children }: ChatProviderProps) {
   const [currentChat, setCurrentChat] = useState<ChatType | null>(null);
   const {currentUser} = useAuthContext();
   const isCreatedRef = useRef(false);
@@ -126,5 +125,3 @@ function ChatProvider({ children }: ChatProviderProps) {
     </ChatContext.Provider>
   );
 }
-
-export default ChatProvider;

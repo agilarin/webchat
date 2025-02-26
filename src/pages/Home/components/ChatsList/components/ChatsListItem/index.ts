@@ -1,2 +1,2 @@
-export {default as ChatsListItem} from "./ChatsListItem.tsx";
-export {default as ChatsListItemSkeleton} from "./ChatsListItemSkeleton.tsx";
+export {ChatsListItem} from "./ChatsListItem.tsx";
+export {ChatsListItemSkeleton} from "./ChatsListItemSkeleton.tsx";

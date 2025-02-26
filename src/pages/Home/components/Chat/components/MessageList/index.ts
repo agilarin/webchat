@@ -1,1 +1,1 @@
-export {default as MessageList} from "./MessageList.tsx";
+export {MessageList} from "./MessageList.tsx";

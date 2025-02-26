@@ -3,14 +3,14 @@ import {useChatContext} from "@/hooks/useChatContext.ts";
 import {useInView} from "@/hooks/useInView.ts";
 import {combineRefs} from "@/utils/combineRefs.ts";
 import {LoadingProgress} from "@/components/UI/LoadingProgress";
-import {MessageListItem} from "@/pages/Home/components/Chat/components/MessageList/components/MessageListItem";
-import useChangeScrollHeight from "@/pages/Home/components/Chat/components/MessageList/useChangeScrollHeight.ts";
+import {MessageListItem} from "./components/MessageListItem";
+import {useChangeScrollHeight} from "./useChangeScrollHeight.ts";
 import classes from "./MessageList.module.scss";
 import ArrowDownIcon from "@/assets/icons/arrow-down.svg?react";
 
 
 
-function MessageList() {
+export function MessageList() {
   const {
     messages,
     messagesIsFetching,
@@ -76,5 +76,3 @@ function MessageList() {
     </div>
   );
 }
-
-export default MessageList;

@@ -1,5 +1,5 @@
 import {Button} from "@/components/UI/Button";
-import classes from "../Modal.module.scss";
+import classes from "./Modal.module.scss";
 import CloseIcon from "@/assets/icons/close.svg?react";
 
 
@@ -8,7 +8,7 @@ interface ModalHeaderProps {
   title?: string,
 }
 
-function ModalHeader({onClose, title}: ModalHeaderProps) {
+export function ModalHeader({onClose, title}: ModalHeaderProps) {
   return (
     <div className={classes.header}>
       <h3 className={classes.title}>
@@ -27,5 +27,3 @@ function ModalHeader({onClose, title}: ModalHeaderProps) {
     </div>
   );
 }
-
-export default ModalHeader;

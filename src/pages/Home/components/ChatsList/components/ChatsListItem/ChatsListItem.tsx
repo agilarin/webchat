@@ -1,13 +1,13 @@
 import clsx from "clsx";
 import {ChatType, UserType} from "@/types";
+import {Timestamp} from "firebase/firestore";
+import Skeleton from "react-loading-skeleton";
 import {useChatContext} from "@/hooks/useChatContext.ts";
 import {useAuthContext} from "@/hooks/useAuthContext.ts";
 import {formatDate} from "@/utils/formatDate.ts";
-import {Timestamp} from "firebase/firestore";
 import {Avatar} from "@/pages/Home/components/Avatar";
-import {useSubscribeToLastMessageAndUnreadCount} from "@/pages/Home/components/ChatsList/components/ChatsListItem/useSubscribeToLastMessageAndUnreadCount.ts";
+import {useSubscribeToLastMessageAndUnreadCount} from "./useSubscribeToLastMessageAndUnreadCount.ts";
 import classes from "./ChatsListItem.module.scss";
-import Skeleton from "react-loading-skeleton";
 
 
 interface ChatsListItemProps {
@@ -16,7 +16,7 @@ interface ChatsListItemProps {
   chat?: ChatType,
 }
 
-function ChatsListItem({ active, user, chat }: ChatsListItemProps) {
+export function ChatsListItem({ active, user, chat }: ChatsListItemProps) {
   const {unreadCount, lastMessage} = useSubscribeToLastMessageAndUnreadCount(chat?.id);
   const {setCurrentChat, isCreated} = useChatContext();
   const {currentUser} = useAuthContext();
@@ -92,5 +92,3 @@ function ChatsListItem({ active, user, chat }: ChatsListItemProps) {
     </li>
   );
 }
-
-export default ChatsListItem;

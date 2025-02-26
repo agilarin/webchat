@@ -1,1 +1,2 @@
-export {default as RippleItem} from "./RippleItem.tsx";
+export {RippleItem} from "./RippleItem.tsx";
+export type { RippleItemProps } from "./RippleItem.tsx";

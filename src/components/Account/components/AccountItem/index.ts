@@ -1,1 +1,1 @@
-export {default as AccountItem} from "./AccountItem.tsx";
+export {AccountItem} from "./AccountItem.tsx";

@@ -1,1 +1,1 @@
-export {default as ChatInfo} from "./ChatInfo.tsx";
+export {ChatInfo} from "./ChatInfo.tsx";

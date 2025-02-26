@@ -3,7 +3,6 @@ import authService from "@/services/authService.ts";
 import {FORM_REGISTER_OPTIONS} from "@/constants";
 import {AuthInput} from "@/pages/AuthPage/components/AuthInput";
 import {EditForm} from "@/components/EditForm";
-// import classes from "./EditPassword.module.scss";
 
 
 type FormValues = {
@@ -17,7 +16,7 @@ interface EditPasswordProps {
   onClose: () => void,
 }
 
-function EditPassword({open, onClose}: EditPasswordProps) {
+export function EditPassword({open, onClose}: EditPasswordProps) {
   const {register, handleSubmit, formState: { errors }} = useForm<FormValues>();
 
 
@@ -57,5 +56,3 @@ function EditPassword({open, onClose}: EditPasswordProps) {
     </EditForm>
   );
 }
-
-export default EditPassword;

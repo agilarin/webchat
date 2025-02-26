@@ -1,1 +1,1 @@
-export {default as LoadingProgress} from "./LoadingProgress.tsx";
+export {LoadingProgress} from "./LoadingProgress.tsx";

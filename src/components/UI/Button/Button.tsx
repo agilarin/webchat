@@ -25,8 +25,8 @@ type ButtonProps<
 
 const defaultElement = "button";
 
-export default forwardRef(
-  function Button<E extends ElementType = typeof defaultElement>(
+export const Button = forwardRef(
+  function<E extends ElementType = typeof defaultElement>(
     {
       as,
       icon,
@@ -61,22 +61,3 @@ export default forwardRef(
     );
   }
 ) as <E extends ElementType = typeof defaultElement>(props: ButtonProps<E> & { ref?: PolymorphicRef<E> }) => ReactElement
-
-// export default forwardRef(function Button<E extends ElementType | LinkType = typeof defaultElement>())
-// const TagName = as === "RouterLink" ? Link : as || defaultElement;
-
-
-// type LinkType = "RouterLink";
-//
-// type ButtonOwnProps<E extends ElementType | LinkType> = {
-//   children?: ReactNode;
-//   color?: "primary" | "default",
-//   variant?: "text" | "solid",
-//   shape?: "default" | "round" | "none",
-//   as?: E,
-// }
-// // variant?: "text" | "filled" | "solid" | "outlined",
-//
-// type ButtonProps<E extends ElementType | LinkType> = E extends ElementType ?
-//   ButtonOwnProps<E> & Omit<ComponentPropsWithoutRef<E>, keyof ButtonOwnProps<E>> :
-//   ButtonOwnProps<E> & LinkProps;

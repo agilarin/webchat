@@ -1,1 +1,1 @@
-export {default as Ripple} from "./Ripple.tsx";
+export {Ripple} from "./Ripple.tsx";

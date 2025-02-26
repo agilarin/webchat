@@ -19,7 +19,7 @@ type FormValues = {
 }
 
 
-function Signup() {
+export function Signup() {
   const {register, handleSubmit} = useForm<FormValues>();
   const [isLoading, setIsLoading] = useState(false);
   const [isShowPassword, setIsShowPassword] = useState(false);
@@ -107,5 +107,3 @@ function Signup() {
     </form>
   );
 }
-
-export default Signup;

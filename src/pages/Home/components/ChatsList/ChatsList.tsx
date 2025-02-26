@@ -1,7 +1,7 @@
 import clsx from "clsx";
-import {ChatsListItem, ChatsListItemSkeleton} from "@/pages/Home/components/ChatsList/components/ChatsListItem";
 import {ChatType, UserType} from "@/types";
 import {useChatContext} from "@/hooks/useChatContext.ts";
+import {ChatsListItem, ChatsListItemSkeleton} from "./components/ChatsListItem";
 import classes from "./ChatsList.module.scss";
 
 
@@ -11,7 +11,7 @@ interface ChatsListProps {
   isSuccess?: boolean,
 }
 
-function ChatsList({users, chats, isSuccess}: ChatsListProps) {
+export function ChatsList({users, chats, isSuccess}: ChatsListProps) {
   const {currentChat} = useChatContext();
 
 
@@ -43,7 +43,6 @@ function ChatsList({users, chats, isSuccess}: ChatsListProps) {
     );
   }
 
-
   return (
     <ul className={clsx(classes.root, "not-scroll")}>
       {Array(20).fill(0).map((_, i) => (
@@ -52,5 +51,3 @@ function ChatsList({users, chats, isSuccess}: ChatsListProps) {
     </ul>
   );
 }
-
-export default ChatsList;

@@ -4,7 +4,6 @@ import {FORM_REGISTER_OPTIONS} from "@/constants";
 import {useAuthContext} from "@/hooks/useAuthContext.ts";
 import {EditForm} from "@/components/EditForm";
 import {AuthInput} from "@/pages/AuthPage/components/AuthInput";
-// import classes from "./EditEmail.module.scss";
 
 
 type FormValues = {
@@ -17,7 +16,7 @@ interface EditEmailProps {
   onClose: () => void,
 }
 
-function EditEmail({ open, onClose }: EditEmailProps) {
+export function EditEmail({ open, onClose }: EditEmailProps) {
   const {currentUser} = useAuthContext();
   const {register, handleSubmit, formState: { errors }} = useForm<FormValues>({
     defaultValues: {
@@ -55,5 +54,3 @@ function EditEmail({ open, onClose }: EditEmailProps) {
     </EditForm>
   );
 }
-
-export default EditEmail;

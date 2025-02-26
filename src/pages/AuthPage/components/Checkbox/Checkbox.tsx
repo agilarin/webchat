@@ -9,7 +9,7 @@ interface CheckboxProps extends ComponentPropsWithoutRef<"input"> {
   children?: React.ReactNode;
 }
 
-function Checkbox({children, ...otherProps}: CheckboxProps) {
+export function Checkbox({children, ...otherProps}: CheckboxProps) {
 
   return (
     <div className={classes.CheckboxRoot}>
@@ -27,5 +27,3 @@ function Checkbox({children, ...otherProps}: CheckboxProps) {
     </div>
   );
 }
-
-export default Checkbox;

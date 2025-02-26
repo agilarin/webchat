@@ -1,11 +1,10 @@
-// import {Avatar} from "@/pages/Home/components/Avatar";
 import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css';
 import classes from "./ChatsListItem.module.scss";
 
 
 
-function ChatsListItemSkeleton() {
+export function ChatsListItemSkeleton() {
 
   return (
     <li className={classes.root}>
@@ -24,5 +23,3 @@ function ChatsListItemSkeleton() {
     </li>
   );
 }
-
-export default ChatsListItemSkeleton;

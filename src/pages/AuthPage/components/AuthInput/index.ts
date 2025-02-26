@@ -1,1 +1,1 @@
-export {default as AuthInput} from "./AuthInput.tsx";
+export {AuthInput} from "./AuthInput.tsx";
