@@ -10,7 +10,7 @@ import PaperPlaneIcon from "@/assets/icons/paper-plane.svg?react";
 
 export function ChatFooter() {
   const {currentUser} = useAuthContext();
-  const {currentChat, setCurrentChat, isCreated} = useChatContext();
+  const {currentChat, setCurrentChat, isNotExist} = useChatContext();
   const [messageValue, setMessageValue] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -30,10 +30,10 @@ export function ChatFooter() {
       return;
     }
     let chat = currentChat;
-    if (isCreated.current) {
+    if (isNotExist.current) {
       chat = await chatService.createChat({data: currentChat, userId: currentUser.uid});
       setCurrentChat(chat);
-      isCreated.current = false
+      isNotExist.current = false
     }
     chatService.sendMessage({
       chatId: chat?.id,

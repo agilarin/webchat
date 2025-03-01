@@ -10,16 +10,10 @@ export function useUnreadCount(chatId?: string) {
   const [incrementValue, setIncrementValue] = useState(0);
 
 
-  function resetUnreadCount() {
+  useEffect(() => {
     setIsFetching(false);
     setUnreadCount(0);
     setIncrementValue(0)
-  }
-
-
-  useEffect(() => {
-    setUnreadCount(0);
-    setIsFetching(false);
     if (!chatId || !currentUser?.uid) {
       return setIsFetching(true);
     }
@@ -50,6 +44,5 @@ export function useUnreadCount(chatId?: string) {
     setIncrementValue,
     // incrementUnreadCount: (value: number) => setIncrementValue(prev => prev + value),
     // resetIncrement: () => setIncrementValue(0),
-    resetUnreadCount,
   };
 }

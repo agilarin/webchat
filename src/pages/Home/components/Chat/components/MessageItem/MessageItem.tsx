@@ -6,49 +6,35 @@ import {useAuthContext} from "@/hooks/useAuthContext.ts";
 import {useChatContext} from "@/hooks/useChatContext.ts";
 import {formatMessageDate} from "@/utils/formatDate.ts";
 import {combineRefs} from "@/utils/combineRefs.ts";
-import classes from "./MessageListItem.module.scss";
+import classes from "./MessageItem.module.scss";
 
 
 interface MessagesListItemProps {
   message: MessageType,
-  isLastRead?: boolean,
-  isRead?: boolean,
-  lastElementRef?: (node: Element | null) => void,
 }
 
-export function MessageListItem({ message, isLastRead, isRead}: MessagesListItemProps) {
+export function MessageItem({message}: MessagesListItemProps) {
   const {currentUser} = useAuthContext();
-  const {setLastReadMessage, incrementUnreadCount} = useChatContext();
+  const {markRead} = useChatContext();
   const wasVisible = useRef(false);
   const elementRef = useRef<HTMLDivElement>(null);
   const {ref, isVisible} = useInView();
 
 
   useEffect(() => {
-    if (isLastRead) {
+    if (message.isJumpTo) {
       elementRef.current?.scrollIntoView()
     }
-  }, []);
+  }, [message.isJumpTo]);
 
 
   useEffect(() => {
-    if (!isVisible || isRead) {
+    if (!isVisible || message?.isRead || wasVisible.current) {
       return;
     }
-    setLastReadMessage(prevMessage => {
-      const prevMessageTimestamp = prevMessage?.date.toDate().getTime() || 0;
-      const MessageTimestamp = message.date.toDate().getTime();
-      if (MessageTimestamp > prevMessageTimestamp) {
-        return message
-      }
-      return prevMessage
-    })
-
-    if (!wasVisible.current && currentUser?.uid && message.senderId !== currentUser?.uid) {
-      incrementUnreadCount(-1);
-    }
+    markRead(message);
     wasVisible.current = true;
-  }, [isVisible, isRead]);
+  }, [isVisible, message]);
 
 
   return (

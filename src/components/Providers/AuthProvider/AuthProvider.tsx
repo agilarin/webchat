@@ -15,13 +15,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const auth = getAuth();
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [userInfo, setUserInfo] = useState<UserType | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isSuccess, setIsSuccess] = useState(true);
 
 
   useLayoutEffect(() => {
     const unsub = onAuthStateChanged(auth, (currentUser) => {
       setCurrentUser(currentUser);
-      setIsLoading(false);
+      setIsSuccess(false);
     });
     return () => unsub()
   }, [])
@@ -43,7 +43,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   return (
     <AuthContext.Provider value={{
-      isLoading,
+      isSuccess,
       currentUser,
       userInfo,
     }}>

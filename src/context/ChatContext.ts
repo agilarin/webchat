@@ -4,43 +4,34 @@ import {ChatType, MessageType} from "@/types";
 
 interface ChatContextType {
   currentChat: ChatType | null,
-  setCurrentChat:  Dispatch<SetStateAction<ChatType | null>>,
-  isCreated: MutableRefObject<boolean>,
+  setCurrentChat: Dispatch<SetStateAction<ChatType | null>>,
+  isNotExist: MutableRefObject<boolean>,
 
   messages: MessageType[],
-  messagesIsFetching: boolean,
-  getPrevMessages: () => Promise<boolean>
-  goToLastMessage: () => void,
+  messagesIsSuccess: boolean,
+  loadPrev: () => Promise<boolean>
+  jumpToLatestMessage: () => void,
 
-  lastReadMessage: MessageType | null,
-  setLastReadMessage: Dispatch<SetStateAction<MessageType | null>>,
-  lastReadMessageIsFetching: boolean,
-
+  markRead: (message: MessageType) => void,
   setLastMessage: Dispatch<SetStateAction<MessageType | null>>,
 
   unreadCount: number,
   setUnreadCount: Dispatch<SetStateAction<number>>,
-  incrementUnreadCount: (value: number) => void,
 }
-
 
 export const ChatContext = createContext<ChatContextType>({
   currentChat: null,
   setCurrentChat: () => {},
-  isCreated: { current: false },
+  isNotExist: { current: false },
 
   messages: [],
-  messagesIsFetching: false,
-  getPrevMessages: () => Promise.resolve(true),
-  goToLastMessage: () => {},
+  messagesIsSuccess: false,
+  loadPrev: () => Promise.resolve(true),
+  jumpToLatestMessage: () => {},
 
-  lastReadMessage:  null,
-  setLastReadMessage: () => {},
-  lastReadMessageIsFetching: false,
-
+  markRead: () => {},
   setLastMessage: () => {},
 
   unreadCount: 0,
   setUnreadCount: () => {},
-  incrementUnreadCount: () => {},
 })

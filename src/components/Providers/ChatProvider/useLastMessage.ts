@@ -7,19 +7,19 @@ import {useAuthContext} from "@/hooks/useAuthContext.ts";
 
 export function useLastMessage(chatId?: string) {
   const {currentUser} = useAuthContext();
-  const [isFetching, setIsFetching] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const [lastMessage, setLastMessage] = useState<MessageType | null>(null);
 
 
   useEffect(() => {
     setLastMessage(null);
-    setIsFetching(false);
+    setIsSuccess(false);
     if (!chatId || !currentUser?.uid) {
-      return setIsFetching(true);
+      return setIsSuccess(true);
     }
     const unsub = chatService.subscribeToLastMessage(chatId, (message) => {
       setLastMessage(message)
-      setIsFetching(true)
+      setIsSuccess(true)
     })
 
     return () => unsub()
@@ -27,7 +27,7 @@ export function useLastMessage(chatId?: string) {
 
 
   return {
-    isFetching,
+    isSuccess,
     lastMessage,
     setLastMessage
   };

@@ -1,8 +1,8 @@
 import { RouterProvider } from "react-router";
 import {router} from "@/routes";
-import {AuthProvider} from "@/components/AuthProvider";
-import {ChatProvider} from "@/components/ChatProvider";
-import {ChatInfoProvider} from "@/components/ChatInfoProvider";
+import {AuthProvider} from "@/components/Providers/AuthProvider";
+import {ChatProvider} from "@/components/Providers/ChatProvider";
+import {ChatInfoProvider} from "@/components/Providers/ChatInfoProvider";
 
 
 function App() {

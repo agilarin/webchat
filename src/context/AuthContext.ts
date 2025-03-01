@@ -4,13 +4,13 @@ import {UserType} from "@/types";
 
 
 interface AuthContextType {
-  isLoading: boolean,
+  isSuccess: boolean,
   currentUser: User | null,
   userInfo: UserType | null,
 }
 
 export const AuthContext = createContext<AuthContextType>({
-  isLoading: true,
+  isSuccess: true,
   currentUser: null,
   userInfo: null
 })

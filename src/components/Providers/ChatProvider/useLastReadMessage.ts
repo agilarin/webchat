@@ -1,52 +1,47 @@
 import {useEffect, useState, Dispatch, SetStateAction, RefObject} from "react";
+import {DocumentSnapshot} from "firebase/firestore";
 import {MessageType, ChatType} from "@/types";
 import chatService from "@/services/chatService.ts";
 import {useAuthContext} from "@/hooks/useAuthContext.ts";
-import {DocumentSnapshot} from "firebase/firestore";
 
 
-export type UseLastReadMessage = {
+
+type UseLastReadMessageReturn = {
   lastReadMessage: MessageType | null,
   setLastReadMessage: Dispatch<SetStateAction<MessageType | null>>,
   snapshot: DocumentSnapshot | null,
-  isFetching: boolean,
+  isSuccess: boolean,
   isCurrentMessage: (message: MessageType) => boolean,
-  reset: () => void,
 }
 
 interface UseLastMessageProps {
-  currentChat: ChatType | null
-  isCreated: RefObject<boolean>,
+  currentChat: ChatType | null,
+  isNotExist: RefObject<boolean>
 }
 
-export function useLastReadMessage({currentChat, isCreated}: UseLastMessageProps): UseLastReadMessage {
+export function useLastReadMessage({currentChat, isNotExist}: UseLastMessageProps): UseLastReadMessageReturn {
   const {currentUser} = useAuthContext();
-  const [isFetching, setIsFetching] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const [snapshot, setSnapshot] = useState<DocumentSnapshot | null>(null);
   const [message, setMessage] = useState<MessageType | null>(null);
   const [savedMessage, setSavedMessage] = useState<MessageType | null>(null);
 
 
-  function isCurrentMessage(message: MessageType) {
-    return savedMessage?.id === message?.id;
-  }
-
-  function reset() {
-    setIsFetching(false)
+  useEffect(() => {
+    setIsSuccess(false)
     setSnapshot(null)
     setSavedMessage(null)
     setMessage(null)
-  }
+  }, [currentChat]);
 
 
   useEffect(() => {
-    if (isCreated.current) {
-      return setIsFetching(true);
+    if (isNotExist.current) {
+      return setIsSuccess(true);
     }
-    if (!currentChat || !currentUser) {
+    if (!currentChat?.id || !currentUser) {
       return;
     }
-
     chatService.subscribeLastReadMessageAndSnapshot({
       chatId: currentChat.id,
       userId: currentUser.uid
@@ -54,17 +49,21 @@ export function useLastReadMessage({currentChat, isCreated}: UseLastMessageProps
       setSnapshot(snapshot || null)
       setSavedMessage(message || null)
       setMessage(message || null)
-      setIsFetching(true)
+      setIsSuccess(true)
     })
   }, [currentChat])
+
+
+  function isCurrentMessage(message: MessageType) {
+    return savedMessage?.id === message?.id;
+  }
 
 
   return {
     lastReadMessage: message,
     setLastReadMessage: setMessage,
     snapshot,
-    isFetching,
+    isSuccess,
     isCurrentMessage,
-    reset,
   }
 }

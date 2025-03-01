@@ -31,17 +31,14 @@ export type ChatType = {
   updatedAt?: Timestamp
 }
 
-export type MessageStatus = "SENT" | "READ";
-
-
 export type MessageType = {
   id: string,
   senderId: string,
   text: string,
-  // status: MessageStatus,
   editDate?: number,
   isDeleted?: boolean,
   isRead?: boolean,
+  isJumpTo?: boolean,
   date: Timestamp,
 }
 

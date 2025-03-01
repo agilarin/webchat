@@ -5,33 +5,39 @@ import chatService from "@/services/chatService.ts";
 import { useAuthContext } from "@/hooks/useAuthContext.ts";
 
 
-interface useMessagesProps {
-  currentChat: ChatType | null,
-  lastReadMessageSnapshot: DocumentSnapshot | null,
-  lastReadMessageIsFetching: boolean,
-  isCreated: RefObject<boolean>,
+
+type UseMessagesReturn = {
+  messages: MessageType[],
+  isSuccess: boolean,
+  loadPrev: () => Promise<boolean>,
 }
 
+interface UseMessagesProps {
+  currentChat: ChatType | null,
+  lastReadMessageSnapshot: DocumentSnapshot | null,
+  lastReadMessageIsSuccess: boolean,
+  isNotExist: RefObject<boolean>,
+}
 
-export function useMessages({currentChat, lastReadMessageSnapshot, lastReadMessageIsFetching, isCreated}: useMessagesProps) {
+export function useMessages({currentChat, lastReadMessageSnapshot, lastReadMessageIsSuccess, isNotExist}: UseMessagesProps): UseMessagesReturn {
   const {currentUser} = useAuthContext()
   const [messages, setMessages] = useState<MessageType[]>([]);
-  const [isFetching, setIsFetching] = useState(false);
-  const isPrevRef = useRef<boolean>(true);
-
-
-  function reset() {
-    setMessages([]);
-    setIsFetching(false);
-    isPrevRef.current = true;
-  }
+  const [isSuccess, setIsSuccess] = useState(false);
+  const hasPrevRef = useRef<boolean>(true);
 
 
   useEffect(() => {
-    if (isCreated.current) {
-      return setIsFetching(true);
+    setMessages([]);
+    setIsSuccess(false);
+    hasPrevRef.current = true;
+  }, [currentChat]);
+
+
+  useEffect(() => {
+    if (isNotExist.current) {
+      return setIsSuccess(true);
     }
-    if (!lastReadMessageIsFetching || !currentChat || !currentUser) {
+    if (!lastReadMessageIsSuccess || !currentChat || !currentUser) {
       return;
     }
     const unsub = chatService.subscribeToMessages({
@@ -39,20 +45,20 @@ export function useMessages({currentChat, lastReadMessageSnapshot, lastReadMessa
       messagesSnapshot: lastReadMessageSnapshot || undefined,
     }, (messages) => {
       setMessages(prev => mergeMessages(prev, messages))
-      setIsFetching(true);
+      setIsSuccess(true);
     });
     return () => unsub()
-  }, [currentChat, lastReadMessageSnapshot, lastReadMessageIsFetching]);
+  }, [currentChat, lastReadMessageSnapshot, lastReadMessageIsSuccess]);
 
 
   function mergeMessages(oldMessages: MessageType[], newMessages: MessageType[]) {
     const result = [...oldMessages];
     newMessages.forEach(message => {
       const index = result.findIndex(item => item.id === message.id);
-      if (index !== -1) {
-        result[index] = message
-      } else {
+      if (index === -1) {
         result.push(message);
+      } else {
+        result[index] = message
       }
     });
     return result.sort((mesA, mesB) => {
@@ -61,8 +67,8 @@ export function useMessages({currentChat, lastReadMessageSnapshot, lastReadMessa
   }
 
 
-  async function fetchPrevMessages() {
-    if (!currentChat?.id || !messages.length || !isPrevRef.current) {
+  async function loadPrev() {
+    if (!currentChat?.id || !messages.length || !hasPrevRef.current) {
       return false;
     }
     const response = await chatService.getPrevMessages({
@@ -72,15 +78,14 @@ export function useMessages({currentChat, lastReadMessageSnapshot, lastReadMessa
     if (response) {
       setMessages(prev => mergeMessages(prev, response))
     }
-    isPrevRef.current = !!response;
+    hasPrevRef.current = !!response;
     return !!response;
   }
 
 
   return {
     messages,
-    isFetching,
-    getPrevMessages: fetchPrevMessages,
-    reset
+    isSuccess,
+    loadPrev,
   };
 }

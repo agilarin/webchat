@@ -18,7 +18,7 @@ interface ChatsListItemProps {
 
 export function ChatsListItem({ active, user, chat }: ChatsListItemProps) {
   const {unreadCount, lastMessage} = useSubscribeToLastMessageAndUnreadCount(chat?.id);
-  const {setCurrentChat, isCreated} = useChatContext();
+  const {setCurrentChat, isNotExist} = useChatContext();
   const {currentUser} = useAuthContext();
   const data = {
     title: "",
@@ -49,7 +49,7 @@ export function ChatsListItem({ active, user, chat }: ChatsListItemProps) {
       createdAt: Timestamp.fromDate(new Date()),
       members: [currentUser.uid, user.id]
     });
-    isCreated.current = true
+    isNotExist.current = true;
   }
 
 

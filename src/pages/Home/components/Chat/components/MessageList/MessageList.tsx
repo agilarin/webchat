@@ -3,8 +3,8 @@ import {useChatContext} from "@/hooks/useChatContext.ts";
 import {useInView} from "@/hooks/useInView.ts";
 import {combineRefs} from "@/utils/combineRefs.ts";
 import {LoadingProgress} from "@/components/UI/LoadingProgress";
-import {MessageListItem} from "./components/MessageListItem";
-import {useChangeScrollHeight} from "./useChangeScrollHeight.ts";
+import {MessageItem} from "@/pages/Home/components/Chat/components/MessageItem";
+import {useScrollSaveOnChange} from "./useScrollSaveOnChange.ts";
 import classes from "./MessageList.module.scss";
 import ArrowDownIcon from "@/assets/icons/arrow-down.svg?react";
 
@@ -13,31 +13,34 @@ import ArrowDownIcon from "@/assets/icons/arrow-down.svg?react";
 export function MessageList() {
   const {
     messages,
-    messagesIsFetching,
-    lastReadMessage,
-    getPrevMessages,
+    messagesIsSuccess,
+    loadPrev,
     unreadCount,
-    goToLastMessage
+    jumpToLatestMessage
   } = useChatContext();
   const listRef = useRef<HTMLDivElement | null>(null)
-  const {ref, isVisible, rootRef} = useInView({rootMargin: "1000px" });
-  const {scrollRef, scrollInnerRef} = useChangeScrollHeight();
+  const loadPrevTrigger = useInView({ rootMargin: "1000px" });
+  const jumpToEndTrigger = useInView();
+  const {scrollRef, addScrollSaveEvent} = useScrollSaveOnChange();
 
 
   useEffect(() => {
-    if (isVisible && messagesIsFetching && messages.length) {
-      getPrevMessages()
+    if (loadPrevTrigger.isVisible && messagesIsSuccess && messages.length) {
+      const removeScrollSaveEvent = addScrollSaveEvent();
+      loadPrev().finally(() => removeScrollSaveEvent())
     }
-  }, [isVisible, messagesIsFetching, messages])
+  }, [loadPrevTrigger.isVisible, messagesIsSuccess, messages])
 
 
-  function handleToEnd() {
-    goToLastMessage();
+  function handleJumpToEnd() {
+    if (unreadCount > 0) {
+      jumpToLatestMessage();
+    }
     listRef.current?.scrollTo(0, 0);
   }
 
 
-  if (!messagesIsFetching) {
+  if (!messagesIsSuccess) {
     return (
       <div className={classes.root}>
         <div className={classes.progressContainer}>
@@ -50,27 +53,41 @@ export function MessageList() {
   }
 
 
-
   return (
     <div className={classes.root}>
-      <div ref={combineRefs(rootRef, listRef, scrollRef)} className={classes.list}>
-        <div ref={scrollInnerRef}>
+      <div
+        ref={combineRefs(loadPrevTrigger.rootRef, listRef, scrollRef, jumpToEndTrigger.rootRef)}
+        className={classes.list}
+      >
+        <div
+          ref={jumpToEndTrigger.ref}
+          className={classes.btnJumpToEndTrigger}
+        />
+        <div>
           {messages.map((message) => (
-            <MessageListItem
+            <MessageItem
               key={message.id}
               message={message}
-              isLastRead={message.id === lastReadMessage?.id}
-              isRead={message.isRead}
             />
           ))}
         </div>
-        <div ref={ref} className={classes.prevTrigger}/>
+        <div
+          ref={loadPrevTrigger.ref}
+          className={classes.loadPrevTrigger}
+        />
       </div>
 
-
-      {unreadCount > 0 && (
-        <button className={classes.buttonToEnd} onClick={handleToEnd}>
-          <ArrowDownIcon className={classes.buttonToEndIcon}/>
+      {(!jumpToEndTrigger.isVisible || unreadCount > 0) && (
+        <button
+          className={classes.btnJumpToEnd}
+          onClick={handleJumpToEnd}
+        >
+          <ArrowDownIcon className={classes.btnJumpToEndIcon}/>
+          {unreadCount > 0 && (
+            <span className={classes.btnJumpToEndNotify}>
+              {unreadCount}
+            </span>
+          )}
         </button>
       )}
     </div>
