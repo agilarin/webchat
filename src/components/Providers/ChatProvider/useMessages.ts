@@ -1,4 +1,4 @@
-import {RefObject, useEffect, useState, useRef} from "react";
+import {RefObject, useEffect, useState, useRef, useLayoutEffect} from "react";
 import {DocumentSnapshot} from "firebase/firestore";
 import {ChatType, MessageType} from "@/types";
 import chatService from "@/services/chatService.ts";
@@ -6,31 +6,81 @@ import { useAuthContext } from "@/hooks/useAuthContext.ts";
 
 
 
+function sortMessagesOrderByAsc(messages: MessageType[]) {
+  return messages.sort((messageA, messageB) => {
+    return messageA.date.toDate().getTime() - messageB.date.toDate().getTime()
+  });
+}
+
+function mergeMessages(oldMessages: MessageType[], newMessages: MessageType[]) {
+  const result = [...oldMessages];
+  newMessages.forEach(message => {
+    const index = result.findIndex(item => item.id === message.id);
+    if (index === -1) {
+      result.push(message);
+    } else {
+      result[index] = message
+    }
+  });
+  return sortMessagesOrderByAsc(result)
+}
+
+
 type UseMessagesReturn = {
   messages: MessageType[],
   isSuccess: boolean,
   loadPrev: () => Promise<boolean>,
+  lastReadMessage: MessageType | null,
 }
 
 interface UseMessagesProps {
   currentChat: ChatType | null,
-  lastReadMessageSnapshot: DocumentSnapshot | null,
-  lastReadMessageIsSuccess: boolean,
+  // lastReadMessageSnapshot: DocumentSnapshot | null,
+  // lastReadMessageIsSuccess: boolean,
   isNotExist: RefObject<boolean>,
 }
 
-export function useMessages({currentChat, lastReadMessageSnapshot, lastReadMessageIsSuccess, isNotExist}: UseMessagesProps): UseMessagesReturn {
+export function useMessages({currentChat, isNotExist}: UseMessagesProps): UseMessagesReturn {
   const {currentUser} = useAuthContext()
+  const [lastReadMessageIsSuccess, setLastReadMessageIsSuccess] = useState(false);
+  const [lastReadMessageSnapshot, setLastReadMessageSnapshot] = useState<DocumentSnapshot | null>(null);
+  const [lastReadMessage, setLastReadMessage] = useState<MessageType | null>(null);
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [isSuccess, setIsSuccess] = useState(false);
   const hasPrevRef = useRef<boolean>(true);
 
 
-  useEffect(() => {
-    setMessages([]);
+  useLayoutEffect(() => {
+    setLastReadMessageIsSuccess(false)
+    setLastReadMessageSnapshot(null)
+    setLastReadMessage(null)
     setIsSuccess(false);
+    setMessages([]);
     hasPrevRef.current = true;
   }, [currentChat]);
+  
+
+  useEffect(() => {
+    if (isNotExist.current) {
+      return setLastReadMessageIsSuccess(true);
+    }
+    if (!currentChat?.id || !currentUser) {
+      return;
+    }
+    chatService.subscribeLastReadMessageAndSnapshot({
+      chatId: currentChat.id,
+      userId: currentUser.uid
+    }, (message, snapshot) => {
+      setLastReadMessageSnapshot(snapshot || null)
+      setLastReadMessage(message || null)
+      setLastReadMessageIsSuccess(true)
+    })
+  }, [currentChat])
+
+
+  // function isLastRead(message: MessageType) {
+  //   return lastReadMessage?.id === message?.id;
+  // }
 
 
   useEffect(() => {
@@ -49,22 +99,6 @@ export function useMessages({currentChat, lastReadMessageSnapshot, lastReadMessa
     });
     return () => unsub()
   }, [currentChat, lastReadMessageSnapshot, lastReadMessageIsSuccess]);
-
-
-  function mergeMessages(oldMessages: MessageType[], newMessages: MessageType[]) {
-    const result = [...oldMessages];
-    newMessages.forEach(message => {
-      const index = result.findIndex(item => item.id === message.id);
-      if (index === -1) {
-        result.push(message);
-      } else {
-        result[index] = message
-      }
-    });
-    return result.sort((mesA, mesB) => {
-      return mesA.date.toDate().getTime() - mesB.date.toDate().getTime()
-    });
-  }
 
 
   async function loadPrev() {
@@ -87,5 +121,6 @@ export function useMessages({currentChat, lastReadMessageSnapshot, lastReadMessa
     messages,
     isSuccess,
     loadPrev,
+    lastReadMessage
   };
 }
