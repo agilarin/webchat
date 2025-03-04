@@ -19,7 +19,7 @@ export function Signin() {
 
 
   const onSubmit = (data: FormValues) => {
-    if (data.email || data.password) {
+    if (!data.email || !data.password) {
       return;
     }
     setIsLoading(true);
