@@ -46,7 +46,7 @@ export function Signin() {
 
   return (
     <AuthForm
-      title="Войти в Chatapp"
+      title="Войти в WebChat"
       description="Введите адрес электроной почты и пароль."
       onSubmit={handleSubmit(onSubmit)}
     >

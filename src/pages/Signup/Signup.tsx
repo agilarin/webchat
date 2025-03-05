@@ -47,7 +47,7 @@ export function Signup() {
 
   return (
     <AuthForm
-      title="Зарегистрироваться в Chatapp"
+      title="Зарегистрироваться в WebChat"
       description="Введите имя пользователя, имя, адрес электроной почты и пароль."
       onSubmit={handleSubmit(onSubmit)}
     >
