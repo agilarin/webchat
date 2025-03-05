@@ -3,7 +3,7 @@ import {useForm} from "react-hook-form";
 import {FORM_REGISTER_OPTIONS} from "@/constants";
 import {useAuthContext} from "@/hooks/useAuthContext.ts";
 import {EditForm} from "@/components/EditForm";
-import {AuthInput} from "@/pages/AuthPage/components/AuthInput";
+import {AuthInput} from "@/components/AuthForm";
 
 
 type FormValues = {

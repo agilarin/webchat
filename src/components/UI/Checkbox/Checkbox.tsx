@@ -1,29 +1,26 @@
-import React, {ComponentPropsWithoutRef} from "react";
+import {ComponentPropsWithoutRef} from "react";
 import classes from "./Checkbox.module.scss";
 import CheckmarkIcon from "@/assets/icons/checkmark.svg?react";
 
 
+type InputComponentProps = Omit<ComponentPropsWithoutRef<"input">, "type" | "children">
 
+export interface CheckboxProps extends InputComponentProps {}
 
-interface CheckboxProps extends ComponentPropsWithoutRef<"input"> {
-  children?: React.ReactNode;
-}
-
-export function Checkbox({children, ...otherProps}: CheckboxProps) {
+export function Checkbox(props: CheckboxProps) {
 
   return (
     <div className={classes.CheckboxRoot}>
       <input
         className={classes.input}
         type="checkbox"
-        {...otherProps}
+        {...props}
       />
       <div className={classes.box}>
         <div className={classes.boxBorder}/>
         <div className={classes.boxBackground}/>
         <CheckmarkIcon className={classes.boxIcon}/>
       </div>
-
     </div>
   );
 }

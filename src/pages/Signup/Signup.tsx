@@ -1,12 +1,11 @@
 import {useState} from "react";
-import {useNavigate} from "react-router";
 import {useForm} from "react-hook-form";
+import {useNavigate} from "react-router";
 import authService from "@/services/authService.ts";
 import {FORM_REGISTER_OPTIONS} from "@/constants";
 import {Button} from "@/components/UI/Button";
-import {AuthInput} from "@/pages/AuthPage/components/AuthInput";
-import {Checkbox} from "@/pages/AuthPage/components/Checkbox";
-import classes from "../../AuthPage.module.scss";
+import {AuthCheckbox, AuthForm, AuthInput} from "@/components/AuthForm";
+import classes from "./Signup.module.scss";
 
 
 
@@ -18,9 +17,8 @@ type FormValues = {
   confirmPassword: string,
 }
 
-
 export function Signup() {
-  const {register, handleSubmit} = useForm<FormValues>();
+  const {register, handleSubmit, formState: { errors }, setValue, setError} = useForm<FormValues>();
   const [isLoading, setIsLoading] = useState(false);
   const [isShowPassword, setIsShowPassword] = useState(false);
   const navigate = useNavigate();
@@ -36,20 +34,28 @@ export function Signup() {
         firstName: data.firstName,
       });
       navigate("/")
-    } finally {
-      setIsLoading(false);
+    } catch (error) {
+      setValue("password", "")
+      setValue("confirmPassword", "")
+      setError("email", {
+        type: "error",
+        message: "Invalid email address"
+      })
     }
+    setIsLoading(false);
   }
 
-
   return (
-    <form
-      className={classes.form}
+    <AuthForm
+      title="Зарегистрироваться в Chatapp"
+      description="Введите имя пользователя, имя, адрес электроной почты и пароль."
       onSubmit={handleSubmit(onSubmit)}
     >
+
       <AuthInput
         title="Ваш username"
         {...register("username", FORM_REGISTER_OPTIONS.USERNAME)}
+        error={!!errors.username}
       />
       <AuthInput
         title="Ваше имя"
@@ -57,34 +63,31 @@ export function Signup() {
           required: true,
           minLength: 2
         })}
+        error={!!errors.firstName}
       />
       <AuthInput
         title="Адрес эл. почты"
         {...register("email", FORM_REGISTER_OPTIONS.EMAIL)}
+        error={!!errors.email}
       />
       <AuthInput
         type={isShowPassword ? "text" : "password"}
         title="Пароль"
         {...register("password", FORM_REGISTER_OPTIONS.PASSWORD)}
+        error={!!errors.password}
       />
       <AuthInput
         type={isShowPassword ? "text" : "password"}
         title="Подтвердите пароль"
         {...register("confirmPassword", FORM_REGISTER_OPTIONS.CONFIRM_PASSWORD)}
+        error={!!errors.confirmPassword}
       />
 
-      <Button
-        as="label"
-        className={classes.checkbox}
-      >
-        <Checkbox
-          onChange={(e) => setIsShowPassword(e.target.checked)}
-          checked={isShowPassword}
-        />
-        <span className={classes.checkboxText}>
-          Показать пароль
-        </span>
-      </Button>
+      <AuthCheckbox
+        text="Показать пароль"
+        onChange={(e) => setIsShowPassword(e.target.checked)}
+        checked={isShowPassword}
+      />
 
       <Button
         color="primary"
@@ -104,6 +107,6 @@ export function Signup() {
         Уже есть аккаунт
       </Button>
 
-    </form>
+    </AuthForm>
   );
 }

@@ -1,7 +1,9 @@
 import {createBrowserRouter, createHashRouter, RouteObject} from "react-router";
 import {Home} from "@/pages/Home";
-import {AuthPage} from "@/pages/AuthPage";
 import {PrivateRoute} from "@/components/PrivateRoute";
+import {Signin} from "@/pages/Signin";
+import {Signup} from "@/pages/Signup";
+import {AuthLayout} from "@/components/AuthLayout";
 
 
 const routes: RouteObject[] = [{
@@ -13,11 +15,19 @@ const routes: RouteObject[] = [{
       },
       {
         path: "/signin",
-        element: <AuthPage type="signin"/>
+        element: (
+          <AuthLayout>
+            <Signin/>
+          </AuthLayout>
+        )
       },
       {
         path: "/signup",
-        element: <AuthPage type="signup"/>
+        element: (
+          <AuthLayout>
+            <Signup/>
+          </AuthLayout>
+        )
       },
     ]
   }]

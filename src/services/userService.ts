@@ -25,10 +25,8 @@ class userService {
 
   async getUser(userId: string) {
     const userRef = doc(this.usersRef, userId);
-
     try {
       const userSnap = await getDoc(userRef);
-
       return {
         id: userSnap.id,
         ...userSnap.data()
@@ -50,7 +48,6 @@ class userService {
       if (user.username && !usernameUnique) {
         return Promise.reject("Username is already in use");
       }
-
       await updateDoc(userRef, {
         ...user,
         updatedAt: serverTimestamp(),

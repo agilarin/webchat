@@ -1,7 +1,7 @@
 import {useForm} from "react-hook-form";
 import authService from "@/services/authService.ts";
 import {FORM_REGISTER_OPTIONS} from "@/constants";
-import {AuthInput} from "@/pages/AuthPage/components/AuthInput";
+import {AuthInput} from "@/components/AuthForm";
 import {EditForm} from "@/components/EditForm";
 
 

@@ -6,7 +6,6 @@
   position: absolute;
   inset: 0;
   z-index: 1;
-  //z-index: -1;
   opacity: 0;
 
   &:checked + .box {
@@ -18,10 +17,12 @@
     }
   }
 }
+
 .box {
   position: relative;
   width: 20px;
   height: 20px;
+  background: var(--white);
   border-radius: 5px;
   overflow: hidden;
 }

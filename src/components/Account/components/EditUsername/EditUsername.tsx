@@ -2,7 +2,7 @@ import {useForm} from "react-hook-form";
 import userService from "@/services/userService.ts";
 import {FORM_REGISTER_OPTIONS} from "@/constants";
 import {EditForm} from "@/components/EditForm";
-import {AuthInput} from "@/pages/AuthPage/components/AuthInput";
+import {AuthInput} from "@/components/AuthForm";
 import {useAuthContext} from "@/hooks/useAuthContext.ts";
 
 

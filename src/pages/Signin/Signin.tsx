@@ -1,10 +1,11 @@
+import {useForm} from "react-hook-form";
 import {useState} from "react";
 import {useNavigate} from "react-router";
-import {useForm} from "react-hook-form";
-import {AuthInput} from "@/pages/AuthPage/components/AuthInput";
-import {Button} from "@/components/UI/Button";
 import authService from "@/services/authService.ts";
-import classes from "../../AuthPage.module.scss";
+import {AuthForm, AuthInput} from "@/components/AuthForm";
+import {Button} from "@/components/UI/Button";
+import classes from "./Signin.module.scss";
+// import {LoadingProgress} from "@/components/UI/LoadingProgress";
 
 
 type FormValues = {
@@ -13,37 +14,53 @@ type FormValues = {
 }
 
 export function Signin() {
-  const {register, handleSubmit} = useForm<FormValues>();
+  const {register, handleSubmit, formState: { errors }, setValue, setError} = useForm<FormValues>();
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
 
-  const onSubmit = (data: FormValues) => {
+  async function onSubmit(data: FormValues) {
     if (!data.email || !data.password) {
       return;
     }
     setIsLoading(true);
-    authService.signIn({
-      email: data.email,
-      password: data.password
-    }).then(() => navigate("/"))
-      .finally(() => setIsLoading(false));
+    try {
+      await authService.signIn({
+        email: data.email,
+        password: data.password
+      })
+      navigate("/")
+    } catch (error) {
+      setValue("password", "")
+      setError("email", {
+        type: "error",
+        message: "Invalid email address"
+      })
+      setError("password", {
+        type: "error",
+        message: "Invalid password"
+      })
+    }
+    setIsLoading(false)
   }
 
   return (
-    <form
-      className={classes.form}
+    <AuthForm
+      title="Войти в Chatapp"
+      description="Введите адрес электроной почты и пароль."
       onSubmit={handleSubmit(onSubmit)}
     >
       <AuthInput
         title="Адрес эл. почты"
         {...register("email", { required: true })}
+        error={!!errors.email}
       />
 
       <AuthInput
         type="password"
         title="Пароль"
         {...register("password", { required: true })}
+        error={!!errors.password}
       />
 
 
@@ -54,6 +71,7 @@ export function Signin() {
         className={classes.buttonSubmit}
         disabled={isLoading}
       >
+        {/*<LoadingProgress color="white"/>*/}
         {isLoading ? "Загрузка" :"Войти"}
       </Button>
 
@@ -64,6 +82,6 @@ export function Signin() {
       >
         Создать аккаунт
       </Button>
-    </form>
+    </AuthForm>
   );
 }
