@@ -3,7 +3,7 @@ import classes from "./LoadingProgress.module.scss";
 
 
 interface LoadingProgressProps {
-  color: "default" | "white";
+  color?: "default" | "white";
 }
 
 export function LoadingProgress({ color = "default" }: LoadingProgressProps) {
