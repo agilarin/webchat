@@ -42,12 +42,12 @@ export function ChatsListItem({ active, user, chat }: ChatsListItemProps) {
     if (!user?.id || !currentUser?.uid) {
       return;
     }
-
     setCurrentChat({
       id: "",
       type: "PRIVATE",
       createdAt: Timestamp.fromDate(new Date()),
-      members: [currentUser.uid, user.id]
+      members: [currentUser.uid, user.id],
+      user: user,
     });
     isNotExist.current = true;
   }

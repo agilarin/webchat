@@ -10,8 +10,6 @@ import classes from "./ChatHeader.module.scss";
 export function ChatHeader() {
   const {currentChat} = useChatContext();
   const {toggle} = useChatInfoContext()
-
-
   const user = currentChat?.user;
   const userLastOnline = user?.lastOnline && formatLastOnlineDate(user?.lastOnline);
   const title =  currentChat?.title || [currentChat?.user?.firstName, currentChat?.user?.lastName].join(" ");

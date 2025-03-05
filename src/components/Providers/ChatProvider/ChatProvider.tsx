@@ -53,7 +53,6 @@ export function ChatProvider({ children }: ChatProviderProps) {
   }, [messages.isSuccess]);
 
 
-
   const debouncedUpdateChatState = useCallback(
     debounce(async (func: () => void) => func(), 2000)
     , [currentChat?.id])
