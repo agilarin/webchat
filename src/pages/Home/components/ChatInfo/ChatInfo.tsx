@@ -9,14 +9,14 @@ import CloseIcon from "@/assets/icons/close.svg?react";
 
 
 export function ChatInfo() {
-  const {currentChat} = useChatContext();
+  const {activeChat} = useChatContext();
   const {open, toggle} = useChatInfoContext();
-  const user = currentChat?.user;
-  const title = currentChat?.title || [user?.firstName, user?.lastName].join(" ")
-  const username = currentChat?.username || user?.username;
+  const user = activeChat?.user;
+  const title = activeChat?.title || [user?.firstName, user?.lastName].join(" ")
+  const username = activeChat?.username || user?.username;
 
 
-  if (!currentChat || !open) {
+  if (!activeChat || !open) {
     return;
   }
 

@@ -1,50 +1,87 @@
-# React + TypeScript + Vite
+## WebChat
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<p>
+    <img alt="NPM Badge" src="https://img.shields.io/badge/v10.2.3-green?label=npm&color=blue">
+</p>
 
-Currently, two official plugins are available:
+Веб приложение чата для общения между пользователями.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Expanding the ESLint configuration
+## Содержание
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+1. [Технологии](#технологии)
+2. [Быстрый старт](#быстрый-старт)
+3. [Ссылки](#ссылки)
+4. [Скриншоты](#скриншоты)
 
-- Configure the top-level `parserOptions` property like this:
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+
+## Технологии
+Frontend:
+- TypeScript
+- React
+- React-router
+- Sass
+- firebase
+- Vite
+
+
+
+## Быстрый старт
+
+На вашем компьютере должно быть установлено следующее:
+- [Git](https://git-scm.com/)
+- [Node.js](https://nodejs.org/en)
+- [npm](https://www.npmjs.com/)
+
+#### Клонирование репозитория
+```
+git clone https://github.com/vlagris/webchat.git
+cd webchat
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+#### Установка
+Установите зависимости проекта с помощью npm:
 ```
+npm install
+```
+Установите зависимости проекта с помощью pnpm:
+```
+pnpm install
+```
+
+#### Запуск проекта
+Запустить проект спомощью npm
+```
+npm run dev
+```
+Запустить проект спомощью pnpm
+```
+pnpm run dev
+```
+Откройте http://localhost:5173 в вашем браузере, чтобы просмотреть проект.
+
+
+
+## Ссылки:
+
+Проект запущен на [github pages](https://vlagris.github.io/webchat/)
+
+
+
+## Скриншоты:
+<div align="center"> 
+  <img alt="Home page" src="https://github.com/vlagris/webchat/blob/main/screenshots/home-page.jpg">
+  <p><i>Главная страница</i></p>
+  <img alt="List collections page" src="https://github.com/vlagris/webchat/blob/main/screenshots/list-collections.jpg">
+  <p><i>Страница списков</i></p>
+  <img alt="List movies page" src="https://github.com/vlagris/webchat/blob/main/screenshots/list-movies.jpg">
+  <p><i>Страница списка фильмов</i></p>
+  <img alt="Movie page" src="https://github.com/vlagris/webchat/blob/main/screenshots/movie-page.jpg">
+  <p><i>Страница фильма</i></p>
+  <img alt="Search" src="https://github.com/vlagris/webchat/blob/main/screenshots/search.jpg">
+  <p><i>Поиск фильмов</i></p>
+</div>
+
+
+

@@ -18,9 +18,8 @@ export function UserAccount() {
   const {userInfo} = useAuthContext();
   const [menuOpen, menuToggle] = useToggle(false);
   const [profileOpen, profileToggle] = useToggle(false);
-  const fullName = [userInfo?.firstName, userInfo?.lastName].join(' ');
   const buttonRef = useRef<HTMLButtonElement>(null);
-
+  const fullName = [userInfo?.firstName, userInfo?.lastName].join(' ');
 
   return (
     <div className={classes.root}>
@@ -32,7 +31,7 @@ export function UserAccount() {
             {fullName}
           </h4>
           <p className={classes.subtitle}>
-            {"@" + userInfo?.username}
+            {userInfo?.username && "@" + userInfo?.username}
           </p>
         </div>
       </div>
@@ -40,7 +39,7 @@ export function UserAccount() {
       <div className={classes.navigation}>
         <Button
           ref={buttonRef}
-          icon
+          icon={true}
           shape="round"
           onClick={() => menuToggle()}
         >

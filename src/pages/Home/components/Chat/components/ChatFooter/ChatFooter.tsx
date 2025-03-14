@@ -1,6 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
-import chatService from "@/services/chatService.ts";
-import {useAuthContext} from "@/hooks/useAuthContext.ts";
+import {useChatActionContext} from "@/hooks/useChatActionContext.ts";
 import {useChatContext} from "@/hooks/useChatContext.ts";
 import {Button} from "@/components/UI/Button";
 import classes from "./ChatFooter.module.scss";
@@ -9,43 +8,28 @@ import PaperPlaneIcon from "@/assets/icons/paper-plane.svg?react";
 
 
 export function ChatFooter() {
-  const {currentUser} = useAuthContext();
-  const {currentChat, setCurrentChat, isNotExist} = useChatContext();
+  const {activeChat} = useChatContext();
+  const {sendMessage} = useChatActionContext();
   const [messageValue, setMessageValue] = useState("");
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
 
   useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-    }
-  }, [messageValue]);
+    setMessageValue("");
+  }, [activeChat?.id]);
 
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!currentChat || !currentUser?.uid || messageValue === "") {
-      return;
-    }
-    let chat = currentChat;
-    if (isNotExist.current) {
-      chat = await chatService.createChat({data: currentChat, userId: currentUser.uid});
-      setCurrentChat(chat);
-      isNotExist.current = false
-    }
-    chatService.sendMessage({
-      chatId: chat?.id,
-      userId: currentUser.uid,
-      message: messageValue
-    });
+    sendMessage(messageValue);
     setMessageValue("");
   }
 
 
   function handleChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
     setMessageValue(event.target.value);
+    event.currentTarget.style.height = 'auto';
+    event.currentTarget.style.height = `${event.currentTarget.scrollHeight}px`;
   }
 
 
@@ -59,17 +43,22 @@ export function ChatFooter() {
   }
 
   return (
-    <form ref={formRef} className={classes.root} onSubmit={handleSubmit}>
+    <form
+      ref={formRef}
+      className={classes.root}
+      onSubmit={handleSubmit}
+    >
 
-      <textarea
-        ref={textareaRef}
-        className={classes.input}
-        placeholder="Написать сообщение..."
-        value={messageValue}
-        onChange={handleChange}
-        rows={1}
-        onKeyDown={handleKeyDown}
-      />
+      <label className={classes.inputLabel}>
+        <textarea
+          className={classes.input}
+          placeholder="Написать сообщение..."
+          value={messageValue}
+          onChange={handleChange}
+          rows={1}
+          onKeyDown={handleKeyDown}
+        />
+      </label>
 
       <Button
         icon

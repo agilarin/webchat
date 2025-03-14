@@ -1,55 +1,50 @@
+import {memo} from "react";
 import clsx from "clsx";
-import {ChatType, UserType} from "@/types";
-import {Timestamp} from "firebase/firestore";
 import Skeleton from "react-loading-skeleton";
+import {ChatType, MessageType, UserType} from "@/types";
 import {useChatContext} from "@/hooks/useChatContext.ts";
 import {useAuthContext} from "@/hooks/useAuthContext.ts";
 import {formatDate} from "@/utils/formatDate.ts";
 import {Avatar} from "@/pages/Home/components/Avatar";
-import {useSubscribeToLastMessageAndUnreadCount} from "./useSubscribeToLastMessageAndUnreadCount.ts";
-import classes from "./ChatsListItem.module.scss";
+import classes from "./ChatItem.module.scss";
 
 
 interface ChatsListItemProps {
   active?: boolean,
   user?: UserType,
   chat?: ChatType,
+  lastMessage?: MessageType | null,
+  count?: number,
 }
 
-export function ChatsListItem({ active, user, chat }: ChatsListItemProps) {
-  const {unreadCount, lastMessage} = useSubscribeToLastMessageAndUnreadCount(chat?.id);
-  const {setCurrentChat, isNotExist} = useChatContext();
+export const ChatItem = memo(function ChatItem({ active, user, chat, lastMessage, count }: ChatsListItemProps) {
+  const {createChat, watchChat} = useChatContext();
   const {currentUser} = useAuthContext();
-  const data = {
-    title: "",
-    subTitle: "",
-  }
+  let title = "";
+  let subTitle = "";
+
 
   if (user) {
-    data.title = [user?.firstName, user?.lastName].join(" ");
-    data.subTitle = "@" + user?.username;
+    title = [user?.firstName, user?.lastName].join(" ");
+    subTitle = "@" + user?.username;
   }
   if (chat) {
-    data.title = chat?.title || [chat?.user?.firstName, chat?.user?.lastName].join(" ");
-    data.subTitle = lastMessage?.text || "";
+    title = chat?.title || [chat?.user?.firstName, chat?.user?.lastName].join(" ");
+    subTitle = lastMessage?.text || "";
   }
 
 
   function handleChatClick() {
     if (chat) {
-      return setCurrentChat(chat);
+      return watchChat(chat);
     }
     if (!user?.id || !currentUser?.uid) {
       return;
     }
-    setCurrentChat({
-      id: "",
+    createChat({
       type: "PRIVATE",
-      createdAt: Timestamp.fromDate(new Date()),
-      members: [currentUser.uid, user.id],
-      user: user,
-    });
-    isNotExist.current = true;
+      user: user
+    })
   }
 
 
@@ -59,29 +54,29 @@ export function ChatsListItem({ active, user, chat }: ChatsListItemProps) {
       onClick={handleChatClick}
     >
 
-      <Avatar title={data.title}/>
+      <Avatar title={title}/>
 
       <div className={classes.content}>
         <div className={classes.info}>
           <h4 className={classes.title}>
-            {data.title}
+            {title}
           </h4>
           <p className={classes.lastMessage}>
-            {data.subTitle || <Skeleton width="100%"/>}
+            {subTitle || <Skeleton width="100%"/>}
           </p>
         </div>
 
-        {!!(unreadCount || lastMessage) && (
+        {!!(count || lastMessage) && (
           <div className={classes.messageDateAndCount}>
             {!!lastMessage && (
               <span className={classes.lastMessageDate}>
                 {formatDate(lastMessage.date)}
               </span>
             )}
-            {!!unreadCount && (
+            {!!count && (
               <div className={classes.messageCount}>
                   <span className={classes.messageCountText}>
-                    {unreadCount}
+                    {count}
                   </span>
               </div>
             )}
@@ -91,4 +86,4 @@ export function ChatsListItem({ active, user, chat }: ChatsListItemProps) {
 
     </li>
   );
-}
+})

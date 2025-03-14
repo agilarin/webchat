@@ -1,32 +1,17 @@
-import {ChangeEvent, useEffect, useState} from "react";
+import {ChangeEvent, useState} from "react";
 import clsx from "clsx";
-import {UserType} from "@/types";
-import searchService from "@/services/searchService.ts";
-import {ChatsList} from "@/pages/Home/components/ChatsList";
+import {SearchContent} from "./components/SearchContent";
 import classes from "./Search.module.scss";
-import SearchIcon from "@/assets/icons/search.svg?react"
+import SearchIcon from "@/assets/icons/search.svg?react";
+import CloseIcon from "@/assets/icons/close.svg?react";
 
 
 export function Search() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResult, setSearchResult] = useState<UserType[]>();
-  const [isSuccess, setIsSuccess] = useState(false);
 
-
-  useEffect(() => {
-    if (!searchQuery) {
-      setIsSuccess(true)
-      return setSearchResult(undefined);
-    }
-
-    const timeoutId = setTimeout(async () => {
-      const response = await searchService.searchUsers({query: searchQuery})
-      setSearchResult(response);
-      setIsSuccess(true)
-    }, 700);
-    return () => clearTimeout(timeoutId);
-  }, [searchQuery]);
-
+  const handleClose = () => {
+    setSearchQuery("");
+  }
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value)
@@ -37,7 +22,7 @@ export function Search() {
     <div className={clsx(classes.root, searchQuery && classes.active)}>
       <div className={classes.searchContainer}>
         <div className={classes.search}>
-          <SearchIcon className={classes.icon}/>
+          <SearchIcon className={classes.iconSearch}/>
           <input
             className={classes.input}
             type="text"
@@ -45,13 +30,20 @@ export function Search() {
             onChange={handleSearchChange}
             value={searchQuery}
           />
+          {!!searchQuery && (
+            <button
+              className={classes.btnClose}
+              onClick={handleClose}
+            >
+              <CloseIcon className={classes.iconClose}/>
+            </button>
+          )}
         </div>
       </div>
 
-
-      <div className={classes.content}>
-        <ChatsList users={searchResult} isSuccess={isSuccess}/>
-      </div>
+      {searchQuery && (
+        <SearchContent searchQuery={searchQuery}/>
+      )}
     </div>
   );
 }

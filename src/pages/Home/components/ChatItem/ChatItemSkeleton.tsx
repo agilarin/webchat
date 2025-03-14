@@ -1,10 +1,10 @@
 import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css';
-import classes from "./ChatsListItem.module.scss";
+import classes from "./ChatItem.module.scss";
 
 
 
-export function ChatsListItemSkeleton() {
+export function ChatItemSkeleton() {
 
   return (
     <li className={classes.root}>

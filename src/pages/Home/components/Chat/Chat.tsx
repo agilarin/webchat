@@ -6,11 +6,11 @@ import classes from "./Chat.module.scss";
 
 
 export function Chat() {
-  const {currentChat} = useChatContext();
+  const {activeChat} = useChatContext();
 
   return (
     <div className={classes.root}>
-      {!!currentChat && (
+      {!!activeChat && (
         <div className={classes.chat}>
           <ChatHeader/>
           <MessageList/>

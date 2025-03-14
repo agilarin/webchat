@@ -15,13 +15,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const auth = getAuth();
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [userInfo, setUserInfo] = useState<UserType | null>(null);
-  const [isSuccess, setIsSuccess] = useState(true);
+  const [isSuccess, setIsSuccess] = useState(false);
 
 
   useLayoutEffect(() => {
-    const unsub = onAuthStateChanged(auth, (currentUser) => {
-      setCurrentUser(currentUser);
-      setIsSuccess(false);
+    const unsub = onAuthStateChanged(auth, (user) => {
+      if  (user) {
+        setCurrentUser(user);
+      } else {
+        setCurrentUser(null);
+        setUserInfo(null);
+      }
+      setIsSuccess(true)
     });
     return () => unsub()
   }, [])
@@ -34,6 +39,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const userId = currentUser.uid;
     const unsubConnect = updateUserOnConnection({userId})
     const unsubUser = userService.subscribeToUser(userId, setUserInfo);
+
     return () => {
       unsubConnect()
       unsubUser()

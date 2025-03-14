@@ -7,7 +7,9 @@ import svgr from "vite-plugin-svgr"
 // https://vite.dev/config/
 export default defineConfig(({ command }) => ({
   base: command === 'build' ? "webchat" : "/",
-  plugins: [react(), svgr()],
+  plugins: [react({
+    jsxImportSource: '@welldone-software/why-did-you-render'
+  }), svgr()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),

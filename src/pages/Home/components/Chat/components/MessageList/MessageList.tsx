@@ -1,42 +1,30 @@
-import {useEffect, useRef} from "react";
-import {useChatContext} from "@/hooks/useChatContext.ts";
-import {useInView} from "@/hooks/useInView.ts";
+import {useRef, memo} from "react";
+import {useChatStateContext} from "@/hooks/useChatStateContext.ts";
+import {useChatActionContext} from "@/hooks/useChatActionContext.ts";
 import {combineRefs} from "@/utils/combineRefs.ts";
 import {LoadingProgress} from "@/components/UI/LoadingProgress";
 import {MessageItem} from "@/pages/Home/components/Chat/components/MessageItem";
+import {ButtonJumpToEnd} from "@/pages/Home/components/Chat/components/ButtonJumpToEnd";
+import {LoadPrevTrigger} from "@/pages/Home/components/Chat/components/LoadPrevTrigger";
 import {useScrollSaveOnChange} from "./useScrollSaveOnChange.ts";
 import classes from "./MessageList.module.scss";
-import ArrowDownIcon from "@/assets/icons/arrow-down.svg?react";
 
 
 
-export function MessageList() {
-  const {
-    messages,
-    messagesIsSuccess,
-    loadPrev,
-    unreadCount,
-    jumpToLatestMessage
-  } = useChatContext();
+export const MessageList = memo(function MessageList() {
+  const {messages, messagesIsSuccess} = useChatStateContext();
+  const {loadPrev} = useChatActionContext();
   const listRef = useRef<HTMLDivElement | null>(null)
-  const loadPrevTrigger = useInView({ rootMargin: "1000px" });
-  const jumpToEndTrigger = useInView();
+  const jumpToEndTriggerRef = useRef<HTMLDivElement | null>(null)
   const {scrollRef, addScrollSaveEvent} = useScrollSaveOnChange();
 
 
-  useEffect(() => {
-    if (loadPrevTrigger.isVisible && messagesIsSuccess && messages.length) {
+  async function handleLoadPrevVisible(isVisible: boolean) {
+    if (isVisible && messagesIsSuccess && messages.length) {
       const removeScrollSaveEvent = addScrollSaveEvent();
-      loadPrev().finally(() => removeScrollSaveEvent())
+      await loadPrev()
+      removeScrollSaveEvent()
     }
-  }, [loadPrevTrigger.isVisible, messagesIsSuccess, messages])
-
-
-  function handleJumpToEnd() {
-    if (unreadCount > 0) {
-      jumpToLatestMessage();
-    }
-    listRef.current?.scrollTo(0, 0);
   }
 
 
@@ -56,12 +44,12 @@ export function MessageList() {
   return (
     <div className={classes.root}>
       <div
-        ref={combineRefs(loadPrevTrigger.rootRef, listRef, scrollRef, jumpToEndTrigger.rootRef)}
+        ref={combineRefs(listRef, scrollRef)}
         className={classes.list}
       >
         <div
-          ref={jumpToEndTrigger.ref}
-          className={classes.btnJumpToEndTrigger}
+          ref={jumpToEndTriggerRef}
+          className={classes.jumpToEndTrigger}
         />
         <div>
           {messages.map((message) => (
@@ -71,25 +59,15 @@ export function MessageList() {
             />
           ))}
         </div>
-        <div
-          ref={loadPrevTrigger.ref}
-          className={classes.loadPrevTrigger}
+        <LoadPrevTrigger
+          rootElement={listRef.current}
+          onVisible={handleLoadPrevVisible}
         />
       </div>
-
-      {(!jumpToEndTrigger.isVisible || unreadCount > 0) && (
-        <button
-          className={classes.btnJumpToEnd}
-          onClick={handleJumpToEnd}
-        >
-          <ArrowDownIcon className={classes.btnJumpToEndIcon}/>
-          {unreadCount > 0 && (
-            <span className={classes.btnJumpToEndNotify}>
-              {unreadCount}
-            </span>
-          )}
-        </button>
-      )}
+      <ButtonJumpToEnd
+        rootElement={listRef.current}
+        triggerElement={jumpToEndTriggerRef.current}
+      />
     </div>
   );
-}
+});

@@ -10,7 +10,7 @@ interface AuthContextType {
 }
 
 export const AuthContext = createContext<AuthContextType>({
-  isSuccess: true,
+  isSuccess: false,
   currentUser: null,
   userInfo: null
 })

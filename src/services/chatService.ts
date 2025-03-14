@@ -13,7 +13,7 @@ import {
   onSnapshot,
   orderBy,
   query,
-  serverTimestamp,
+  serverTimestamp, setDoc,
   startAt,
   Timestamp,
   updateDoc,
@@ -28,7 +28,7 @@ import {generateUniqueId} from "@/utils/generateUniqueId.ts";
 
 
 interface CreateChat {
-  data: Omit<ChatType, "id" | "createdAt" | "updatedAt">,
+  data: Omit<ChatType, "createdAt" | "updatedAt">,
   userId: string,
 }
 
@@ -112,12 +112,12 @@ class ChatService {
 
   async createChat({data, userId}: CreateChat) {
     try {
-      const chatRef = await addDoc(this.chatsRef, {
+      const chatId = data.id;
+      await setDoc(doc(this.chatsRef, chatId), {
         type: "PRIVATE",
         members: data.members,
         createdAt: serverTimestamp(),
       });
-      const chatId = chatRef.id;
 
       data.members.forEach((memberId) => {
         userChatsService.addChatToUserChats({chatId, userId: memberId});
@@ -285,14 +285,14 @@ class ChatService {
       if (typeof usersId === "string") {
         usersId = [usersId]
       }
-      const counts: {[k: string]: number} = {};
 
+      const counts: {[k: string]: number} = {};
       usersId.forEach((userId) => {
-        counts[`counts.${userId}`] = 0
+        counts[userId] = 0
       })
 
       await addDoc(unreadCountRef, {
-        ...counts,
+        counts: counts,
         createdAt: serverTimestamp(),
       })
     } catch (error) {
@@ -322,7 +322,6 @@ class ChatService {
         [`counts.${userId}`]: newUnreadCount,
         updatedAt: serverTimestamp(),
       })
-
     } catch (error) {
       console.error(error);
       throw error;
@@ -340,7 +339,7 @@ class ChatService {
 
     return onSnapshot(unreadCountQuery,async (snap) => {
       const unreadCount = snap.docs?.[0]?.data().counts[userId] as number;
-      callback(unreadCount);
+      callback(unreadCount || 0);
     })
   }
 
@@ -378,7 +377,7 @@ class ChatService {
     const readMessagesRef = doc(this.chatsRef, chatId, "readmessages", userId);
 
     try {
-      await updateDoc(readMessagesRef, {
+      await setDoc(readMessagesRef, {
         messageId: messageId || null,
         createdAt: serverTimestamp(),
       })

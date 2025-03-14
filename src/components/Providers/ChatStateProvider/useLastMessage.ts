@@ -5,17 +5,22 @@ import {useAuthContext} from "@/hooks/useAuthContext.ts";
 
 
 
-export function useLastMessage(chatId?: string) {
+export function useLastMessage(chatId?: string, isNotExist?: boolean) {
   const {currentUser} = useAuthContext();
   const [isSuccess, setIsSuccess] = useState(false);
   const [lastMessage, setLastMessage] = useState<MessageType | null>(null);
 
-
-  useEffect(() => {
+  function reset() {
     setLastMessage(null);
     setIsSuccess(false);
-    if (!chatId || !currentUser?.uid) {
+  }
+
+  useEffect(() => {
+    if (isNotExist) {
       return setIsSuccess(true);
+    }
+    if (!chatId || !currentUser) {
+      return;
     }
     const unsub = chatService.subscribeToLastMessage(chatId, (message) => {
       setLastMessage(message)
@@ -23,12 +28,12 @@ export function useLastMessage(chatId?: string) {
     })
 
     return () => unsub()
-  }, [chatId])
+  }, [chatId, isNotExist])
 
 
   return {
     isSuccess,
-    lastMessage,
-    setLastMessage
+    data: lastMessage,
+    reset
   };
 }

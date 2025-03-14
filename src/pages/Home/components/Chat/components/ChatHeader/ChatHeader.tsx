@@ -8,16 +8,16 @@ import classes from "./ChatHeader.module.scss";
 
 
 export function ChatHeader() {
-  const {currentChat} = useChatContext();
+  const {activeChat} = useChatContext();
   const {toggle} = useChatInfoContext()
-  const user = currentChat?.user;
+  const user = activeChat?.user;
   const userLastOnline = user?.lastOnline && formatLastOnlineDate(user?.lastOnline);
-  const title =  currentChat?.title || [currentChat?.user?.firstName, currentChat?.user?.lastName].join(" ");
+  const title =  activeChat?.title || [activeChat?.user?.firstName, activeChat?.user?.lastName].join(" ");
   let subTitle;
-  if (currentChat?.type === "PRIVATE") {
+  if (activeChat?.type === "PRIVATE") {
     subTitle = user?.isOnline && "в сети" || userLastOnline
   } else {
-    subTitle = currentChat?.members.length + " участников"
+    subTitle = activeChat?.members.length + " участников"
   }
 
 

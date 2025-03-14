@@ -3,7 +3,7 @@ import clsx from "clsx";
 import {MessageType} from "@/types";
 import {useInView} from "@/hooks/useInView.ts";
 import {useAuthContext} from "@/hooks/useAuthContext.ts";
-import {useChatContext} from "@/hooks/useChatContext.ts";
+import {useChatActionContext} from "@/hooks/useChatActionContext.ts";
 import {formatMessageDate} from "@/utils/formatDate.ts";
 import {combineRefs} from "@/utils/combineRefs.ts";
 import classes from "./MessageItem.module.scss";
@@ -15,10 +15,10 @@ interface MessagesListItemProps {
 
 export function MessageItem({message}: MessagesListItemProps) {
   const {currentUser} = useAuthContext();
-  const {markRead} = useChatContext();
-  const wasVisible = useRef(false);
+  const {markRead} = useChatActionContext();
   const elementRef = useRef<HTMLDivElement>(null);
-  const {ref, isVisible} = useInView();
+  const wasVisible = useRef(false);
+  const {ref, isVisible} = useInView({threshold: 0.75});
 
 
   useEffect(() => {

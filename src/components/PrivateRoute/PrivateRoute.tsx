@@ -11,14 +11,12 @@ export function PrivateRoute({children}: PrivateRouteProps) {
   const {currentUser, isSuccess} = useAuthContext();
 
 
-  if (isSuccess) {
+  if (!isSuccess) {
     return (<></>);
   }
 
   if (currentUser) {
-    return (
-      children
-    );
+    return (children);
   }
 
   return (
