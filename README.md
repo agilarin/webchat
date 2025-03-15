@@ -4,7 +4,7 @@
     <img alt="NPM Badge" src="https://img.shields.io/badge/v10.2.3-green?label=npm&color=blue">
 </p>
 
-Веб приложение чата для общения между пользователями.
+WebChat - это веб приложение для общения между пользователями. Для использования приложения в нем нужно зарегистрироваться.
 
 
 ## Содержание
@@ -27,12 +27,21 @@ Frontend:
 
 
 
+## Функционал
+
+**Система аутентификации:** аутентификации в приложении сделана с помощью [Firebase Authentication](https://firebase.google.com/docs/auth).
+
+**Редактирование аккаунта:** возможность изменить информацию пользователя такую как имя, электронная почта,
+имя пользователя и пароль.
+
+**Поиск:** с помощью него можно найти других пользователей, чтобы начать общение.
+
+**Чат:** с помощью него пользователи могут общаться друг с другом. Доступны только текстовые сообщения. Чат между пользователями создается при отправке первого сообщения.
+
+
+
 ## Быстрый старт
 
-На вашем компьютере должно быть установлено следующее:
-- [Git](https://git-scm.com/)
-- [Node.js](https://nodejs.org/en)
-- [npm](https://www.npmjs.com/)
 
 #### Клонирование репозитория
 ```
@@ -40,22 +49,22 @@ git clone https://github.com/vlagris/webchat.git
 cd webchat
 ```
 
-#### Установка
-Установите зависимости проекта с помощью npm:
+#### npm
+Установить зависимости проекта:
 ```
 npm install
 ```
-Установите зависимости проекта с помощью pnpm:
-```
-pnpm install
-```
-
-#### Запуск проекта
-Запустить проект спомощью npm
+Запустить проект:
 ```
 npm run dev
 ```
-Запустить проект спомощью pnpm
+
+#### pnpm
+Установить зависимости проекта:
+```
+pnpm install
+```
+Запустить проект:
 ```
 pnpm run dev
 ```
@@ -71,16 +80,14 @@ pnpm run dev
 
 ## Скриншоты:
 <div align="center"> 
-  <img alt="Home page" src="https://github.com/vlagris/webchat/blob/main/screenshots/home-page.jpg">
-  <p><i>Главная страница</i></p>
-  <img alt="List collections page" src="https://github.com/vlagris/webchat/blob/main/screenshots/list-collections.jpg">
-  <p><i>Страница списков</i></p>
-  <img alt="List movies page" src="https://github.com/vlagris/webchat/blob/main/screenshots/list-movies.jpg">
-  <p><i>Страница списка фильмов</i></p>
-  <img alt="Movie page" src="https://github.com/vlagris/webchat/blob/main/screenshots/movie-page.jpg">
-  <p><i>Страница фильма</i></p>
-  <img alt="Search" src="https://github.com/vlagris/webchat/blob/main/screenshots/search.jpg">
-  <p><i>Поиск фильмов</i></p>
+  <img alt="Chat" src="https://github.com/vlagris/webchat/blob/main/screenshots/chat-open.png">
+  <p><i>Чат</i></p>
+  <img alt="Edit user account" src="https://github.com/vlagris/webchat/blob/main/screenshots/edit-account.png">
+  <p><i>Редактирование аккаунта</i></p>
+  <img alt="Search" src="https://github.com/vlagris/webchat/blob/main/screenshots/search.png">
+  <p><i>Поиск пользователей</i></p>
+  <img alt="Login" src="https://github.com/vlagris/webchat/blob/main/screenshots/login-page.png">
+  <p><i>Страница авторизации</i></p>
 </div>
 
 
