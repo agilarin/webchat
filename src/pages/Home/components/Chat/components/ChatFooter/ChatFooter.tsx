@@ -12,6 +12,7 @@ export function ChatFooter() {
   const {sendMessage} = useChatActionContext();
   const [messageValue, setMessageValue] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
 
   useEffect(() => {
@@ -19,17 +20,24 @@ export function ChatFooter() {
   }, [activeChat?.id]);
 
 
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [messageValue]);
+
+
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    sendMessage(messageValue);
+    const formatedMessageValue = messageValue.replace(/(\r\n|\r|\n)/g, "<br/>");
+    sendMessage(formatedMessageValue);
     setMessageValue("");
   }
 
 
   function handleChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
     setMessageValue(event.target.value);
-    event.currentTarget.style.height = 'auto';
-    event.currentTarget.style.height = `${event.currentTarget.scrollHeight}px`;
   }
 
 
@@ -42,6 +50,7 @@ export function ChatFooter() {
     }
   }
 
+
   return (
     <form
       ref={formRef}
@@ -51,6 +60,7 @@ export function ChatFooter() {
 
       <label className={classes.inputLabel}>
         <textarea
+          ref={textareaRef}
           className={classes.input}
           placeholder="Написать сообщение..."
           value={messageValue}
