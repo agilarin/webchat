@@ -4,7 +4,6 @@ import {AuthProvider} from "@/components/Providers/AuthProvider";
 import {ChatProvider} from "@/components/Providers/ChatProvider";
 import {ChatStateProvider} from "@/components/Providers/ChatStateProvider";
 import {ChatActionProvider} from "@/components/Providers/ChatActionProvider";
-import {ChatInfoProvider} from "@/components/Providers/ChatInfoProvider";
 import {UserChatsProvider} from "@/components/Providers/UserChatsProvider";
 
 
@@ -16,9 +15,7 @@ function App() {
         <ChatProvider>
         <ChatStateProvider>
           <ChatActionProvider>
-            <ChatInfoProvider>
-              <RouterProvider router={router}/>
-            </ChatInfoProvider>
+            <RouterProvider router={router}/>
           </ChatActionProvider>
         </ChatStateProvider>
         </ChatProvider>
