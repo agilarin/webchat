@@ -24,7 +24,6 @@ export function EditName({open, onClose}: EditNameProps) {
     }
   });
 
-
   async function onSubmit({firstName, lastName}: FormValues) {
     if (!currentUser?.uid) {
       return
@@ -33,7 +32,6 @@ export function EditName({open, onClose}: EditNameProps) {
     onClose()
   }
 
-
   return (
     <EditForm
       onSubmit={handleSubmit(onSubmit)}
@@ -41,7 +39,6 @@ export function EditName({open, onClose}: EditNameProps) {
       open={open}
       title="Изменить имя"
     >
-
       <AuthInput
         type="text"
         title="Имя"
@@ -63,7 +60,6 @@ export function EditName({open, onClose}: EditNameProps) {
         })}
         error={!!errors.lastName}
       />
-
     </EditForm>
   );
 }

@@ -1,7 +1,6 @@
 import {Button} from "@/components/UI/Button";
-import classes from "./Modal.module.scss";
 import CloseIcon from "@/assets/icons/close.svg?react";
-
+import classes from "./ModalHeader.module.scss";
 
 interface ModalHeaderProps {
   onClose?: () => void,

@@ -14,7 +14,11 @@ interface EditFormProps {
 
 export function EditForm({open, onClose, onSubmit, title, children}: EditFormProps) {
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal
+      open={open}
+      onClose={onClose}
+      mobileFull={false}
+    >
       <ModalHeader title={title} />
 
       <form className={classes.editFormRoot} onSubmit={onSubmit}>
