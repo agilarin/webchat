@@ -1,5 +1,6 @@
 import {Button} from "@/components/UI/Button";
-import CloseIcon from "@/assets/icons/close.svg?react";
+import { X as XIcon } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import classes from "./ModalHeader.module.scss";
 
 interface ModalHeaderProps {
@@ -10,17 +11,31 @@ interface ModalHeaderProps {
 export function ModalHeader({onClose, title}: ModalHeaderProps) {
   return (
     <div className={classes.header}>
-      <h3 className={classes.title}>
-        {title}
-      </h3>
+      <div className={classes.left}>
+        {onClose && (
+          <Button
+            icon={true}
+            shape="round"
+            onClick={onClose}
+            className={classes.buttonBack}
+          >
+            <ArrowLeft/>
+          </Button>
+        )}
+
+        <h3 className={classes.title}>
+          {title}
+        </h3>
+      </div>
 
       {onClose && (
         <Button
           icon={true}
           shape="round"
           onClick={onClose}
+          className={classes.buttonClose}
         >
-          <CloseIcon className={classes.closeIcon}/>
+          <XIcon/>
         </Button>
       )}
     </div>

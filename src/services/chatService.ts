@@ -13,6 +13,7 @@ import {
   onSnapshot,
   orderBy,
   query,
+  QueryConstraint,
   serverTimestamp, setDoc,
   startAt,
   Timestamp,
@@ -209,13 +210,16 @@ class ChatService {
     callback: (messages: MessageType[]) => void
   ) {
     const messagesRef = collection(this.chatsRef, chatId, "messages");
-    let MessagesQuery = query(messagesRef, orderBy("createdAt", "asc"), limitToLast(1));
+    const constraints:  QueryConstraint[] = [orderBy("createdAt", "asc")]
 
     if (messagesSnapshot) {
-      MessagesQuery = query(messagesRef, orderBy("createdAt", "asc"), startAt(messagesSnapshot));
+      constraints.push(startAt(messagesSnapshot))
+    } else {
+      constraints.push(limitToLast(1))
     }
 
-    return onSnapshot(MessagesQuery, (querySnap) => {
+    const messagesQuery = query(messagesRef, ...constraints);
+    return onSnapshot(messagesQuery, (querySnap) => {
       let messages: MessageType[] = [];
       querySnap.docs.forEach((docSnap) => {
         messages = [

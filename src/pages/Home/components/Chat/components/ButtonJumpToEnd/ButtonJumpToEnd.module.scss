@@ -19,17 +19,10 @@
   min-height: 44px;
   width: 44px;
   height: 44px;
+  color: var(--gray-600);
   background: var(--white);
   border-radius: 50%;
   box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2);
-
-}
-
-.icon {
-  margin-top: 2px;
-  width: 28px;
-  height: 28px;
-  color: var(--gray-600);
 }
 
 .notify {

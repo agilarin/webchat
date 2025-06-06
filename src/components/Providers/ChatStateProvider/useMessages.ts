@@ -4,8 +4,6 @@ import {MessageType} from "@/types";
 import chatService from "@/services/chatService.ts";
 import { useAuthContext } from "@/hooks/useAuthContext.ts";
 
-
-
 function sortMessagesOrderByAsc(messages: MessageType[]) {
   return messages.sort((messageA, messageB) => {
     return messageA.date.toDate().getTime() - messageB.date.toDate().getTime()
@@ -25,7 +23,6 @@ function mergeMessages(oldMessages: MessageType[], newMessages: MessageType[]) {
   return sortMessagesOrderByAsc(result)
 }
 
-
 type UseMessagesReturn = {
   messages: MessageType[],
   isSuccess: boolean,
@@ -44,7 +41,6 @@ export function useMessages(chatId?: string, isNotExist?: boolean): UseMessagesR
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [isSuccess, setIsSuccess] = useState(false);
   const [hasMorePrev, setHasMorePrev] = useState(false);
-
 
   function reset() {
     setLastReadMessageIsSuccess(false)
@@ -71,7 +67,6 @@ export function useMessages(chatId?: string, isNotExist?: boolean): UseMessagesR
       })
   }, [chatId, isNotExist])
 
-
   useEffect(() => {
     if (isNotExist) {
       return setIsSuccess(true);
@@ -88,28 +83,9 @@ export function useMessages(chatId?: string, isNotExist?: boolean): UseMessagesR
     return () => unsub()
   }, [chatId, isNotExist, lastReadMessageSnapshot, lastReadMessageIsSuccess]);
 
-
-  // const loadPrev = useCallback(async () => {
-  //   if (!chatId || !messages.length || !hasPrevRef.current) {
-  //     return false;
-  //   }
-  //   const response = await chatService.getPrevMessages({
-  //     chatId,
-  //     messageId: messages[0].id,
-  //   });
-  //   if (response) {
-  //     setMessages(prev => mergeMessages(prev, response))
-  //   }
-  //   hasPrevRef.current = !!response;
-  //   return !!response;
-  // }, [chatId, messages]);
-
-
   const addMessages = useCallback((message: MessageType[]) => {
     setMessages(prev => mergeMessages(prev, message))
   }, [setMessages])
-
-
 
   return {
     messages,

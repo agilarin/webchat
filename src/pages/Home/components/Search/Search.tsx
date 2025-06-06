@@ -1,9 +1,9 @@
 import {ChangeEvent, useState} from "react";
 import clsx from "clsx";
 import {SearchContent} from "./components/SearchContent";
+import { Search as SearchIcon } from 'lucide-react';
+import { X as XIcon } from 'lucide-react';
 import classes from "./Search.module.scss";
-import SearchIcon from "@/assets/icons/search.svg?react";
-import CloseIcon from "@/assets/icons/close.svg?react";
 
 
 export function Search() {
@@ -22,7 +22,10 @@ export function Search() {
     <div className={clsx(classes.root, searchQuery && classes.active)}>
       <div className={classes.searchContainer}>
         <div className={classes.search}>
-          <SearchIcon className={classes.iconSearch}/>
+          <SearchIcon
+            size={20}
+            className={classes.iconSearch}
+          />
           <input
             className={classes.input}
             type="text"
@@ -32,10 +35,10 @@ export function Search() {
           />
           {!!searchQuery && (
             <button
-              className={classes.btnClose}
+              className={classes.buttonClose}
               onClick={handleClose}
             >
-              <CloseIcon className={classes.iconClose}/>
+              <XIcon size={20} />
             </button>
           )}
         </div>

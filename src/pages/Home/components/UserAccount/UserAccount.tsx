@@ -7,11 +7,10 @@ import {Button} from "@/components/UI/Button";
 import {Menu, MenuItem} from "@/components/UI/Menu";
 import {Avatar} from "@/pages/Home/components/Avatar";
 import {Account} from "@/components/Account";
+import { EllipsisVertical } from 'lucide-react';
+import { LogOut } from 'lucide-react';
+import { CircleUser } from 'lucide-react';
 import classes from "./UserAccount.module.scss";
-import LogoutIcon from "@/assets/icons/logout.svg?react";
-import EllipsisIcon from "@/assets/icons/ellipsis.svg?react";
-import UserIcon from "@/assets/icons/user-avatar.svg?react";
-
 
 
 export function UserAccount() {
@@ -43,7 +42,7 @@ export function UserAccount() {
           shape="round"
           onClick={() => menuToggle()}
         >
-          <EllipsisIcon/>
+          <EllipsisVertical size={26} strokeWidth={2.5} />
         </Button>
 
         <Menu
@@ -52,7 +51,10 @@ export function UserAccount() {
           toggleEl={buttonRef.current}
         >
           <MenuItem className={classes.item} onClick={() => profileToggle(true)}>
-            <UserIcon className={classes.itemIcon}/>
+            <CircleUser
+              size={20}
+              className={classes.itemIcon}
+            />
             Мой аккаунт
           </MenuItem>
 
@@ -60,7 +62,10 @@ export function UserAccount() {
             className={clsx(classes.item, classes.itemRed)}
             onClick={() => authService.signOut()}
           >
-            <LogoutIcon className={classes.itemIcon}/>
+            <LogOut
+              size={20}
+              className={classes.itemIcon}
+            />
             Выйти
           </MenuItem>
         </Menu>

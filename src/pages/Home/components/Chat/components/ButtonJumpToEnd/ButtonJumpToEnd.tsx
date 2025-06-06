@@ -3,9 +3,8 @@ import {useChatContext} from "@/hooks/useChatContext.ts";
 import {useChatStateContext} from "@/hooks/useChatStateContext.ts";
 import {useChatActionContext} from "@/hooks/useChatActionContext.ts";
 import {useInView} from "@/hooks/useInView.ts";
+import { ChevronDown } from 'lucide-react';
 import classes from "./ButtonJumpToEnd.module.scss";
-import ArrowDownIcon from "@/assets/icons/arrow-down.svg?react";
-
 
 interface ButtonJumpToEndProps {
   rootElement: Element | null
@@ -48,7 +47,10 @@ export function ButtonJumpToEnd({rootElement, triggerElement}: ButtonJumpToEndPr
       className={classes.btn}
       onClick={handleJumpToEnd}
     >
-      <ArrowDownIcon className={classes.icon}/>
+      <ChevronDown
+        size={36}
+        strokeWidth={1.5}
+      />
       {unreadCount > 0 && (
         <span className={classes.notify}>
           {unreadCount}

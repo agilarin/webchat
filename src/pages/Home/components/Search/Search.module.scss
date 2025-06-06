@@ -27,15 +27,12 @@
   position: absolute;
   top: calc(50% - 9px);
   left: 11px;
-  width: 18px;
-  height: 18px;
-  fill: var(--gray-300);
+  color: var(--gray-400);
 }
 
 .input {
   width: 100%;
   padding: 10px 0 10px 40px;
-  //padding: 10px 14px 10px 40px;
   font-size: 16px;
   line-height: 20px;
   border-radius: 12px;
@@ -46,24 +43,18 @@
   }
 }
 
-.btnClose {
+.buttonClose {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   height: 40px;
   width: 40px;
+  color: var(--gray-400);
 
   &:hover {
     .iconClose {
       opacity: .45;
     }
   }
-}
-
-.iconClose {
-  width: 20px;
-  height: 20px;
-  color: var(--black);
-  opacity: .3;
 }

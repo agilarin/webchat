@@ -4,11 +4,12 @@ import {useChatContext} from "@/hooks/useChatContext";
 import {formatLastOnlineDate} from "@/utils/formatDate.ts";
 import {Button} from "@/components/UI/Button";
 import {ChatInfo} from "@/pages/Home/components/ChatInfo";
+import { ArrowLeft } from 'lucide-react';
 import classes from "./ChatHeader.module.scss";
 
 
 export function ChatHeader() {
-  const {activeChat} = useChatContext();
+  const {activeChat, closeChat} = useChatContext();
   const [open, toggle] = useToggle(false)
   const user = activeChat?.user;
   const userLastOnline = user?.lastOnline && formatLastOnlineDate(user?.lastOnline);
@@ -22,6 +23,16 @@ export function ChatHeader() {
 
   return (
     <div className={classes.headerRoot}>
+
+      <Button
+        icon
+        shape="round"
+        className={classes.buttonBack}
+        onClick={closeChat}
+      >
+        <ArrowLeft size={28} />
+      </Button>
+
       <Button
         className={classes.content}
         onClick={() => toggle()}

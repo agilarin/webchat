@@ -3,6 +3,16 @@
   height: 100vh;
 }
 
+.resizable {
+  width: 100%;
+
+  @media (min-width: 768px) {
+    min-width: 280px;
+    max-width: 50%;
+    width: 25%;
+  }
+}
+
 .sidebar {
   min-width: 320px;
   width: 25%;
