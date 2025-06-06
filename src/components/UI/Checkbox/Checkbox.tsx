@@ -1,6 +1,6 @@
 import {ComponentPropsWithoutRef} from "react";
+import { Check } from 'lucide-react';
 import classes from "./Checkbox.module.scss";
-import CheckmarkIcon from "@/assets/icons/checkmark.svg?react";
 
 
 type InputComponentProps = Omit<ComponentPropsWithoutRef<"input">, "type" | "children">
@@ -19,7 +19,11 @@ export function Checkbox(props: CheckboxProps) {
       <div className={classes.box}>
         <div className={classes.boxBorder}/>
         <div className={classes.boxBackground}/>
-        <CheckmarkIcon className={classes.boxIcon}/>
+        <Check
+          size={15}
+          strokeWidth={3}
+          className={classes.boxIcon}
+        />
       </div>
     </div>
   );
