@@ -25,11 +25,11 @@ export function ChatList() {
     <ul className={classes.chatListRoot}>
       {items.map(({chat, lastMessage, unreadCount}) => (
         <ChatItem
-        key={chat.id}
-        chat={chat}
-        lastMessage={lastMessage}
-        count={unreadCount}
-        active={chat.id === activeChat?.id}
+          key={chat.id}
+          chat={chat}
+          lastMessage={lastMessage}
+          count={unreadCount}
+          active={chat.id === activeChat?.id}
         />
       ))}
     </ul>

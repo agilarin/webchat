@@ -17,7 +17,8 @@ interface ChatsListItemProps {
   count?: number,
 }
 
-export const ChatItem = memo(function ChatItem({ active, user, chat, lastMessage, count }: ChatsListItemProps) {
+export const ChatItem = memo(
+function ChatItem({ active, user, chat, lastMessage, count }: ChatsListItemProps) {
   const {createChat, watchChat} = useChatContext();
   const {currentUser} = useAuthContext();
   let title = "";
@@ -30,7 +31,7 @@ export const ChatItem = memo(function ChatItem({ active, user, chat, lastMessage
   }
   if (chat) {
     title = chat?.title || [chat?.user?.firstName, chat?.user?.lastName].join(" ");
-    subTitle = lastMessage?.text || "";
+    subTitle = lastMessage?.text.replace(/<br\/>/, " ") || "";
   }
 
 

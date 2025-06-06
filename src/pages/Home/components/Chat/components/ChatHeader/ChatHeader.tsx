@@ -1,10 +1,11 @@
+import { ArrowLeft } from 'lucide-react';
 import {useToggle} from "@/hooks/useToggle.ts";
 import {Avatar} from "@/pages/Home/components/Avatar";
 import {useChatContext} from "@/hooks/useChatContext";
 import {formatLastOnlineDate} from "@/utils/formatDate.ts";
 import {Button} from "@/components/UI/Button";
 import {ChatInfo} from "@/pages/Home/components/ChatInfo";
-import { ArrowLeft } from 'lucide-react';
+import {ChatMenu} from "@/pages/Home/components/Chat/components/ChatMenu";
 import classes from "./ChatHeader.module.scss";
 
 
@@ -23,34 +24,38 @@ export function ChatHeader() {
 
   return (
     <div className={classes.headerRoot}>
+      <div className={classes.left}>
+        <Button
+          icon
+          shape="round"
+          className={classes.buttonBack}
+          onClick={closeChat}
+        >
+          <ArrowLeft size={28} />
+        </Button>
 
-      <Button
-        icon
-        shape="round"
-        className={classes.buttonBack}
-        onClick={closeChat}
-      >
-        <ArrowLeft size={28} />
-      </Button>
+        <Button
+          className={classes.content}
+          onClick={() => toggle()}
+        >
+          <Avatar
+            image={user?.avatar}
+            title={title}
+          />
 
-      <Button
-        className={classes.content}
-        onClick={() => toggle()}
-      >
-        <Avatar
-          image={user?.avatar}
-          title={title}
-        />
+          <div className={classes.info}>
+            <h4 className={classes.name}>
+              {title}
+            </h4>
+            <p className={classes.userStatus}>
+              {subTitle}
+            </p>
+          </div>
+        </Button>
+      </div>
 
-        <div className={classes.info}>
-          <h4 className={classes.name}>
-            {title}
-          </h4>
-          <p className={classes.userStatus}>
-            {subTitle}
-          </p>
-        </div>
-      </Button>
+
+      <ChatMenu/>
 
       <ChatInfo
         open={open}

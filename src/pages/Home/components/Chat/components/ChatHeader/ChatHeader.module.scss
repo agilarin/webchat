@@ -1,9 +1,15 @@
 .headerRoot {
   display: flex;
   align-items: center;
-  gap: 4px;
+  justify-content: space-between;
   padding: 6px 24px 6px 8px;
   background: var(--white);
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .buttonBack {

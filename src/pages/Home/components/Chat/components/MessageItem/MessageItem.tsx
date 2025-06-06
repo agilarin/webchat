@@ -45,9 +45,10 @@ export function MessageItem({message}: MessagesListItemProps) {
       <div className={classes.date}>
         {formatMessageDate(message.date)}
       </div>
-      <div className={classes.message}>
-        {message.text}
-      </div>
+      <div
+        className={classes.message}
+        dangerouslySetInnerHTML={{ __html: message.text }}
+      />
     </div>
   );
 }
