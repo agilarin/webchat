@@ -37,6 +37,8 @@ WebChat - это веб приложение для общения между п
 <div align="center"> 
   <img alt="Chat" src="https://github.com/vlagris/webchat/blob/main/screenshots/chat-open.png">
   <p><i>Чат</i></p>
+  <img alt="Chat" src="https://github.com/vlagris/webchat/blob/main/screenshots/chat-info.png">
+  <p><i>Информация о чате</i></p>
   <img alt="Edit user account" src="https://github.com/vlagris/webchat/blob/main/screenshots/edit-account.png">
   <p><i>Редактирование аккаунта</i></p>
   <img alt="Search" src="https://github.com/vlagris/webchat/blob/main/screenshots/search.png">
