@@ -194,9 +194,17 @@ class ChatService {
           updatedAt: serverTimestamp(),
         })
       }
-      this.incrementAllExceptUserUnreadCount({chatId, userId});
-      this.updateLastReadMessage({chatId, userId, messageId: newMessage.id});
+
+      this.incrementAllExceptUserUnreadCount({chatId, userId})
+      this.updateLastReadMessage({chatId, userId, messageId: newMessage.id})
       this.updateUnreadCount({chatId, userId, value: 0})
+
+
+      // await Promise.all([
+      //   this.incrementAllExceptUserUnreadCount({chatId, userId}),
+      //   this.updateLastReadMessage({chatId, userId, messageId: newMessage.id}),
+      //   this.updateUnreadCount({chatId, userId, value: 0})
+      // ]);
     } catch (error) {
       console.error(error);
       throw error;

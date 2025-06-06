@@ -17,7 +17,7 @@ interface UserProfileProps {
   onClose: () => void,
 }
 
-export function Account({ open, onClose }: UserProfileProps): JSX.Element {
+export function Account({ open, onClose }: UserProfileProps) {
   const {userInfo} = useAuthContext();
   const [nameOpen, nameToggle] = useToggle(false);
   const [emailOpen, emailToggle] = useToggle(false);

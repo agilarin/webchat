@@ -11,7 +11,7 @@ interface ISearchUsers {
 
 class searchService {
   usersRef = collection(firestore, `users`);
-  chatsRef = collection(firestore, `chats`);
+  // chatsRef = collection(firestore, `chats`);
 
 
   async searchUsers({query: queryText}: ISearchUsers) {
