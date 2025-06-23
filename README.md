@@ -12,7 +12,7 @@
 
 ## Демонстрация:
 
-Демострация проекта здесь: [WebChat demo](https://vlagris.github.io/webchat/)
+Демострация проекта здесь: [WebChat demo](https://agilarin.github.io/webchat/)
 
 ## Функционал
 
