@@ -7,8 +7,6 @@ import {Button} from "@/components/UI/Button";
 import {AuthCheckbox, AuthForm, AuthInput} from "@/components/AuthForm";
 import classes from "./Signup.module.scss";
 
-
-
 type FormValues = {
   email: string,
   username: string,
@@ -22,7 +20,6 @@ export function Signup() {
   const [isLoading, setIsLoading] = useState(false);
   const [isShowPassword, setIsShowPassword] = useState(false);
   const navigate = useNavigate();
-
 
   async function onSubmit(data: FormValues) {
     setIsLoading(true);
@@ -51,7 +48,6 @@ export function Signup() {
       description="Введите имя пользователя, имя, адрес электроной почты и пароль."
       onSubmit={handleSubmit(onSubmit)}
     >
-
       <AuthInput
         title="Ваш username"
         {...register("username", FORM_REGISTER_OPTIONS.USERNAME)}
@@ -106,7 +102,6 @@ export function Signup() {
       >
         Уже есть аккаунт
       </Button>
-
     </AuthForm>
   );
 }

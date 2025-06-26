@@ -5,7 +5,8 @@ import {UserChatsContext} from "@/context/UserChatsContext.ts";
 import chatService from "@/services/chatService.ts";
 import {useAuthContext} from "@/hooks/useAuthContext.ts";
 import userChatsService from "@/services/userChatsService.ts";
-
+import {useSound} from "@/hooks/useSound.ts";
+import newMessageSoundMedia from "@/assets/media/pop.mp3";
 
 export type LastMessagesType = {[key: string]: MessageType | null };
 export type CountsType = {[key: string]: number };
@@ -29,7 +30,7 @@ export function UserChatsProvider({ children }: ChatListProviderProps) {
   const [lastMessages, setLastMessages] = useState<LastMessagesType>({});
   const [unreadCounts, setUnreadCounts] = useState<CountsType>({});
   const [readCounts, setReadCounts] = useState<CountsType>({});
-
+  const newMessageSound = useSound(newMessageSoundMedia)
 
   useEffect(() => {
     const userId = currentUser?.uid;
@@ -47,13 +48,12 @@ export function UserChatsProvider({ children }: ChatListProviderProps) {
     return () => unsub();
   }, [currentUser]);
 
-
   useEffect(() => {
     if (!chatsId.length || !currentUser) {
       return;
     }
     setLastMessages({});
-    setUnreadCounts({});
+    // setUnreadCounts({});
     const unsubArray: Unsubscribe[] = []
     chatsId.map(chatId => {
       const unsubMessage = chatService.subscribeToLastMessage(chatId,
@@ -65,16 +65,21 @@ export function UserChatsProvider({ children }: ChatListProviderProps) {
         })
       const unsubCount = chatService.subscribeToUnreadCount({ chatId, userId: currentUser.uid },
         (count) => {
-          setUnreadCounts(prev => ({
-            ...prev,
-            [chatId]: count
-          }))
+          setUnreadCounts(prev => {
+            const prevCount = prev[chatId];
+            if (prevCount && count > prevCount) {
+              newMessageSound?.play()
+            }
+            return {
+              ...prev,
+              [chatId]: count
+            }
+          })
         })
       unsubArray.push(unsubMessage, unsubCount)
     })
     return () => unsubArray.forEach(unsub => unsub())
   }, [chatsId])
-
 
   useEffect(() => {
     if (!chats.length || !isSuccess) {
@@ -99,7 +104,6 @@ export function UserChatsProvider({ children }: ChatListProviderProps) {
     }
   }, [chats, lastMessages, unreadCounts, readCounts]);
 
-
   const setReadCount = useCallback((chatId: string, value: SetStateAction<number>) => {
     const isFunc = typeof value === "function"
     setReadCounts(prev => ({
@@ -107,7 +111,6 @@ export function UserChatsProvider({ children }: ChatListProviderProps) {
       [chatId]: isFunc ? value(prev[chatId]) : value
     }))
   }, [setReadCounts])
-
 
   return (
     <UserChatsContext.Provider value={{

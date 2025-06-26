@@ -2,13 +2,11 @@ import {ComponentPropsWithoutRef} from "react";
 import { Check } from 'lucide-react';
 import classes from "./Checkbox.module.scss";
 
-
 type InputComponentProps = Omit<ComponentPropsWithoutRef<"input">, "type" | "children">
 
 export interface CheckboxProps extends InputComponentProps {}
 
 export function Checkbox(props: CheckboxProps) {
-
   return (
     <div className={classes.CheckboxRoot}>
       <input

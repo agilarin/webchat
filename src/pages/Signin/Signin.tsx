@@ -5,8 +5,6 @@ import authService from "@/services/authService.ts";
 import {AuthForm, AuthInput} from "@/components/AuthForm";
 import {Button} from "@/components/UI/Button";
 import classes from "./Signin.module.scss";
-// import {LoadingProgress} from "@/components/UI/LoadingProgress";
-
 
 type FormValues = {
   email: string,
@@ -71,7 +69,6 @@ export function Signin() {
         className={classes.buttonSubmit}
         disabled={isLoading}
       >
-        {/*<LoadingProgress color="white"/>*/}
         {isLoading ? "Загрузка" :"Войти"}
       </Button>
 

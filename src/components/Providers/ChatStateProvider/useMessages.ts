@@ -59,7 +59,10 @@ export function useMessages(chatId?: string, isNotExist?: boolean): UseMessagesR
       return;
     }
     chatService.subscribeLastReadMessageAndSnapshot(
-      { chatId, userId: currentUser.uid },
+      {
+        chatId,
+        userId: currentUser.uid
+      },
       (message, snapshot) => {
         setLastReadMessageSnapshot(snapshot || null)
         setLastReadMessage(message || null)
@@ -75,7 +78,10 @@ export function useMessages(chatId?: string, isNotExist?: boolean): UseMessagesR
       return;
     }
     const unsub = chatService.subscribeToMessages(
-      { chatId, messagesSnapshot: lastReadMessageSnapshot || undefined },
+      {
+        chatId,
+        messagesSnapshot: lastReadMessageSnapshot || undefined
+      },
       (messages) => {
         setMessages(prev => mergeMessages(prev, messages))
         setIsSuccess(true);

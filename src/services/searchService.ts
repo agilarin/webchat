@@ -1,25 +1,24 @@
 import {firestore} from "@/services/firebase.ts";
 import {UserType} from "@/types";
-import {collection, getDocs, query, where} from "firebase/firestore";
-
-
-
-interface ISearchUsers {
-  query: string
-}
+import {collection, getDocs, limit, query, where} from "firebase/firestore";
 
 
 class searchService {
   usersRef = collection(firestore, `users`);
   // chatsRef = collection(firestore, `chats`);
 
-
-  async searchUsers({query: queryText}: ISearchUsers) {
+  async searchUsers(searchTerm: string) {
+    searchTerm = searchTerm.toLowerCase();
+    const strLength = searchTerm.length;
+    const strFrontCode = searchTerm.slice(0, strLength - 1);
+    const strEndCode = searchTerm.slice(strLength - 1, searchTerm.length);
+    const endCode = strFrontCode + String.fromCharCode(strEndCode.charCodeAt(0) + 1);
     const searchQueryRef = query(
       this.usersRef,
-      where('username', '>=', queryText),
-      where('username', '<=', queryText+ '\uf8ff')
-    )
+      where('username', '>=', searchTerm),
+      where('username', '<', endCode),
+      limit(10)
+  )
 
     try {
       const usersSnap = await getDocs(searchQueryRef);

@@ -24,7 +24,7 @@ export function SearchResultList({searchQuery, blackListUsernames}: SearchResult
     }
     setIsLoading(true)
     const timeoutId = setTimeout(async () => {
-      const response = await searchService.searchUsers({query: searchQuery})
+      const response = await searchService.searchUsers(searchQuery)
       setSearchResult(response);
     }, 500);
     return () => clearTimeout(timeoutId);
