@@ -1,18 +1,24 @@
-import {useRef} from "react";
+import { useRef } from "react";
 import clsx from "clsx";
-import {CircleUser, EllipsisVertical, LogOut} from "lucide-react";
-import authService from "@/services/authService.ts";
-import {useToggle} from "@/hooks/useToggle.ts";
-import {Button} from "@/components/UI/Button";
-import {Menu, MenuItem} from "@/components/UI/Menu";
-import {Account} from "@/components/Account";
+import { CircleUser, EllipsisVertical, LogOut } from "lucide-react";
+import { signOut } from "@/services/authService.ts";
+import { useToggle } from "@/hooks/useToggle.ts";
+import { Button } from "@/components/UI/Button";
+import { Menu, MenuItem } from "@/components/UI/Menu";
+import { Account } from "@/components/Account";
 import classes from "./UserAccountMenu.module.scss";
-
 
 export function UserAccountMenu() {
   const [menuOpen, menuToggle] = useToggle(false);
   const [profileOpen, profileToggle] = useToggle(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
+
+  const createHandleClickItem = (callback: () => void) => {
+    return () => {
+      menuToggle();
+      callback();
+    };
+  };
 
   return (
     <>
@@ -22,7 +28,10 @@ export function UserAccountMenu() {
         shape="round"
         onClick={() => menuToggle()}
       >
-        <EllipsisVertical size={26} strokeWidth={2} />
+        <EllipsisVertical
+          size={26}
+          strokeWidth={2}
+        />
       </Button>
 
       <Menu
@@ -30,7 +39,10 @@ export function UserAccountMenu() {
         onClose={() => menuToggle(false)}
         toggleEl={buttonRef.current}
       >
-        <MenuItem className={classes.item} onClick={() => profileToggle(true)}>
+        <MenuItem
+          className={classes.item}
+          onClick={createHandleClickItem(() => profileToggle(true))}
+        >
           <CircleUser
             size={20}
             className={classes.itemIcon}
@@ -40,7 +52,7 @@ export function UserAccountMenu() {
 
         <MenuItem
           className={clsx(classes.item, classes.itemRed)}
-          onClick={() => authService.signOut()}
+          onClick={createHandleClickItem(() => signOut())}
         >
           <LogOut
             size={20}
@@ -49,7 +61,10 @@ export function UserAccountMenu() {
           Выйти
         </MenuItem>
       </Menu>
-      <Account open={profileOpen} onClose={() => profileToggle(false)} />
+      <Account
+        open={profileOpen}
+        onClose={() => profileToggle(false)}
+      />
     </>
   );
 }

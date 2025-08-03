@@ -1,57 +1,54 @@
-import {arrayUnion, collection, doc, onSnapshot, setDoc, updateDoc} from "firebase/firestore";
-import {firestore} from "@/services/firebase.ts";
+import {
+  collection,
+  FieldValue,
+  doc,
+  onSnapshot,
+  serverTimestamp,
+  Timestamp,
+  setDoc,
+} from "firebase/firestore";
+import { firestore } from "@/services/firebase.ts";
+import { UserChat } from "@/types";
+import { USERS_CHATS_SUBCOLLECTION, USERS_COLLECTION } from "@/constants";
 
+const usersRef = collection(firestore, USERS_COLLECTION);
+const getUserChatsRef = (userId: string) => {
+  return collection(usersRef, userId, USERS_CHATS_SUBCOLLECTION);
+};
 
-interface AddChatToUserChats {
+type CreateUserChat = Omit<UserChat, "joinedAt"> & {
+  joinedAt: FieldValue;
+};
+
+export async function addUserChats(
+  userId: string,
   chatId: string,
-  userId: string
+  joinedAt?: Date
+) {
+  const userChatsRef = getUserChatsRef(userId);
+
+  try {
+    await setDoc(doc(userChatsRef, chatId), {
+      chatId,
+      joinedAt: joinedAt ? Timestamp.fromDate(joinedAt) : serverTimestamp(),
+      role: "member",
+    } as CreateUserChat);
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }
 
-class userChatsService {
-  private usersChatsRef = collection(firestore, "userchats");
+export function subscribeToUserChats(
+  userId: string,
+  callback: (data: UserChat[]) => Promise<void>
+) {
+  const userChatsRef = getUserChatsRef(userId);
 
-
-  async createUserChats(userId: string) {
-    const userChatsRef = doc(this.usersChatsRef, userId);
-
-    try {
-      await setDoc(userChatsRef, {
-        chats: []
-      });
-    } catch (error) {
-      console.error(error);
-      throw error;
+  return onSnapshot(userChatsRef, (snapshot) => {
+    if (snapshot.empty) {
+      return callback([]);
     }
-  }
-
-
-  async addChatToUserChats({chatId, userId}: AddChatToUserChats) {
-    const userChatsRef = doc(this.usersChatsRef, userId);
-
-    try {
-      await updateDoc(userChatsRef, {
-        chats: arrayUnion(chatId)
-      });
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  }
-
-
-  subscribeToUserChats(
-    userId: string,
-    callback: (data: string[]) => void
-  ) {
-    const userChatsRef = doc(this.usersChatsRef, userId);
-
-    return onSnapshot(userChatsRef, (snapshot) => {
-      callback(snapshot.data()?.chats || [])
-    });
-  }
-
-
+    callback(snapshot.docs.map((doc) => doc.data() as UserChat));
+  });
 }
-
-
-export default new userChatsService();

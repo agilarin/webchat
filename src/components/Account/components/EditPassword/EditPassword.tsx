@@ -1,30 +1,32 @@
-import {useForm} from "react-hook-form";
-import authService from "@/services/authService.ts";
-import {FORM_REGISTER_OPTIONS} from "@/constants";
-import {AuthInput} from "@/components/AuthForm";
-import {EditForm} from "@/components/EditForm";
+import { z } from "zod/v4";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
+import { EditPasswordSchema } from "@/schemas/auth";
+import { updatePassword } from "@/services/authService.ts";
+import { AuthInput } from "@/components/Forms/AuthForm";
+import { EditForm } from "@/components/Forms/EditForm";
 
-type FormValues = {
-  oldPassword: string,
-  password: string,
-  confirmPassword: string
-}
+type EditPasswordFields = z.infer<typeof EditPasswordSchema>;
 
 interface EditPasswordProps {
-  open: boolean,
-  onClose: () => void,
+  open: boolean;
+  onClose: () => void;
 }
 
-export function EditPassword({open, onClose}: EditPasswordProps) {
-  const {register, handleSubmit, formState: { errors }} = useForm<FormValues>();
+export function EditPassword({ open, onClose }: EditPasswordProps) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<EditPasswordFields>({
+    resolver: zodResolver(EditPasswordSchema),
+  });
 
-
-  async function onSubmit({oldPassword, password}: FormValues) {
-    await authService.updatePassword(oldPassword, password)
-    onClose()
+  async function onSubmit({ oldPassword, newPassword }: EditPasswordFields) {
+    await updatePassword({ oldPassword, newPassword });
+    onClose();
   }
-
 
   return (
     <EditForm
@@ -33,26 +35,24 @@ export function EditPassword({open, onClose}: EditPasswordProps) {
       open={open}
       title="Изменить пароль"
     >
-
       <AuthInput
         type="password"
         title="Старый пароль"
-        {...register("oldPassword", FORM_REGISTER_OPTIONS.PASSWORD)}
+        {...register("oldPassword")}
         error={!!errors.oldPassword}
       />
       <AuthInput
         type="password"
         title="Новый пароль"
-        {...register("password", FORM_REGISTER_OPTIONS.PASSWORD)}
-        error={!!errors.password}
+        {...register("newPassword")}
+        error={!!errors.newPassword}
       />
       <AuthInput
         type="password"
         title="Подтвердите пароль"
-        {...register("confirmPassword", FORM_REGISTER_OPTIONS.CONFIRM_PASSWORD)}
+        {...register("confirmPassword")}
         error={!!errors.confirmPassword}
       />
-
     </EditForm>
   );
 }

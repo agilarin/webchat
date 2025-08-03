@@ -1,35 +1,41 @@
-import {useForm} from "react-hook-form";
-import userService from "@/services/userService.ts";
-import {useAuthContext} from "@/hooks/useAuthContext.ts";
-import {EditForm} from "@/components/EditForm";
-import {AuthInput} from "@/components/AuthForm";
+import { z } from "zod/v4";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
+import { EditNameSchema } from "@/schemas/auth";
+import { updateUserProfile } from "@/services/userService.ts";
+import { useCurrentUser } from "@/hooks/store/useCurrentUser";
+import { EditForm } from "@/components/Forms/EditForm";
+import { AuthInput } from "@/components/Forms/AuthForm";
 
-type FormValues = {
-  firstName: string,
-  lastName: string,
-}
+type EditNameFields = z.infer<typeof EditNameSchema>;
 
 interface EditNameProps {
-  open: boolean,
-  onClose: () => void,
+  open: boolean;
+  onClose: () => void;
 }
 
-export function EditName({open, onClose}: EditNameProps) {
-  const {currentUser, userInfo} = useAuthContext();
-  const {register, handleSubmit, formState: { errors }} = useForm<FormValues>({
+export function EditName({ open, onClose }: EditNameProps) {
+  const user = useCurrentUser();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<EditNameFields>({
+    resolver: zodResolver(EditNameSchema),
     defaultValues: {
-      firstName: userInfo?.firstName || "",
-      lastName: userInfo?.lastName || "",
-    }
+      firstName: user?.firstName || "",
+      lastName: user?.lastName || "",
+    },
   });
 
-  async function onSubmit({firstName, lastName}: FormValues) {
-    if (!currentUser?.uid) {
-      return
+  async function onSubmit({ firstName, lastName }: EditNameFields) {
+    if (!user?.id) {
+      return;
     }
-    await userService.updateUser(currentUser?.uid, { firstName, lastName })
-    onClose()
+    await updateUserProfile(user?.id, { firstName, lastName });
+    onClose();
   }
 
   return (
@@ -42,22 +48,13 @@ export function EditName({open, onClose}: EditNameProps) {
       <AuthInput
         type="text"
         title="Имя"
-        {...register("firstName", {
-          minLength: 2,
-          validate: (value, formValues) => {
-            if (value === "" && formValues.lastName === "") {
-              return "";
-            }
-          }
-        })}
+        {...register("firstName")}
         error={!!errors.firstName}
       />
       <AuthInput
         type="text"
         title="Фамилия"
-        {...register("lastName", {
-          minLength: 2
-        })}
+        {...register("lastName")}
         error={!!errors.lastName}
       />
     </EditForm>

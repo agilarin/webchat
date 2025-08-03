@@ -1,0 +1,42 @@
+.root {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.progressContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.progress {
+  padding: 4px;
+  background: var(--white);
+  border-radius: 50%;
+  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1);
+}
+
+.messageList {
+  width: 100%;
+  height: 100%;
+}
+
+.listA {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 100%;
+}
+
+.jumpToEndTrigger {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 500px;
+  pointer-events: none;
+}

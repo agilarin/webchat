@@ -1,46 +1,53 @@
-import {useState} from "react";
-import {useForm} from "react-hook-form";
-import {useNavigate} from "react-router";
-import authService from "@/services/authService.ts";
-import {FORM_REGISTER_OPTIONS} from "@/constants";
-import {Button} from "@/components/UI/Button";
-import {AuthCheckbox, AuthForm, AuthInput} from "@/components/AuthForm";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
+import { z } from "zod/v4";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import { SignUpSchema } from "@/schemas/auth";
+import { ROUTES } from "@/constants";
+import { signUp } from "@/services/authService.ts";
+import { Button } from "@/components/UI/Button";
+import { AuthCheckbox, AuthForm, AuthInput } from "@/components/Forms/AuthForm";
 import classes from "./Signup.module.scss";
 
-type FormValues = {
-  email: string,
-  username: string,
-  firstName: string,
-  password: string,
-  confirmPassword: string,
-}
+type SignUpFields = z.infer<typeof SignUpSchema>;
 
 export function Signup() {
-  const {register, handleSubmit, formState: { errors }, setValue, setError} = useForm<FormValues>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    setError,
+  } = useForm<SignUpFields>({
+    resolver: zodResolver(SignUpSchema),
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [isShowPassword, setIsShowPassword] = useState(false);
   const navigate = useNavigate();
 
-  async function onSubmit(data: FormValues) {
+  const onSubmit = async (data: SignUpFields) => {
     setIsLoading(true);
     try {
-      await authService.createUser({
+      await signUp({
         email: data.email,
         password: data.password,
         username: data.username,
         firstName: data.firstName,
       });
-      navigate("/")
-    } catch (error) {
-      setValue("password", "")
-      setValue("confirmPassword", "")
+      navigate("/", { replace: true });
+    } catch {
+      setValue("password", "");
+      setValue("confirmPassword", "");
       setError("email", {
-        type: "error",
-        message: "Invalid email address"
-      })
+        type: "manual",
+        message: "Пользователь с таким email уже существует",
+      });
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
-  }
+  };
 
   return (
     <AuthForm
@@ -50,32 +57,32 @@ export function Signup() {
     >
       <AuthInput
         title="Ваш username"
-        {...register("username", FORM_REGISTER_OPTIONS.USERNAME)}
+        {...register("username")}
         error={!!errors.username}
       />
       <AuthInput
         title="Ваше имя"
         {...register("firstName", {
           required: true,
-          minLength: 2
+          minLength: 2,
         })}
         error={!!errors.firstName}
       />
       <AuthInput
         title="Адрес эл. почты"
-        {...register("email", FORM_REGISTER_OPTIONS.EMAIL)}
+        {...register("email")}
         error={!!errors.email}
       />
       <AuthInput
         type={isShowPassword ? "text" : "password"}
         title="Пароль"
-        {...register("password", FORM_REGISTER_OPTIONS.PASSWORD)}
+        {...register("password")}
         error={!!errors.password}
       />
       <AuthInput
         type={isShowPassword ? "text" : "password"}
         title="Подтвердите пароль"
-        {...register("confirmPassword", FORM_REGISTER_OPTIONS.CONFIRM_PASSWORD)}
+        {...register("confirmPassword")}
         error={!!errors.confirmPassword}
       />
 
@@ -92,13 +99,13 @@ export function Signup() {
         className={classes.buttonSubmit}
         disabled={isLoading}
       >
-        {isLoading? "Загрузка" : "Зарегистрироваться"}
+        {isLoading ? "Загрузка" : "Зарегистрироваться"}
       </Button>
 
       <Button
         color="primary"
         className={classes.link}
-        onClick={() => navigate("/signin")}
+        onClick={() => navigate(ROUTES.SIGNIN)}
       >
         Уже есть аккаунт
       </Button>

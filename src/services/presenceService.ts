@@ -1,12 +1,27 @@
 import {ref, serverTimestamp, onValue, onDisconnect, update} from 'firebase/database';
-import {database} from "@/services/firebase.ts";
+import {database, auth} from "@/services/firebase.ts";
 
 
-interface IUpdateUserOnConnection {
-  userId: string,
+
+export async function updateUserOnlineStatus(isOnline: boolean) {
+  const user = auth.currentUser;
+
+  if (!user) {
+    throw new Error("Пользователь не авторизован");
+  }
+
+  try {
+    await update(ref(database, `users/${user.uid}`), {
+      isOnline,
+      lastOnline: serverTimestamp(),
+    });
+  } catch (error) {
+    console.error("Ошибка при обновлении онлайн-статуса:", error);
+    throw error;
+  }
 }
 
-export function updateUserOnConnection({userId}: IUpdateUserOnConnection) {
+export function updateUserOnConnection(userId: string) {
   const connectedRef = ref(database, '.info/connected');
   const userRef = ref(database, `users/${userId}`);
 

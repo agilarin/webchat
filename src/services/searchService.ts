@@ -5,7 +5,6 @@ import {collection, getDocs, limit, query, where} from "firebase/firestore";
 
 class searchService {
   usersRef = collection(firestore, `users`);
-  // chatsRef = collection(firestore, `chats`);
 
   async searchUsers(searchTerm: string) {
     searchTerm = searchTerm.toLowerCase();

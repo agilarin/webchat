@@ -1,1 +1,2 @@
-export {ChatInfo} from "./ChatInfo.tsx";
+export * from "./ChatInfoModal";
+export * from "./ChatInfoProvider";

@@ -1,59 +1,26 @@
-import {useLayoutEffect, useState, ReactNode} from "react";
-import {getAuth, onAuthStateChanged, User} from "firebase/auth";
-import {UserType} from "@/types";
-import {AuthContext} from "@/context/AuthContext.ts";
-import {updateUserOnConnection} from "@/services/presenceService.ts";
-import userService from "@/services/userService.ts";
+import { useEffect, PropsWithChildren } from "react";
+import { useCurrentUserStore } from "@/store";
 
+export function AuthProvider({ children }: PropsWithChildren) {
+  const authUser = useCurrentUserStore.use.authUser();
+  const authLoading = useCurrentUserStore.use.authLoading();
+  const subscribeToUser = useCurrentUserStore.use.subscribeToUser();
 
+  const subscribeToUserProfile =
+    useCurrentUserStore.use.subscribeToUserProfile();
 
-interface AuthProviderProps {
-  children: ReactNode;
-}
+  useEffect(() => {
+    const unsub = subscribeToUser();
+    return () => unsub();
+  }, [subscribeToUser]);
 
-export function AuthProvider({ children }: AuthProviderProps) {
-  const auth = getAuth();
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [userInfo, setUserInfo] = useState<UserType | null>(null);
-  const [isSuccess, setIsSuccess] = useState(false);
+  useEffect(() => {
+    if (!authUser?.id) return;
+    const unsub = subscribeToUserProfile(authUser.id);
+    return () => unsub();
+  }, [subscribeToUserProfile, authUser?.id]);
 
+  if (authLoading) return null;
 
-  useLayoutEffect(() => {
-    const unsub = onAuthStateChanged(auth, (user) => {
-      if  (user) {
-        setCurrentUser(user);
-      } else {
-        setCurrentUser(null);
-        setUserInfo(null);
-      }
-      setIsSuccess(true)
-    });
-    return () => unsub()
-  }, [])
-
-
-  useLayoutEffect(() => {
-    if  (!currentUser) {
-      return;
-    }
-    const userId = currentUser.uid;
-    const unsubConnect = updateUserOnConnection({userId})
-    const unsubUser = userService.subscribeToUser(userId, setUserInfo);
-
-    return () => {
-      unsubConnect()
-      unsubUser()
-    }
-  }, [currentUser])
-
-
-  return (
-    <AuthContext.Provider value={{
-      isSuccess,
-      currentUser,
-      userInfo,
-    }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return children;
 }

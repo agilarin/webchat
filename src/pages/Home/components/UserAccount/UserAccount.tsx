@@ -1,30 +1,27 @@
-import {useAuthContext} from "@/hooks/useAuthContext.ts";
-import {Avatar} from "@/pages/Home/components/Avatar";
-import {UserAccountMenu} from "@/pages/Home/components/UserAccountMenu";
+import { Avatar } from "@/pages/Home/components/Avatar";
+import { UserAccountMenu } from "@/pages/Home/components/UserAccountMenu";
 import classes from "./UserAccount.module.scss";
-
+import { useCurrentUser } from "@/hooks/store/useCurrentUser";
 
 export function UserAccount() {
-  const {userInfo} = useAuthContext();
-  const fullName = [userInfo?.firstName, userInfo?.lastName].join(' ');
+  const user = useCurrentUser();
+  const fullName = [user?.firstName, user?.lastName].join(" ");
 
   return (
     <div className={classes.root}>
       <div className={classes.content}>
-        <Avatar title={fullName}/>
+        <Avatar title={fullName} />
 
         <div className={classes.info}>
-          <h4 className={classes.title}>
-            {fullName}
-          </h4>
+          <h4 className={classes.title}>{fullName}</h4>
           <p className={classes.subtitle}>
-            {userInfo?.username && "@" + userInfo?.username}
+            {user?.username && "@" + user?.username}
           </p>
         </div>
       </div>
 
       <div className={classes.navigation}>
-        <UserAccountMenu/>
+        <UserAccountMenu />
       </div>
     </div>
   );

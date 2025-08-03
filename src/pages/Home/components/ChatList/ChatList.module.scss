@@ -1,0 +1,13 @@
+.chatListRoot {
+  padding: 0 16px;
+  flex: 1 1 auto;
+  overflow-y: scroll;
+  scrollbar-width: none;
+}
+
+.showScrollOnHover {
+  &:hover {
+    padding: 0 6px 0 16px;
+    scrollbar-width: thin;
+  }
+}

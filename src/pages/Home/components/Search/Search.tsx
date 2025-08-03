@@ -1,22 +1,21 @@
-import {ChangeEvent, useState} from "react";
+import { ChangeEvent, useState } from "react";
 import clsx from "clsx";
-import {SearchContent} from "./components/SearchContent";
-import { Search as SearchIcon } from 'lucide-react';
-import { X as XIcon } from 'lucide-react';
-import classes from "./Search.module.scss";
+import { Search as SearchIcon } from "lucide-react";
+import { X as XIcon } from "lucide-react";
 
+import { SearchContent } from "./components/SearchContent";
+import classes from "./Search.module.scss";
 
 export function Search() {
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleClose = () => {
     setSearchQuery("");
-  }
+  };
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value)
-  }
-
+    setSearchQuery(e.target.value);
+  };
 
   return (
     <div className={clsx(classes.root, searchQuery && classes.active)}>
@@ -44,9 +43,7 @@ export function Search() {
         </div>
       </div>
 
-      {searchQuery && (
-        <SearchContent searchQuery={searchQuery}/>
-      )}
+      {searchQuery && <SearchContent searchQuery={searchQuery} />}
     </div>
   );
 }

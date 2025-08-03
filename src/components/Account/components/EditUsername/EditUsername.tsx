@@ -1,36 +1,45 @@
-import {useForm} from "react-hook-form";
-import userService from "@/services/userService.ts";
-import {FORM_REGISTER_OPTIONS} from "@/constants";
-import {EditForm} from "@/components/EditForm";
-import {AuthInput} from "@/components/AuthForm";
-import {useAuthContext} from "@/hooks/useAuthContext.ts";
+import { z } from "zod/v4";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
+import { EditUsernameSchema } from "@/schemas/auth";
+import { useCurrentUser } from "@/hooks/store/useCurrentUser";
+import { EditForm } from "@/components/Forms/EditForm";
+import { AuthInput } from "@/components/Forms/AuthForm";
+import { updateUsername } from "@/services/usernameService";
 
 type FormValues = {
-  username: string,
-}
+  newUsername: string;
+};
+
+type EditUsernameFields = z.infer<typeof EditUsernameSchema>;
 
 interface EditUsernameProps {
-  open: boolean,
-  onClose: () => void,
+  open: boolean;
+  onClose: () => void;
 }
 
 export function EditUsername({ open, onClose }: EditUsernameProps) {
-  const {currentUser, userInfo} = useAuthContext();
-  const {register, handleSubmit, formState: { errors }} = useForm<FormValues>({
+  const user = useCurrentUser();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<EditUsernameFields>({
+    resolver: zodResolver(EditUsernameSchema),
     defaultValues: {
-      username: userInfo?.username || "",
-    }
+      newUsername: user?.username || "",
+    },
   });
 
-  async function onSubmit({username}: FormValues) {
-    if (!currentUser?.uid) {
+  async function onSubmit({ newUsername }: FormValues) {
+    if (!user?.id) {
       return;
     }
-    await userService.updateUser(currentUser.uid, { username });
-    onClose()
+    await updateUsername(user.id, newUsername);
+    onClose();
   }
-
 
   return (
     <EditForm
@@ -42,8 +51,8 @@ export function EditUsername({ open, onClose }: EditUsernameProps) {
       <AuthInput
         type="text"
         title="Имя пользователя"
-        {...register("username", FORM_REGISTER_OPTIONS.USERNAME)}
-        error={!!errors.username}
+        {...register("newUsername")}
+        error={!!errors.newUsername}
       />
     </EditForm>
   );

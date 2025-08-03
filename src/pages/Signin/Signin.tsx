@@ -1,46 +1,53 @@
-import {useForm} from "react-hook-form";
-import {useState} from "react";
-import {useNavigate} from "react-router";
-import authService from "@/services/authService.ts";
-import {AuthForm, AuthInput} from "@/components/AuthForm";
-import {Button} from "@/components/UI/Button";
+import { useState } from "react";
+import { useNavigate } from "react-router";
+import { z } from "zod/v4";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import { SignInSchema } from "@/schemas/auth";
+import { ROUTES } from "@/constants";
+import { signIn } from "@/services/authService.ts";
+import { AuthForm, AuthInput } from "@/components/Forms/AuthForm";
+import { Button } from "@/components/UI/Button";
 import classes from "./Signin.module.scss";
 
-type FormValues = {
-  email: string,
-  password: string,
-}
+type SignInFields = z.infer<typeof SignInSchema>;
 
 export function Signin() {
-  const {register, handleSubmit, formState: { errors }, setValue, setError} = useForm<FormValues>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    setError,
+  } = useForm<SignInFields>({
+    resolver: zodResolver(SignInSchema),
+  });
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-
-  async function onSubmit(data: FormValues) {
-    if (!data.email || !data.password) {
-      return;
-    }
+  const onSubmit = async (data: SignInFields) => {
     setIsLoading(true);
     try {
-      await authService.signIn({
+      await signIn({
         email: data.email,
-        password: data.password
-      })
-      navigate("/")
+        password: data.password,
+      });
+      navigate("/", { replace: true });
     } catch (error) {
-      setValue("password", "")
+      setValue("password", "");
       setError("email", {
-        type: "error",
-        message: "Invalid email address"
-      })
+        type: "manual",
+        message: "Неверный адрес эл. почты или пароль",
+      });
       setError("password", {
-        type: "error",
-        message: "Invalid password"
-      })
+        type: "manual",
+        message: "Неверный адрес эл. почты или пароль",
+      });
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false)
-  }
+  };
 
   return (
     <AuthForm
@@ -50,17 +57,16 @@ export function Signin() {
     >
       <AuthInput
         title="Адрес эл. почты"
-        {...register("email", { required: true })}
+        {...register("email")}
         error={!!errors.email}
       />
 
       <AuthInput
         type="password"
         title="Пароль"
-        {...register("password", { required: true })}
+        {...register("password")}
         error={!!errors.password}
       />
-
 
       <Button
         color="primary"
@@ -69,13 +75,13 @@ export function Signin() {
         className={classes.buttonSubmit}
         disabled={isLoading}
       >
-        {isLoading ? "Загрузка" :"Войти"}
+        {isLoading ? "Загрузка" : "Войти"}
       </Button>
 
       <Button
         color="primary"
         className={classes.link}
-        onClick={() => navigate("/signup")}
+        onClick={() => navigate(ROUTES.SIGNUP)}
       >
         Создать аккаунт
       </Button>

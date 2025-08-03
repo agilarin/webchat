@@ -1,0 +1,29 @@
+.spinnerRoot {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  z-index: 10;
+
+  transform: translate(-50%, 60px);
+  opacity: 0;
+
+  animation: slideDownFadeIn 100ms ease-out forwards;
+}
+
+@keyframes slideDownFadeIn {
+  from {
+    transform: translate(-50%, 0px);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 60px);
+    opacity: 1;
+  }
+}
+
+.spinnerWrapper {
+  padding: 4px;
+  background: var(--white);
+  border-radius: 50%;
+  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.2);
+}
