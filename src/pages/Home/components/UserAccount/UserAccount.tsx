@@ -1,11 +1,12 @@
 import { Avatar } from "@/pages/Home/components/Avatar";
 import { UserAccountMenu } from "@/pages/Home/components/UserAccountMenu";
-import classes from "./UserAccount.module.scss";
 import { useCurrentUser } from "@/hooks/store/useCurrentUser";
+import { getFullName } from "@/utils/getFullName";
+import classes from "./UserAccount.module.scss";
 
 export function UserAccount() {
   const user = useCurrentUser();
-  const fullName = [user?.firstName, user?.lastName].join(" ");
+  const fullName = getFullName(user);
 
   return (
     <div className={classes.root}>

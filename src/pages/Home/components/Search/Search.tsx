@@ -1,49 +1,35 @@
-import { ChangeEvent, useState } from "react";
 import clsx from "clsx";
-import { Search as SearchIcon } from "lucide-react";
-import { X as XIcon } from "lucide-react";
+import { useDebounce } from "use-debounce";
 
-import { SearchContent } from "./components/SearchContent";
+import { useUserChatsStore } from "@/store";
+import { SearchInput } from "./components/SearchInput";
+import { ExistingChatsList } from "./components/ExistingChatsList";
+import { UserSearchList } from "./components/UserSearchList";
 import classes from "./Search.module.scss";
 
 export function Search() {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useDebounce("", 300);
 
-  const handleClose = () => {
-    setSearchQuery("");
-  };
-
-  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-  };
+  const chats = useUserChatsStore.use.chats();
+  const existingChats = Object.values(chats).filter((chat) =>
+    chat.username.toLowerCase().includes(searchQuery.toLowerCase().trim())
+  );
 
   return (
     <div className={clsx(classes.root, searchQuery && classes.active)}>
       <div className={classes.searchContainer}>
-        <div className={classes.search}>
-          <SearchIcon
-            size={20}
-            className={classes.iconSearch}
-          />
-          <input
-            className={classes.input}
-            type="text"
-            placeholder={"Search"}
-            onChange={handleSearchChange}
-            value={searchQuery}
-          />
-          {!!searchQuery && (
-            <button
-              className={classes.buttonClose}
-              onClick={handleClose}
-            >
-              <XIcon size={20} />
-            </button>
-          )}
-        </div>
+        <SearchInput onChange={setSearchQuery} />
       </div>
 
-      {searchQuery && <SearchContent searchQuery={searchQuery} />}
+      {searchQuery && (
+        <div className={classes.result}>
+          <ExistingChatsList chats={existingChats} />
+          <UserSearchList
+            searchQuery={searchQuery}
+            chats={existingChats}
+          />
+        </div>
+      )}
     </div>
   );
 }

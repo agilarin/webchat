@@ -6,6 +6,7 @@ import { generateUniqueId } from "@/utils/generateUniqueId";
 import { createSelectors } from "@/utils/zustand";
 import { useCurrentUserStore } from "./currentUserStore";
 import { useMessagesStore } from "./messagesStore";
+import { getFullName } from "@/utils/getFullName";
 
 interface ActiveChatState {
   chat: ChatType | null;
@@ -32,7 +33,7 @@ export const useActiveChatStoreBase = create<ActiveChatState>((set, get) => ({
         id: generateUniqueId(),
         type: "PRIVATE",
         members: [authUser.id, peer.id],
-        title: [peer.firstName, peer.lastName].join(" "),
+        title: getFullName(peer),
         username: peer.username,
         peer: peer,
       },

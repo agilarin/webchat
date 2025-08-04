@@ -9,6 +9,7 @@ import { EditName } from "./components/EditName";
 import { EditEmail } from "./components/EditEmail";
 import { EditUsername } from "./components/EditUsername";
 import classes from "./Account.module.scss";
+import { getFullName } from "@/utils/getFullName";
 
 interface UserProfileProps {
   open: boolean;
@@ -22,7 +23,14 @@ export function Account({ open, onClose }: UserProfileProps) {
   const [emailOpen, emailToggle] = useToggle(false);
   const [usernameOpen, usernameToggle] = useToggle(false);
   const [passwordOpen, passwordToggle] = useToggle(false);
-  const fullName = [user?.firstName, user?.lastName].join(" ");
+  const fullName = getFullName(user);
+
+  const modals = [
+    { isOpen: nameOpen, toggle: nameToggle, Component: EditName },
+    { isOpen: emailOpen, toggle: emailToggle, Component: EditEmail },
+    { isOpen: usernameOpen, toggle: usernameToggle, Component: EditUsername },
+    { isOpen: passwordOpen, toggle: passwordToggle, Component: EditPassword },
+  ];
 
   return (
     <Modal
@@ -70,29 +78,15 @@ export function Account({ open, onClose }: UserProfileProps) {
           />
         </div>
 
-        {nameOpen && (
-          <EditName
-            open={nameOpen}
-            onClose={() => nameToggle(false)}
-          />
-        )}
-        {emailOpen && (
-          <EditEmail
-            open={emailOpen}
-            onClose={() => emailToggle(false)}
-          />
-        )}
-        {usernameOpen && (
-          <EditUsername
-            open={usernameOpen}
-            onClose={() => usernameToggle(false)}
-          />
-        )}
-        {passwordOpen && (
-          <EditPassword
-            open={passwordOpen}
-            onClose={() => passwordToggle(false)}
-          />
+        {modals.map(
+          ({ isOpen, toggle, Component }, i) =>
+            isOpen && (
+              <Component
+                key={i}
+                open={isOpen}
+                onClose={() => toggle(false)}
+              />
+            )
         )}
       </div>
     </Modal>

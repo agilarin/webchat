@@ -13,6 +13,7 @@ import { ChatSchema, CreateChatSchema, RawChatSchema } from "@/schemas/chat";
 import { getUserProfile } from "../userService";
 import { reserveUsername } from "../usernameService";
 import { createReadStatus } from "./readStatusService";
+import { getFullName } from "@/utils/getFullName";
 
 const chatsRef = collection(firestore, CHATS_COLLECTION);
 
@@ -99,7 +100,7 @@ async function processPrivateChat(
     ...chat,
     peer,
     username: peer.username,
-    title: [peer.firstName, peer.lastName].join(" "),
+    title: getFullName(peer),
   });
 
   if (!parseResult.success) {
