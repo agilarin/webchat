@@ -157,6 +157,5 @@ export async function getMessagesCount(chatId: string, date?: Date | null) {
   const messagesQuery = query(messagesRef, ...constraints);
 
   const countSnap = await getCountFromServer(messagesQuery);
-  console.log(countSnap.data().count);
   return countSnap.data().count;
 }

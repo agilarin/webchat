@@ -8,7 +8,6 @@ import {
   updateEmail as _updateEmail,
 } from "firebase/auth";
 import { auth } from "@/services/firebase.ts";
-import { updateUserOnlineStatus } from "@/services/presenceService.ts";
 import { createUserProfile } from "./userService";
 import {
   useActiveChatStore,
