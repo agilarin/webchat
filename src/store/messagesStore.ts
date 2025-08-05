@@ -1,10 +1,8 @@
 import { create } from "zustand";
-import { RawMessage } from "@/types";
+import { Message } from "@/types";
 import {
-  subscribeToMessages as _subscribeToMessages,
   sendMessage as _sendMessage,
   getMessages as _getMessages,
-  GetMessagesParams,
 } from "@/services/chat/messageService";
 import { arrayToObjectByKey } from "@/utils/arrayToObjectByKey";
 import { createSelectors, getActiveChatOrThrow } from "@/utils/zustand";
@@ -13,12 +11,8 @@ import { MAX_INDEX, MESSAGE_LIMIT, STORE_ERRORS } from "@/constants";
 import { sortMessages } from "@/utils/sortMessages";
 import { useActiveChatStore } from "./activeChatStore";
 
-interface GetMessagesStoreProps extends Omit<GetMessagesParams, "chatId"> {
-  onBeforeSet?: (message: RawMessage[]) => void;
-}
-
 interface MessagesState {
-  messages: Record<string, RawMessage>;
+  messages: Record<string, Message>;
   loading: boolean;
   hasReachedStart: boolean;
   hasReachedEnd: boolean;
@@ -26,13 +20,8 @@ interface MessagesState {
   loadingPrev: boolean;
   loadingNext: boolean;
 
-  setLoading: (value: boolean) => void;
-  setReachedStart: (value: boolean) => void;
-  setReachedEnd: (value: boolean) => void;
   reset: () => void;
   sendMessage: (text: string) => Promise<void>;
-  getMessages: (params: GetMessagesStoreProps) => Promise<RawMessage[]>;
-  setMessages: (messages: RawMessage[]) => void;
   initializeMessages: (date?: Date | null) => Promise<void>;
   loadNewMessages: () => Promise<void>;
   loadPrevMessages: () => Promise<void>;
@@ -48,9 +37,6 @@ export const useMessagesStoreBase = create<MessagesState>((set, get) => ({
   loadingNext: false,
   firstItemIndex: MAX_INDEX,
 
-  setLoading: (value) => set({ loading: value }),
-  setReachedStart: (value) => set({ hasReachedStart: value }),
-  setReachedEnd: (value) => set({ hasReachedEnd: value }),
   reset: () =>
     set({
       loading: true,
@@ -66,6 +52,9 @@ export const useMessagesStoreBase = create<MessagesState>((set, get) => ({
     const authUser = useCurrentUserStore.getState().authUser;
     if (!authUser) throw Error(STORE_ERRORS.NO_USER);
     const activeChat = getActiveChatOrThrow();
+    if (activeChat.isDraft) {
+      await useActiveChatStore.getState().saveChat();
+    }
 
     const newMessageId = await _sendMessage({
       chatId: activeChat.id,
@@ -87,47 +76,16 @@ export const useMessagesStoreBase = create<MessagesState>((set, get) => ({
     }));
   },
 
-  getMessages: async (params) => {
-    const activeChat = getActiveChatOrThrow();
-
-    const messages = await _getMessages({
-      chatId: activeChat.id,
-      ...params,
-    });
-    const messageMap = arrayToObjectByKey(messages, "id");
-
-    if (params.onBeforeSet) {
-      params.onBeforeSet(messages);
-      await new Promise((r) => setTimeout(() => r(1), 10));
-    }
-
-    if (activeChat.id === getActiveChatOrThrow().id) {
-      set((state) => ({
-        messages: {
-          ...state.messages,
-          ...messageMap,
-        },
-      }));
-    }
-
-    return messages;
-  },
-
-  setMessages: (messages) => {
-    const messageMap = arrayToObjectByKey(messages, "id");
-    set((state) => ({
-      messages: {
-        ...state.messages,
-        ...messageMap,
-      },
-    }));
-  },
-
   initializeMessages: async (date) => {
     const activeChat = getActiveChatOrThrow();
+    if (activeChat.isDraft) {
+      set({ loading: false });
+      return;
+    }
+
     set({ loading: true });
 
-    let prevMessages: RawMessage[] = [];
+    let prevMessages: Message[] = [];
     if (date) {
       prevMessages = await _getMessages({
         chatId: activeChat.id,
@@ -157,7 +115,7 @@ export const useMessagesStoreBase = create<MessagesState>((set, get) => ({
     const activeChat = getActiveChatOrThrow();
     const { messages, loading, hasReachedEnd } = get();
     const sortedMessages = sortMessages(Object.values(messages));
-    if (loading || !hasReachedEnd) return;
+    if (loading || !hasReachedEnd || activeChat.isDraft) return;
 
     const newMessages = await _getMessages({
       chatId: activeChat.id,
@@ -178,7 +136,14 @@ export const useMessagesStoreBase = create<MessagesState>((set, get) => ({
     const activeChat = getActiveChatOrThrow();
     const { messages, loadingPrev, hasReachedStart } = get();
     const sortedMessages = sortMessages(Object.values(messages));
-    if (!sortedMessages.length || loadingPrev || hasReachedStart) return;
+    if (
+      !sortedMessages.length ||
+      loadingPrev ||
+      hasReachedStart ||
+      activeChat.isDraft
+    ) {
+      return;
+    }
     set({ loadingPrev: true });
 
     const prevMessages = await _getMessages({
@@ -204,7 +169,14 @@ export const useMessagesStoreBase = create<MessagesState>((set, get) => ({
     const activeChat = getActiveChatOrThrow();
     const { messages, loadingNext, hasReachedEnd } = get();
     const sortedMessages = sortMessages(Object.values(messages));
-    if (!sortedMessages.length || loadingNext || hasReachedEnd) return;
+    if (
+      !sortedMessages.length ||
+      loadingNext ||
+      hasReachedEnd ||
+      activeChat.isDraft
+    ) {
+      return;
+    }
     set({ loadingNext: true });
 
     const NextMessages = await _getMessages({

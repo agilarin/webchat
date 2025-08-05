@@ -22,7 +22,7 @@ export async function reserveUsername({
 }: UsernameAssignment) {
   const usernameRef = doc(usernamesRef, username);
 
-  if (!userId || !chatId) throw new Error("ID is missing");
+  if (!userId && !chatId) throw new Error("ID is missing");
 
   try {
     await runTransaction(firestore, async (transaction) => {

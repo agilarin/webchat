@@ -35,8 +35,9 @@ export async function createChat(userId: string, data: CreateChat) {
       createdAt: serverTimestamp(),
     });
 
-    await Promise.all(
-      savedData.members.flatMap((memberId) => {
+    const [chat] = await Promise.all([
+      getChat(chatId, userId),
+      ...savedData.members.flatMap((memberId) => {
         let userChatData;
         if (savedData.type === "PRIVATE") {
           userChatData = {
@@ -52,15 +53,14 @@ export async function createChat(userId: string, data: CreateChat) {
             type: savedData.type,
           };
         }
-
         return [
           addUserChat(userChatData),
           createReadStatus({ chatId, userId: memberId }),
         ];
-      })
-    );
+      }),
+    ]);
 
-    return await getChat(chatId, userId);
+    return chat;
   } catch (error) {
     console.error(error);
     throw error;

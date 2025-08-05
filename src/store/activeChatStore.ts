@@ -12,7 +12,7 @@ interface ActiveChatState {
   chat: ChatType | null;
   setChat: (chat: ChatType | null) => void;
   createPrivateChat: (peer: UserProfile) => void;
-  saveChat: () => void;
+  saveChat: () => Promise<void>;
   reset: () => void;
 }
 
@@ -36,6 +36,7 @@ export const useActiveChatStoreBase = create<ActiveChatState>((set, get) => ({
         title: getFullName(peer),
         username: peer.username,
         peer: peer,
+        isDraft: true,
       },
     });
   },

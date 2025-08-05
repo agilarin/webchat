@@ -19,3 +19,10 @@
   height: 100%;
   border: 1px solid var(--gray-200);
 }
+
+.chatContainer {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  background: var(--chat-background);
+}

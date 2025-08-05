@@ -1,8 +1,10 @@
+import { generatePath } from "react-router";
 import { useActiveChatStore } from "@/store";
+import { ROUTES } from "@/constants";
 import { useUnreadCount } from "@/hooks/store/useUnreadCount";
-import { ChatItem } from "./ChatItem";
 import { useChat } from "@/hooks/store/useChat";
 import { useLastMessage } from "@/hooks/store/useLastMessage";
+import { ChatItem } from "./ChatItem";
 
 interface ChatItemWithChatProps {
   chatId: string;
@@ -10,16 +12,9 @@ interface ChatItemWithChatProps {
 
 export function ChatItemWithChat({ chatId }: ChatItemWithChatProps) {
   const activeChat = useActiveChatStore.use.chat();
-  const setChat = useActiveChatStore.use.setChat();
   const chat = useChat(chatId);
   const lastMessage = useLastMessage(chatId);
   const unreadCount = useUnreadCount(chatId);
-
-  const handleClick = () => {
-    if (activeChat?.id !== chat.id) {
-      setChat(chat);
-    }
-  };
 
   return (
     <ChatItem
@@ -28,7 +23,7 @@ export function ChatItemWithChat({ chatId }: ChatItemWithChatProps) {
       subtitle={lastMessage?.text}
       date={lastMessage?.createdAt}
       count={unreadCount}
-      onClick={handleClick}
+      href={generatePath(ROUTES.CHAT, { username: chat.username })}
     />
   );
 }

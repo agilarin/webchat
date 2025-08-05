@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button } from "@/components/UI/Button";
-import { MessageInput } from "@/pages/Home/components/ChatRoom/components/MessageInput";
 import { Send } from "lucide-react";
-import classes from "./ChatFooter.module.scss";
+
 import { useActiveChatStore, useMessagesStore } from "@/store";
+import { Button } from "@/components/UI/Button";
+import { MessageInput } from "./components/MessageInput";
+import { EmojiMenu } from "./components/EmojiMenu";
+import classes from "./ChatFooter.module.scss";
 
 export function ChatFooter() {
   const activeChat = useActiveChatStore.use.chat();
@@ -17,8 +19,8 @@ export function ChatFooter() {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const formatedMessageValue = messageValue.replace(/(\r\n|\r|\n)/g, "<br/>");
-    sendMessage(formatedMessageValue);
+    if (messageValue.trim() === "") return;
+    sendMessage(messageValue.trim());
     setMessageValue("");
   }
 
@@ -35,12 +37,18 @@ export function ChatFooter() {
     }
   }
 
+  const addEmoji = (value: string) => {
+    setMessageValue(messageValue + value);
+  };
+
   return (
     <form
       ref={formRef}
       className={classes.root}
       onSubmit={handleSubmit}
     >
+      <EmojiMenu onEmojiSelect={addEmoji} />
+
       <MessageInput
         value={messageValue}
         placeholder="Написать сообщение..."

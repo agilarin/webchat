@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { Unsubscribe } from "firebase/auth";
-import { Message, RawMessage, ReadStatus } from "@/types";
+import { Message, ReadStatus } from "@/types";
 import {
   subscribeToReadStatus as _subscribeToReadStatus,
   updateReadStatus,
@@ -21,9 +21,9 @@ interface ReadStatusesState {
   reset: () => void;
 
   subscribeToReadStatus: (chatId: string, userId: string) => Unsubscribe;
-  saveReadStatus: (chatId: string, data: RawMessage) => Promise<void>;
+  saveReadStatus: (chatId: string, data: Message) => Promise<void>;
 
-  markRead: (chatId: string, message: RawMessage) => void;
+  markRead: (chatId: string, message: Message) => void;
   updateReadCount: (chatId: string, value: number) => void;
   fetchUnreadCount: (chatId: string, date?: Date | null) => Promise<void>;
 }
@@ -127,7 +127,6 @@ export const useReadStatusesStoreBase = create<ReadStatusesState>(
 
     fetchUnreadCount: async (chatId, date) => {
       const storeDate = get().readStatuses[chatId]?.lastReadAt;
-      if (!date || !storeDate) return;
 
       const count = await getMessagesCount(chatId, date || storeDate);
 

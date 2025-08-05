@@ -11,6 +11,7 @@ interface CurrentUserState {
   userProfile: UserProfile | null;
   userProfileLoading: boolean;
 
+  reset: () => void;
   subscribeToUser: () => Unsubscribe;
   subscribeToUserProfile: (userId: string) => Unsubscribe;
 }
@@ -20,6 +21,15 @@ export const useCurrentUserStoreBase = create<CurrentUserState>((set) => ({
   authLoading: true,
   userProfile: null,
   userProfileLoading: true,
+
+  reset: () => {
+    set({
+      authUser: null,
+      authLoading: false,
+      userProfile: null,
+      userProfileLoading: false,
+    });
+  },
 
   subscribeToUser: () => {
     return onAuthStateChanged(auth, async (firebaseUser) => {

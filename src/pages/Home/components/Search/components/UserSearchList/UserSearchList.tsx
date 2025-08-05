@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { ChatType, UserType } from "@/types";
+import { ChatType, UserProfile } from "@/types";
 import { useCurrentUserStore } from "@/store";
 import { searchUsersByUsername } from "@/services/searchService.ts";
 import { ChatList, ChatItemWithUser } from "@/pages/Home/components/ChatList";
@@ -14,7 +14,7 @@ interface UserSearchListProps {
 
 export function UserSearchList({ searchQuery, chats }: UserSearchListProps) {
   const userProfile = useCurrentUserStore.use.userProfile();
-  const [result, setResult] = useState<UserType[]>([]);
+  const [result, setResult] = useState<UserProfile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {

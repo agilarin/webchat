@@ -16,7 +16,7 @@ export function ReadStatusesListener() {
   useEffect(() => {
     if (!authUser?.id) return;
 
-    const chatIds = Object.keys(userChats);
+    const chatIds = Object.values(userChats).map(({ chatId }) => chatId);
     const prevChatIds = Object.keys(unsubsRef.current);
 
     for (const prevId of prevChatIds) {

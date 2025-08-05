@@ -1,21 +1,7 @@
 import { z } from "zod/v4";
 import { timestampToDate } from "./firebase";
 
-// export type RawMessage = {
-//   id: string;
-//   senderId: string;
-//   text: string;
-//   editDate?: Timestamp;
-//   isDeleted?: boolean;
-//   date: Timestamp;
-// };
-
-// export type Message = RawMessage & {
-//   isRead?: boolean;
-//   isJumpTo?: boolean;
-// };
-
-export const RawMessageSchema = z.object({
+export const MessageSchema = z.object({
   id: z.string(),
   senderId: z.string(),
   text: z.string(),
@@ -25,7 +11,7 @@ export const RawMessageSchema = z.object({
   editedAt: timestampToDate.optional(),
 });
 
-export const MessageSchema = RawMessageSchema.extend({
-  isRead: z.boolean().optional(),
-  isJumpTo: z.boolean().optional(),
+export const CreateMessageSchema = MessageSchema.pick({
+  senderId: true,
+  text: true,
 });

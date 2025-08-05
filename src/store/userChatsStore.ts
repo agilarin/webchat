@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { Unsubscribe } from "firebase/auth";
-import { ChatType, RawMessage, UserChat } from "@/types";
+import { ChatType, Message, UserChat } from "@/types";
 import { subscribeToUserChats as _subscribeToUserChats } from "@/services/userChatsService";
 import { subscribeToLastMessage as _subscribeToLastMessage } from "@/services/chat/messageService";
 import { getChat } from "@/services/chat/chatService";
@@ -10,27 +10,27 @@ import { useReadStatusesStore } from "./readStatusesStore";
 
 interface UserChatsState {
   userChats: Record<string, UserChat>;
-  chats: Record<string, ChatType>;
-  lastMessages: Record<string, RawMessage | null>;
   loading: boolean;
+  chats: Record<string, ChatType>;
+  lastMessages: Record<string, Message | null>;
   reset: () => void;
   subscribeToUserChats: (userId: string) => Unsubscribe;
   subscribeToLastMessage: (chatId: string) => Unsubscribe;
-  getLastMessage: (chatId: string) => RawMessage | null;
+  getLastMessage: (chatId: string) => Message | null;
 }
 
 export const useUserChatsStoreBase = create<UserChatsState>((set, get) => ({
   userChats: {},
+  loading: true,
   chats: {},
   lastMessages: {},
-  loading: true,
 
   reset: () => {
     set({
       userChats: {},
+      loading: true,
       chats: {},
       lastMessages: {},
-      loading: true,
     });
   },
 

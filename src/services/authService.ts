@@ -10,6 +10,13 @@ import {
 import { auth } from "@/services/firebase.ts";
 import { updateUserOnlineStatus } from "@/services/presenceService.ts";
 import { createUserProfile } from "./userService";
+import {
+  useActiveChatStore,
+  useCurrentUserStore,
+  useUserChatsStore,
+  useMessagesStore,
+  useReadStatusesStore,
+} from "@/store";
 
 async function passwordVerification(password: string) {
   const user = auth.currentUser;
@@ -73,8 +80,12 @@ export async function signIn({ email, password }: SignInParams) {
 
 export async function signOut() {
   try {
-    await updateUserOnlineStatus(false);
-    return await _signOut(auth);
+    await _signOut(auth);
+    useCurrentUserStore.getState().reset();
+    useUserChatsStore.getState().reset();
+    useReadStatusesStore.getState().reset();
+    useActiveChatStore.getState().reset();
+    useMessagesStore.getState().reset();
   } catch (error) {
     console.log(error);
     throw error;

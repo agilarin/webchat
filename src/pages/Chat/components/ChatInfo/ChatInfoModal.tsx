@@ -1,5 +1,5 @@
 import { useActiveChatStore } from "@/store";
-import { ChatPreview } from "@/pages/Home/components/ChatInfo/components/ChatPreview";
+import { ChatPreview } from "./components/ChatPreview";
 import { ChatInfoItem } from "./components/ChatInfoItem";
 import { Modal, ModalHeader } from "@/components/UI/Modal";
 import classes from "./ChatInfoModal.module.scss";

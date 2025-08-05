@@ -61,10 +61,12 @@ export function subscribeToUserChats(
     }
 
     const parseResult = UserChatParseArray(
-      snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }))
+      snapshot.docs
+        .filter((doc) => !doc.metadata.hasPendingWrites)
+        .map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
     );
 
     callback(parseResult);

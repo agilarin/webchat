@@ -4,7 +4,7 @@ import { useCurrentUser } from "@/hooks/store/useCurrentUser";
 import { Modal, ModalHeader } from "@/components/UI/Modal";
 import { AccountItem } from "./components/AccountItem";
 import { EditPassword } from "./components/EditPassword";
-import { Avatar } from "@/pages/Home/components/Avatar";
+import { Avatar } from "@/components/Avatar";
 import { EditName } from "./components/EditName";
 import { EditEmail } from "./components/EditEmail";
 import { EditUsername } from "./components/EditUsername";

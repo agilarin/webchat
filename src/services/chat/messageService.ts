@@ -146,7 +146,7 @@ export function subscribeToLastMessage(
   });
 }
 
-export async function getMessagesCount(chatId: string, date?: Date) {
+export async function getMessagesCount(chatId: string, date?: Date | null) {
   const messagesRef = getChatMessagesRef(chatId);
   const constraints: QueryConstraint[] = [];
 
@@ -157,5 +157,6 @@ export async function getMessagesCount(chatId: string, date?: Date) {
   const messagesQuery = query(messagesRef, ...constraints);
 
   const countSnap = await getCountFromServer(messagesQuery);
+  console.log(countSnap.data().count);
   return countSnap.data().count;
 }

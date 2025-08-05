@@ -1,19 +1,6 @@
 import { z } from "zod/v4";
 import { timestampToDate } from "./firebase";
 
-// export type UserType = {
-//   id: string;
-//   email: string;
-//   username: string;
-//   firstName: string;
-//   lastName?: string;
-//   avatar?: string;
-//   lastOnline?: number;
-//   isOnline?: boolean;
-//   createdAt: Timestamp;
-//   updatedAt?: Timestamp;
-// };
-
 export const UserRolesEnum = z.enum(["admin"]);
 
 export const AuthUserSchema = z.object({

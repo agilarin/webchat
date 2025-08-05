@@ -1,7 +1,7 @@
+import { Outlet } from "react-router";
 import { Resizable, ResizableProps } from "re-resizable";
 import { useMediaQuery } from "@/hooks/useMediaQuery.ts";
 import { Sidebar } from "@/pages/Home/components/Sidebar";
-import { ChatRoom } from "@/pages/Home/components/ChatRoom";
 import classes from "./Home.module.scss";
 
 export function Home() {
@@ -25,7 +25,9 @@ export function Home() {
       <Resizable {...resizableProps}>
         <Sidebar />
       </Resizable>
-      <ChatRoom />
+      <div className={classes.chatContainer}>
+        <Outlet />
+      </div>
     </div>
   );
 }

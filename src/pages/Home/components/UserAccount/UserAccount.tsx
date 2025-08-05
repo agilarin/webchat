@@ -1,4 +1,4 @@
-import { Avatar } from "@/pages/Home/components/Avatar";
+import { Avatar } from "@/components/Avatar";
 import { UserAccountMenu } from "@/pages/Home/components/UserAccountMenu";
 import { useCurrentUser } from "@/hooks/store/useCurrentUser";
 import { getFullName } from "@/utils/getFullName";

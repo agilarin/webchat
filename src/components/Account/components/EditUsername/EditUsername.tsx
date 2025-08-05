@@ -37,7 +37,7 @@ export function EditUsername({ open, onClose }: EditUsernameProps) {
     if (!user?.id) {
       return;
     }
-    await updateUsername(user.id, newUsername);
+    await updateUsername({ userId: user.id, username: newUsername });
     onClose();
   }
 

@@ -1,7 +1,6 @@
 import {
   collection,
   doc,
-  getDoc,
   onSnapshot,
   setDoc,
   Timestamp,
@@ -40,16 +39,7 @@ export async function createReadStatus({
   };
 
   try {
-    const readStatusDoc = await getDoc(readStatusRef);
-
-    if (!readStatusDoc.exists()) {
-      await setDoc(readStatusRef, data);
-      return;
-    }
-
-    if (data.lastReadAt && data.lastReadMessageId) {
-      await setDoc(readStatusRef, data, { merge: true });
-    }
+    await setDoc(readStatusRef, data, { merge: true });
   } catch (error) {
     console.error(error);
     throw error;

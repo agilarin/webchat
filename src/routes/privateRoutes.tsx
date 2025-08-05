@@ -3,22 +3,25 @@ import { ROUTES } from "@/constants";
 import { PrivateApp } from "@/components/Layout/PrivateApp";
 import { PrivateRoute } from "@/components/Layout/PrivateRoute";
 import { Home } from "@/pages/Home";
+import { Chat } from "@/pages/Chat";
 
 export const privateRoutes: RouteObject = {
-  path: ROUTES.ROOT,
   element: <PrivateRoute />,
   children: [
     {
       element: <PrivateApp />,
       children: [
         {
-          index: true,
+          path: ROUTES.ROOT,
           element: <Home />,
+          children: [
+            {
+              path: ROUTES.CHAT,
+              element: <Chat />,
+              children: [],
+            },
+          ],
         },
-        // {
-        //   path: ROUTES.CHAT,
-        //   element: <ChatLayout />,
-        // }
       ],
     },
   ],

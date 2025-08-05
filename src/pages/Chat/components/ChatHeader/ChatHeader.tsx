@@ -1,15 +1,17 @@
+import { useNavigate } from "react-router";
 import { ArrowLeft } from "lucide-react";
-import { useActiveChatStore, useMessagesStore } from "@/store";
-import { Avatar } from "@/pages/Home/components/Avatar";
-import { Button } from "@/components/UI/Button";
-import { ChatMenu } from "@/pages/Home/components/ChatRoom/components/ChatMenu";
-import classes from "./ChatHeader.module.scss";
+
+import { ROUTES } from "@/constants";
 import { useChatInfoContext } from "@/contexts/ChatInfoContext";
+import { useActiveChatStore } from "@/store";
+import { Avatar } from "@/components/Avatar";
+import { Button } from "@/components/UI/Button";
+import { ChatMenu } from "../ChatMenu";
+import classes from "./ChatHeader.module.scss";
 
 export function ChatHeader() {
   const activeChat = useActiveChatStore.use.chat();
-  const closeChat = useActiveChatStore.use.reset();
-  const clearMessage = useMessagesStore.use.reset();
+  const navigate = useNavigate();
   const { toggle } = useChatInfoContext();
 
   const peer = activeChat?.peer;
@@ -22,10 +24,7 @@ export function ChatHeader() {
           icon
           shape="round"
           className={classes.buttonBack}
-          onClick={() => {
-            closeChat();
-            clearMessage();
-          }}
+          onClick={() => navigate(ROUTES.ROOT)}
         >
           <ArrowLeft size={28} />
         </Button>
