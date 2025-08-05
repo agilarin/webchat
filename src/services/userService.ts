@@ -10,8 +10,13 @@ import {
 import { CreateUserProfile, UserProfile } from "@/types";
 import { firestore } from "@/services/firebase.ts";
 import { USERS_COLLECTION } from "@/constants";
-import { CreateUserProfileSchema, UserProfileSchema } from "@/schemas/user";
 import { reserveUsername, updateUsername } from "./usernameService";
+import {
+  CreateUserProfileParseOrThrow,
+  UpdateUserProfileParseOrThrow,
+  UserProfileParseOrNull,
+  UserProfileParseOrThrow,
+} from "@/utils/parsers";
 
 const usersRef = collection(firestore, USERS_COLLECTION);
 
@@ -19,19 +24,14 @@ export async function createUserProfile(
   userId: string,
   userProfile: CreateUserProfile
 ): Promise<void> {
-  const parseResult = CreateUserProfileSchema.safeParse(userProfile);
+  const parseResult = CreateUserProfileParseOrThrow(userProfile);
 
-  if (!parseResult.success) {
-    console.error(parseResult.error);
-    throw new Error(`Validation failed: ${parseResult.error.message}`);
-  }
-
-  await reserveUsername(userId, parseResult.data.username);
+  await reserveUsername({ userId, username: parseResult.username });
 
   const userRef = doc(usersRef, userId);
   try {
     await setDoc(userRef, {
-      ...parseResult.data,
+      ...parseResult,
       createdAt: serverTimestamp(),
     });
   } catch (error) {
@@ -49,16 +49,10 @@ export async function getUserProfile(
     const userDoc = await getDoc(userRef);
     if (!userDoc.exists()) return null;
 
-    const parseResult = UserProfileSchema.safeParse({
+    return UserProfileParseOrThrow({
       id: userDoc.id,
       ...userDoc.data(),
     });
-
-    if (!parseResult.success) {
-      throw new Error(`Validation failed: ${parseResult.error.message}`);
-    }
-
-    return parseResult.data;
   } catch (error) {
     console.error(error);
     throw error;
@@ -73,18 +67,14 @@ export function subscribeToUserProfile(
 
   return onSnapshot(userRef, async (userDoc) => {
     if (!userDoc.exists()) return await callback(null);
+    if (userDoc.metadata.hasPendingWrites) return;
 
-    const parseResult = UserProfileSchema.safeParse({
+    const parseResult = UserProfileParseOrNull({
       id: userDoc.id,
       ...userDoc.data(),
     });
 
-    if (!parseResult.success) {
-      console.error(`Validation failed: ${parseResult.error.message}`);
-      return await callback(null);
-    }
-
-    await callback(parseResult.data);
+    await callback(parseResult);
   });
 }
 
@@ -92,27 +82,19 @@ export async function updateUserProfile(
   userId: string,
   userProfile: Partial<CreateUserProfile>
 ): Promise<void> {
-  const PartialUserProfileSchema = CreateUserProfileSchema.partial();
+  const parseResult = UpdateUserProfileParseOrThrow(userProfile);
 
-  const parseResult = PartialUserProfileSchema.safeParse(userProfile);
-
-  if (!parseResult.success) {
-    throw new Error(`Validation failed: ${parseResult.error.message}`);
+  if (parseResult.username) {
+    await updateUsername({ userId, username: parseResult.username });
   }
+  delete parseResult.username;
 
-  if (parseResult.data.username) {
-    await updateUsername(userId, parseResult.data.username);
-  }
-  const updates = { ...parseResult.data };
-  delete updates.username;
-
-  if (Object.keys(updates).length === 0) return;
+  if (Object.keys(parseResult).length === 0) return;
 
   const userRef = doc(usersRef, userId);
-
   try {
     await updateDoc(userRef, {
-      ...parseResult.data,
+      ...parseResult,
       updatedAt: serverTimestamp(),
     });
   } catch (error) {

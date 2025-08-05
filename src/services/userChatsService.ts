@@ -1,38 +1,48 @@
 import {
   collection,
-  FieldValue,
   doc,
   onSnapshot,
   serverTimestamp,
-  Timestamp,
   setDoc,
 } from "firebase/firestore";
 import { firestore } from "@/services/firebase.ts";
-import { UserChat } from "@/types";
+import { CreateUserChat, UserChat } from "@/types";
 import { USERS_CHATS_SUBCOLLECTION, USERS_COLLECTION } from "@/constants";
+import {
+  CreateUserChatParseOrThrow,
+  UserChatParseArray,
+} from "@/utils/parsers";
 
 const usersRef = collection(firestore, USERS_COLLECTION);
 const getUserChatsRef = (userId: string) => {
   return collection(usersRef, userId, USERS_CHATS_SUBCOLLECTION);
 };
 
-type CreateUserChat = Omit<UserChat, "joinedAt"> & {
-  joinedAt: FieldValue;
-};
+export async function addUserChat(data: CreateUserChat) {
+  const parseResult = CreateUserChatParseOrThrow(data);
 
-export async function addUserChats(
-  userId: string,
-  chatId: string,
-  joinedAt?: Date
-) {
+  const { userId, ...otherData } = parseResult;
+
+  let docId: string;
+  let docData: Omit<typeof otherData, "peerId">;
+
+  if (otherData.type === "PRIVATE") {
+    docId = otherData.peerId;
+    const { peerId, ...rest } = otherData;
+    docData = rest;
+  } else {
+    docId = otherData.chatId;
+    docData = otherData;
+  }
+
   const userChatsRef = getUserChatsRef(userId);
 
   try {
-    await setDoc(doc(userChatsRef, chatId), {
-      chatId,
-      joinedAt: joinedAt ? Timestamp.fromDate(joinedAt) : serverTimestamp(),
+    await setDoc(doc(userChatsRef, docId), {
+      ...docData,
       role: "member",
-    } as CreateUserChat);
+      joinedAt: serverTimestamp(),
+    });
   } catch (error) {
     console.error(error);
     throw error;
@@ -49,6 +59,14 @@ export function subscribeToUserChats(
     if (snapshot.empty) {
       return callback([]);
     }
-    callback(snapshot.docs.map((doc) => doc.data() as UserChat));
+
+    const parseResult = UserChatParseArray(
+      snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }))
+    );
+
+    callback(parseResult);
   });
 }

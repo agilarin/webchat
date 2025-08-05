@@ -7,27 +7,26 @@ import {
 } from "firebase/firestore";
 import { firestore } from "@/services/firebase.ts";
 import { ChatType, CreateChat, RawChat } from "@/types";
-import { addUserChats } from "@/services/userChatsService.ts";
+import { addUserChat } from "@/services/userChatsService.ts";
 import { CHATS_COLLECTION } from "@/constants";
-import { ChatSchema, CreateChatSchema, RawChatSchema } from "@/schemas/chat";
 import { getUserProfile } from "../userService";
 import { reserveUsername } from "../usernameService";
 import { createReadStatus } from "./readStatusService";
 import { getFullName } from "@/utils/getFullName";
+import {
+  ChatParseOrNull,
+  CreateChatParseOrThrow,
+  RawChatParseOrNull,
+} from "@/utils/parsers";
 
 const chatsRef = collection(firestore, CHATS_COLLECTION);
 
 export async function createChat(userId: string, data: CreateChat) {
-  const parseResult = CreateChatSchema.safeParse(data);
-
-  if (!parseResult.success) {
-    console.error(parseResult.error);
-    throw new Error(`Validation failed: ${parseResult.error.message}`);
-  }
-  const { id: chatId, ...savedData } = parseResult.data;
+  const parseResult = CreateChatParseOrThrow(data);
+  const { id: chatId, ...savedData } = parseResult;
 
   if (savedData.type === "GROUP") {
-    await reserveUsername(chatId, savedData.username);
+    await reserveUsername({ chatId, username: savedData.username });
   }
 
   try {
@@ -36,10 +35,30 @@ export async function createChat(userId: string, data: CreateChat) {
       createdAt: serverTimestamp(),
     });
 
-    savedData.members.forEach((memberId) => {
-      addUserChats(memberId, chatId);
-      createReadStatus({ chatId, userId: memberId });
-    });
+    await Promise.all(
+      savedData.members.flatMap((memberId) => {
+        let userChatData;
+        if (savedData.type === "PRIVATE") {
+          userChatData = {
+            userId: memberId,
+            chatId,
+            type: savedData.type,
+            peerId: savedData.members.find((id) => id !== memberId)!,
+          };
+        } else {
+          userChatData = {
+            userId: memberId,
+            chatId,
+            type: savedData.type,
+          };
+        }
+
+        return [
+          addUserChat(userChatData),
+          createReadStatus({ chatId, userId: memberId }),
+        ];
+      })
+    );
 
     return await getChat(chatId, userId);
   } catch (error) {
@@ -55,25 +74,17 @@ export async function getChat(
   const chatRef = doc(chatsRef, chatId);
   try {
     const chatSnap = await getDoc(chatRef);
+    if (!chatSnap.exists()) return null;
 
-    if (!chatSnap.exists()) {
-      return null;
-    }
-    const parseResult = RawChatSchema.safeParse({
+    const parseResult = RawChatParseOrNull({
       id: chatSnap.id,
       ...chatSnap.data(),
     });
+    if (!parseResult) return parseResult;
 
-    if (!parseResult.success) {
-      console.error(parseResult.error);
-      return null;
-    }
-
-    const rawChat = parseResult.data;
-
-    switch (rawChat.type) {
+    switch (parseResult.type) {
       case "PRIVATE":
-        return processPrivateChat(rawChat, userId);
+        return processPrivateChat(parseResult, userId);
       case "GROUP":
         return null;
       default:
@@ -92,21 +103,12 @@ async function processPrivateChat(
   const peerId = chat.members.filter((id) => id !== userId)[0];
   const peer = await getUserProfile(peerId);
 
-  if (!peer) {
-    return null;
-  }
+  if (!peer) return null;
 
-  const parseResult = ChatSchema.safeParse({
+  return ChatParseOrNull({
     ...chat,
     peer,
     username: peer.username,
     title: getFullName(peer),
   });
-
-  if (!parseResult.success) {
-    console.error(parseResult.error);
-    return null;
-  }
-
-  return parseResult.data;
 }

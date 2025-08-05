@@ -1,12 +1,28 @@
-import { collection, doc, runTransaction } from "firebase/firestore";
+import { collection, doc, getDoc, runTransaction } from "firebase/firestore";
+import { RequireAtLeastOne } from "@/types";
 import { firestore } from "./firebase";
-import { USERNAMES_COLLECTION, USERS_COLLECTION } from "@/constants";
+import {
+  CHATS_COLLECTION,
+  USERNAMES_COLLECTION,
+  USERS_COLLECTION,
+} from "@/constants";
+import { UsernameType } from "@/types/usernameTypes";
+import { UsernameParseOrThrow } from "@/utils/parsers";
 
 const usersRef = collection(firestore, USERS_COLLECTION);
+const chatsRef = collection(firestore, CHATS_COLLECTION);
 const usernamesRef = collection(firestore, USERNAMES_COLLECTION);
 
-export async function reserveUsername(userId: string, username: string) {
+type UsernameAssignment = RequireAtLeastOne<UsernameType, "userId" | "chatId">;
+
+export async function reserveUsername({
+  userId,
+  chatId,
+  username,
+}: UsernameAssignment) {
   const usernameRef = doc(usernamesRef, username);
+
+  if (!userId || !chatId) throw new Error("ID is missing");
 
   try {
     await runTransaction(firestore, async (transaction) => {
@@ -14,9 +30,11 @@ export async function reserveUsername(userId: string, username: string) {
       if (usernameDoc.exists()) {
         throw new Error("Username is already taken");
       }
-      transaction.set(usernameRef, { userId });
-      // const userRef = doc(firestore, "users", userId);
-      // transaction.update(userRef, { username });
+      if (userId) {
+        transaction.set(usernameRef, { userId });
+      } else if (chatId) {
+        transaction.set(usernameRef, { chatId });
+      }
     });
   } catch (error) {
     console.error(error);
@@ -24,18 +42,23 @@ export async function reserveUsername(userId: string, username: string) {
   }
 }
 
-export async function updateUsername(userId: string, newUsername: string) {
+export async function updateUsername({
+  userId,
+  chatId,
+  username: newUsername,
+}: UsernameAssignment) {
   const usernameRef = doc(usernamesRef, newUsername);
-  const userRef = doc(usersRef, userId);
+  const entityId = userId ?? chatId;
+  const entityRef = doc(userId ? usersRef : chatsRef, entityId);
 
   try {
     await runTransaction(firestore, async (transaction) => {
-      const userDoc = await transaction.get(userRef);
-      if (!userDoc.exists()) {
-        throw new Error("User does not exist");
+      const entityDoc = await transaction.get(entityRef);
+      if (!entityDoc.exists()) {
+        throw new Error(`${userId ? "User" : "Chat"} does not exist`);
       }
 
-      const currentUsername = userDoc.data()?.username;
+      const currentUsername = entityDoc.data()?.username;
 
       const usernameDoc = await transaction.get(usernameRef);
       if (usernameDoc.exists()) {
@@ -43,15 +66,26 @@ export async function updateUsername(userId: string, newUsername: string) {
       }
 
       if (currentUsername && currentUsername !== newUsername) {
-        const oldUsernameRef = doc(firestore, "usernames", currentUsername);
+        const oldUsernameRef = doc(usernamesRef, currentUsername);
         transaction.delete(oldUsernameRef);
       }
 
-      transaction.set(usernameRef, { userId });
-      transaction.update(userRef, { username: newUsername });
+      const docData = userId ? { userId: entityId } : { chatId: entityId };
+      transaction.set(usernameRef, docData);
+      transaction.update(entityRef, { username: newUsername });
     });
   } catch (error) {
     console.error(error);
     throw error;
   }
+}
+
+export async function getUsername(username: string): Promise<UsernameType> {
+  const usernameRef = doc(usernamesRef, username);
+  const usernameDoc = await getDoc(usernameRef);
+
+  return UsernameParseOrThrow({
+    username: usernameDoc.id,
+    ...usernameDoc.data(),
+  });
 }

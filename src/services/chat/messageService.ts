@@ -2,7 +2,6 @@ import {
   addDoc,
   collection,
   getDocs,
-  limitToLast,
   onSnapshot,
   orderBy,
   query,
@@ -17,16 +16,16 @@ import {
   getCountFromServer,
 } from "firebase/firestore";
 import { firestore } from "@/services/firebase.ts";
-import { RawMessage } from "@/types";
+import { Message } from "@/types";
 import {
   CHATS_COLLECTION,
   CHATS_MESSAGES_SUBCOLLECTION,
   MESSAGE_LIMIT,
 } from "@/constants";
 import { updateReadStatus } from "./readStatusService";
-import { RawMessageSchema } from "@/schemas/Message";
+import { MessageParseArray, MessageParseOrNull } from "@/utils/parsers";
 
-export type NewMessageType = Pick<RawMessage, "text" | "senderId"> & {
+export type NewMessageType = Pick<Message, "text" | "senderId"> & {
   createdAt: Timestamp;
 };
 
@@ -47,18 +46,14 @@ export async function sendMessage({
   message,
 }: SendMessageParams): Promise<string> {
   const messagesRef = getChatMessagesRef(chatId);
-
   const createdAt = Timestamp.fromDate(new Date(Date.now()));
 
   try {
-    const newMessage: NewMessageType = {
+    const docRef = await addDoc(messagesRef, {
       text: message,
       senderId,
       createdAt,
-    };
-
-    const docRef = await addDoc(messagesRef, newMessage);
-
+    });
     await updateReadStatus({
       chatId,
       userId: senderId,
@@ -69,79 +64,6 @@ export async function sendMessage({
     return docRef.id;
   } catch (err) {
     console.error(err);
-    throw err;
-  }
-}
-
-interface SubscribeToMessagesParams {
-  chatId: string;
-  createdAt?: Date | null;
-}
-
-export function subscribeToMessages(
-  { chatId, createdAt }: SubscribeToMessagesParams,
-  callback: (messages: RawMessage[]) => void
-) {
-  const messagesRef = getChatMessagesRef(chatId);
-  const constraints: QueryConstraint[] = [orderBy("createdAt", "asc")];
-
-  if (createdAt) {
-    constraints.push(startAt(createdAt), limit(MESSAGE_LIMIT));
-  } else {
-    constraints.push(limitToLast(MESSAGE_LIMIT));
-  }
-
-  return onSnapshot(query(messagesRef, ...constraints), (snapshot) => {
-    const messages: RawMessage[] = [];
-
-    snapshot.docs.forEach((doc) => {
-      const parseResult = RawMessageSchema.safeParse({
-        id: doc.id,
-        ...doc.data(),
-      });
-
-      if (parseResult.success) {
-        messages.push(parseResult.data);
-      } else {
-        console.error("Invalid message data", parseResult.error);
-      }
-    });
-
-    callback(messages);
-  });
-}
-
-export async function getPreviousMessages(chatId: string, createdAt: Date) {
-  const messagesRef = getChatMessagesRef(chatId);
-  try {
-    const constraints: QueryConstraint[] = [
-      orderBy("createdAt", "desc"),
-      limit(MESSAGE_LIMIT),
-    ];
-
-    if (createdAt) {
-      constraints.push(startAfter(Timestamp.fromDate(createdAt)));
-    }
-
-    const messagesSnap = await getDocs(query(messagesRef, ...constraints));
-
-    const messages: RawMessage[] = [];
-
-    messagesSnap.docs.forEach((doc) => {
-      const result = RawMessageSchema.safeParse({
-        id: doc.id,
-        ...doc.data(),
-      });
-      if (result.success) {
-        messages.push(result.data);
-      } else {
-        console.error("Invalid message format:", result.error);
-      }
-    });
-
-    return messages;
-  } catch (err) {
-    console.error("Error loading messages:", err);
     throw err;
   }
 }
@@ -170,7 +92,6 @@ export async function getMessages({
     const constraints: QueryConstraint[] = [
       orderBy("createdAt", sort),
       limit(limitValue),
-      // sort === "asc" ? limitToLast(limitValue) : limit(limitValue),
     ];
 
     if (startAfterDate) {
@@ -188,19 +109,9 @@ export async function getMessages({
 
     const messagesSnap = await getDocs(query(messagesRef, ...constraints));
 
-    const messages: RawMessage[] = [];
-
-    messagesSnap.docs.forEach((doc) => {
-      const result = RawMessageSchema.safeParse({
-        id: doc.id,
-        ...doc.data(),
-      });
-      if (result.success) {
-        messages.push(result.data);
-      } else {
-        console.error("Invalid message format:", result.error);
-      }
-    });
+    const messages = MessageParseArray(
+      messagesSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+    );
 
     return messages;
   } catch (err) {
@@ -211,7 +122,7 @@ export async function getMessages({
 
 export function subscribeToLastMessage(
   chatId: string,
-  callback: (message: RawMessage | null) => void
+  callback: (message: Message | null) => void
 ) {
   const messagesRef = getChatMessagesRef(chatId);
   const messagesQuery = query(
@@ -224,18 +135,14 @@ export function subscribeToLastMessage(
     if (snapshot.empty) {
       return callback(null);
     }
-    const doc = snapshot.docs[0];
 
-    const parseResult = RawMessageSchema.safeParse({
+    const doc = snapshot.docs[0];
+    const parseResult = MessageParseOrNull({
       id: doc.id,
       ...doc.data(),
     });
 
-    if (parseResult.success) {
-      callback(parseResult.data);
-    } else {
-      console.error("Invalid message data", parseResult.error);
-    }
+    callback(parseResult);
   });
 }
 

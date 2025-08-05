@@ -12,7 +12,7 @@ import {
 } from "@/constants";
 import { firestore } from "../firebase";
 import { ReadStatus } from "@/types";
-import { ReadStatusSchema } from "@/schemas/readStatus";
+import { ReadStatusParseOrNull } from "@/utils/parsers";
 
 const chatsRef = collection(firestore, CHATS_COLLECTION);
 const getReadStatusesRef = (chatId: string) => {
@@ -50,7 +50,6 @@ export async function createReadStatus({
     if (data.lastReadAt && data.lastReadMessageId) {
       await setDoc(readStatusRef, data, { merge: true });
     }
-    return;
   } catch (error) {
     console.error(error);
     throw error;
@@ -73,13 +72,9 @@ export function subscribeToReadStatus(
       return callback(null);
     }
 
-    const parseResult = ReadStatusSchema.safeParse(snapshot.data());
+    const parseResult = ReadStatusParseOrNull(snapshot.data());
 
-    if (parseResult.success) {
-      return callback(parseResult.data);
-    }
-
-    callback(null);
+    callback(parseResult);
   });
 }
 
