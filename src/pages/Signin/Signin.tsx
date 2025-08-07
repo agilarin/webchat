@@ -87,28 +87,34 @@ export function Signin() {
         Создать аккаунт
       </Button>
 
-      <Button
-        color="primary"
-        className={classes.link}
-        onClick={() => {
-          setValue("email", import.meta.env.VITE_GUEST1_EMAIL);
-          setValue("password", import.meta.env.VITE_GUEST1_PASSWORD);
-        }}
-        type="submit"
-      >
-        Войти как гость (1)
-      </Button>
-      <Button
-        color="primary"
-        className={classes.link}
-        onClick={() => {
-          setValue("email", import.meta.env.VITE_GUEST2_EMAIL);
-          setValue("password", import.meta.env.VITE_GUEST2_PASSWORD);
-        }}
-        type="submit"
-      >
-        Войти как гость (2)
-      </Button>
+      {import.meta.env.VITE_GUEST1_EMAIL &&
+        import.meta.env.VITE_GUEST1_PASSWORD && (
+          <Button
+            color="primary"
+            className={classes.link}
+            onClick={() => {
+              setValue("email", import.meta.env.VITE_GUEST1_EMAIL);
+              setValue("password", import.meta.env.VITE_GUEST1_PASSWORD);
+            }}
+            type="submit"
+          >
+            Войти как гость (1)
+          </Button>
+        )}
+      {import.meta.env.VITE_GUEST2_EMAIL &&
+        import.meta.env.VITE_GUEST2_PASSWORD && (
+          <Button
+            color="primary"
+            className={classes.link}
+            onClick={() => {
+              setValue("email", import.meta.env.VITE_GUEST2_EMAIL);
+              setValue("password", import.meta.env.VITE_GUEST2_PASSWORD);
+            }}
+            type="submit"
+          >
+            Войти как гость (2)
+          </Button>
+        )}
     </AuthForm>
   );
 }

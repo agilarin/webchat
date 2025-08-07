@@ -8,6 +8,7 @@ import {
 import { getMessagesCount } from "@/services/chat/messageService";
 import { createSelectors } from "@/utils/zustand";
 import { useCurrentUserStore } from "./currentUserStore";
+import { STORE_ERRORS } from "@/constants";
 
 interface ReadStatusesState {
   readStatuses: Record<string, ReadStatus | undefined>;
@@ -126,9 +127,15 @@ export const useReadStatusesStoreBase = create<ReadStatusesState>(
     },
 
     fetchUnreadCount: async (chatId, date) => {
+      const authUser = useCurrentUserStore.getState().authUser;
+      if (!authUser) throw Error(STORE_ERRORS.NO_USER);
       const storeDate = get().readStatuses[chatId]?.lastReadAt;
 
-      const count = await getMessagesCount(chatId, date || storeDate);
+      const count = await getMessagesCount({
+        chatId,
+        userId: authUser.id,
+        date: date || storeDate,
+      });
 
       set((state) => ({
         unreadCounts: {
@@ -139,30 +146,38 @@ export const useReadStatusesStoreBase = create<ReadStatusesState>(
     },
 
     markRead: (chatId, message) => {
-      const createdAtBDLoading = get().readStatusesLoading[chatId];
-      if (createdAtBDLoading) throw new Error("");
+      const authUser = useCurrentUserStore.getState().authUser;
+      if (!authUser) throw new Error(STORE_ERRORS.NO_USER);
 
-      const createdAtBD = get().readStatuses[chatId]?.lastReadAt;
-      const createdAtLocal = get().lastReadMessages[chatId]?.createdAt;
-      const createdAtNewTime = message.createdAt.getTime();
+      const isLoading = get().readStatusesLoading[chatId];
+      if (isLoading) throw new Error("Read statuses are still loading");
 
-      if (createdAtLocal && createdAtLocal.getTime() >= createdAtNewTime) {
+      const lastReadAtBD = get().readStatuses[chatId]?.lastReadAt;
+      const lastReadAtLocal = get().lastReadMessages[chatId]?.createdAt;
+      const messageTime = message.createdAt.getTime();
+
+      if (
+        (lastReadAtLocal && lastReadAtLocal.getTime() >= messageTime) ||
+        (lastReadAtBD && lastReadAtBD.getTime() >= messageTime)
+      ) {
         return;
       }
-      if (createdAtBD && createdAtBD.getTime() >= createdAtNewTime) {
-        return;
-      }
 
-      set((state) => ({
-        lastReadMessages: {
-          ...state.lastReadMessages,
-          [chatId]: message,
-        },
-        readCounts: {
-          ...state.readCounts,
-          [chatId]: (state.readCounts[chatId] || 0) + 1,
-        },
-      }));
+      set((state) => {
+        const currentCount = state.readCounts[chatId] || 0;
+        const shouldIncrement = message.senderId !== authUser.id;
+
+        return {
+          lastReadMessages: {
+            ...state.lastReadMessages,
+            [chatId]: message,
+          },
+          readCounts: {
+            ...state.readCounts,
+            [chatId]: shouldIncrement ? currentCount + 1 : currentCount,
+          },
+        };
+      });
     },
   })
 );

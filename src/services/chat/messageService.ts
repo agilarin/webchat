@@ -146,10 +146,19 @@ export function subscribeToLastMessage(
   });
 }
 
-export async function getMessagesCount(chatId: string, date?: Date | null) {
-  const messagesRef = getChatMessagesRef(chatId);
-  const constraints: QueryConstraint[] = [];
+interface GetMessagesCountParams {
+  chatId: string;
+  userId: string;
+  date?: Date | null;
+}
 
+export async function getMessagesCount({
+  chatId,
+  userId,
+  date,
+}: GetMessagesCountParams) {
+  const messagesRef = getChatMessagesRef(chatId);
+  const constraints: QueryConstraint[] = [where("senderId", "!=", userId)];
   if (date) {
     constraints.push(where("createdAt", ">", Timestamp.fromDate(date)));
   }
